@@ -1,0 +1,31 @@
+Floor
+- Calls Elevator
+- Submit Direction
+- Gets Elevator Direction on Arrival
+- Opens doors on signal
+- Displays called directions
+- Close doors on signal
+- Display floor and direction of each elevator
+
+
+
+
+Elevator
+- Determines destination floor and tell scheduler
+- Track current direction
+- Send notification on arrival at a destination
+- Track all next destinations and displays
+- Open doors if at destination
+- Close doors before leaving
+- Signals floor to open doors on arrival
+- Signals floor to close doors before departure
+- Reject destinations from sheduler (not buttons) if already passed it
+
+
+
+
+Scheduler
+- Receive calls
+- Determine best suited elevator to service a request and notify
+- Track elevator current status
+- Deal with errors/faults appropriately
