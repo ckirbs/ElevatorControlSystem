@@ -2,5 +2,6 @@ package Resources;
 
 public enum Directions {
 	UP,
-	DOWN;
+	DOWN,
+	STANDBY;
 }
