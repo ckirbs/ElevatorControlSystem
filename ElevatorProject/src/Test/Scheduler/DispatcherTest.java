@@ -57,4 +57,26 @@ public class DispatcherTest {
 		// Should give the closest elevator that is going in the correct direction/not moving
 		assertEquals("Incorrect Elevator", elevator1, dispatcher.getNearestElevator(Directions.DOWN, 4));
 	}
+	
+	@Test
+	public void testTwoElevatorsCloserOneDownTooFar() {
+		TempElevator elevator1 = this.dispatcher.new TempElevator(Directions.DOWN, 7);
+		dispatcher.addElevator(elevator1);
+		TempElevator elevator2 = this.dispatcher.new TempElevator(Directions.DOWN, 3);
+		dispatcher.addElevator(elevator2);
+		
+		// Should give the closest elevator that is going in the correct direction/not moving
+		assertEquals("Incorrect Elevator", elevator1, dispatcher.getNearestElevator(Directions.DOWN, 4));
+	}
+	
+	@Test
+	public void testTwoElevatorsCloserOneUpTooFar() {
+		TempElevator elevator1 = this.dispatcher.new TempElevator(Directions.UP, 7);
+		dispatcher.addElevator(elevator1);
+		TempElevator elevator2 = this.dispatcher.new TempElevator(Directions.UP, 3);
+		dispatcher.addElevator(elevator2);
+		
+		// Should give the closest elevator that is going in the correct direction/not moving
+		assertEquals("Incorrect Elevator", elevator2, dispatcher.getNearestElevator(Directions.UP, 6));
+	}
 }
