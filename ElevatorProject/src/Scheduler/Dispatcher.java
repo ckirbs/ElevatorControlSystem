@@ -6,7 +6,7 @@ import Resources.*;
 
 public class Dispatcher {
 	private ArrayList<TempElevator> elevators;
-	public final static int MAX_DIFF = 100;
+	public final static int MAX_DIFF = SystemFile.HIGHESTFLOOR - SystemFile.LOWESTFLOOR + 1; // + 1 so that it's always bigger than the greatest possible difference
 	
 	public Dispatcher() {
 		this.elevators = new ArrayList<TempElevator>();
