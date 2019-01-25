@@ -1,5 +1,8 @@
 package floorSubsystem;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
@@ -37,7 +40,7 @@ public class FloorSystem {
 	}
 	
 	public void startFloorSchedule() {
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(floors.size());
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 		long delay;
 		for (Message message : que) {
 			delay = ChronoUnit.MILLIS.between(LocalTime.of(STARTING_HOUR, STARTING_MINUTE), message.getTime());
@@ -49,7 +52,10 @@ public class FloorSystem {
 					if (message.getDirection() == Directions.UP) {
 						direction = 1;
 					}
+					DatagramSocket datagramSocket = new DatagramSocket();
 					byte[] buffer = new byte[]{ (byte) message.getStartingFloor(), (byte) message.getDestinatinoFloor(), direction};
+					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("127.0.0.1"), 23);
+					datagramSocket.send(packet);
 					return true;
 				}
 				
