@@ -77,12 +77,10 @@ public class Elevator {
 			if (currFloorPosition >= floorRequested) {
 				return true; // The elevator can accept service to this floor
 			}
-			return false; // The elevator can not service during its current service
 		} else if (status.equals(Directions.UP)) {
 			if (currFloorPosition <= floorRequested) {
 				return true; // The elevator can accept service to this floor
 			}
-			return false; // The elevator can not service during its current service
 		} else {
 			if (currFloorPosition >= floorRequested) {
 				serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_CAPACITY, floorComparator);
@@ -91,5 +89,6 @@ public class Elevator {
 			}
 			return true; // The current elevator is not doing anything, will service request
 		}
+		return false; // The elevator can not service request during its current service route
 	}
 }
