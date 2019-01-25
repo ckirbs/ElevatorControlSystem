@@ -20,6 +20,9 @@ public class FloorSystem {
 	private SystemFile systemFile;
 	private Queue<Message> que;
 	
+	public static int STARTING_HOUR = 14;
+	public static int STARTING_MINUTE = 0;
+	
 	public FloorSystem() {
 		floors = new ArrayList<>();
 		floors.add(new Floor(1));
@@ -37,12 +40,10 @@ public class FloorSystem {
 		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(floors.size());
 		long delay;
 		for (Message message : que) {
-			
-			delay = 1000;//ChronoUnit.MILLIS.between(LocalTime.now(), LocalTime.of(13, 5, 45));
-			
+			delay = ChronoUnit.MILLIS.between(LocalTime.of(STARTING_HOUR, STARTING_MINUTE), message.getTime());
 			scheduler.schedule(new Callable() {
 				public Object call() throws Exception {
-					System.out.println("holy heck");
+					System.out.println(message.toString());
 					return "Called!";
 				}
 			}, delay, TimeUnit.MILLISECONDS);
