@@ -41,14 +41,22 @@ public class FloorSystem {
 		long delay;
 		for (Message message : que) {
 			delay = ChronoUnit.MILLIS.between(LocalTime.of(STARTING_HOUR, STARTING_MINUTE), message.getTime());
-			scheduler.schedule(new Callable() {
-				public Object call() throws Exception {
-					System.out.println(message.toString());
-					return "Called!";
+			scheduler.schedule(new Callable<Boolean>() {
+				
+				public Boolean call() throws Exception {
+					System.out.println("Someone on floor " + message.getStartingFloor() + " wants to go " + message.getDirection() + " to floor " + message.getDestinatinoFloor());
+					byte direction = 0;
+					if (message.getDirection() == Directions.UP) {
+						direction = 1;
+					}
+					byte[] buffer = new byte[]{ (byte) message.getStartingFloor(), (byte) message.getDestinatinoFloor(), direction};
+					return true;
 				}
+				
 			}, delay, TimeUnit.MILLISECONDS);
 			
 		}
 	}
 	
 }
+
