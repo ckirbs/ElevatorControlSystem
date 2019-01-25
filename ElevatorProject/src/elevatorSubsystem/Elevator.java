@@ -83,8 +83,10 @@ public class Elevator {
 			}
 		} else {
 			if (currFloorPosition >= floorRequested) {
+				status = Direction.UP;
 				serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_CAPACITY, floorComparator);
 			} else {
+				status = Directions.DOWN;
 				serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_CAPACITY, floorComparator.reversed());
 			}
 			return true; // The current elevator is not doing anything, will service request
