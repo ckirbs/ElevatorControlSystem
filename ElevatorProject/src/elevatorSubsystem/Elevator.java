@@ -83,7 +83,7 @@ public class Elevator {
 			}
 		} else {
 			if (currFloorPosition >= floorRequested) {
-				status = Direction.UP;
+				status = Directions.UP;
 				serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_CAPACITY, floorComparator);
 			} else {
 				status = Directions.DOWN;
