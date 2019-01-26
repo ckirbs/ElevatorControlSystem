@@ -42,14 +42,14 @@ public class SystemFileTest {
     @Test
     public void testValidateLineInvalidStartFloor() {
 	SystemFile input = new SystemFile("Filename.txt");
-	String invalidDirection = "10:02:21 Floor1 DIRECTION 4";
+	String invalidDirection = "10:02:21 Floor1 Up 4";
 	assertFalse("Invalid Time!", input.testValidateLine(invalidDirection));
     }
     
     @Test
     public void testValidateLineInvalidDestinationFloor() {
 	SystemFile input = new SystemFile("Filename.txt");
-	String invalidDirection = "10:02:21 1 DIRECTION Floor2";
+	String invalidDirection = "10:02:21 1 Up Floor2";
 	assertFalse("Invalid Time!", input.testValidateLine(invalidDirection));
     }
 
@@ -58,7 +58,7 @@ public class SystemFileTest {
 	SystemFile input = new SystemFile(TESTFILE1);
 	String returnInfo = "14:05:15.22 2 Up 4";
 	String output = input.testReadFile().get(0);
-	assertTrue("Correct Read of TestFile1!", returnInfo.equals(output));
+	assertEquals("Incorrect Read of TestFile1!", returnInfo, output);
     }
 
 }
