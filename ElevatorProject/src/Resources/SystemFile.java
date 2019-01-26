@@ -174,17 +174,4 @@ public class SystemFile {
     public Boolean testValidateLine(String lineInfo) {
 	return this.validateLine(lineInfo);
     }
-
-    public static void main(String[] args) {
-	SystemFile s = new SystemFile(FILENAME1);
-	s.readValidateAndCreateMessages();
-
-	// Example of how to retrieve MessagesQueue
-	Queue<Message> que = Message.getMessageQueue();
-	while (que.peek() != null) {
-	    Message m2 = que.remove();
-	    System.out.println(m2.toString());
-	}
-    }
-
 }
