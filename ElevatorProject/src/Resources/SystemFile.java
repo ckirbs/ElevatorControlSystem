@@ -84,6 +84,7 @@ public class SystemFile {
 	    } else // If not "up" or "down" it's an invalid direction
 	    {
 		System.out.println("Invalid Direction");
+		System.out.println("Text: " + messageDetails[2]);
 		System.out.println("at " + new Exception().getStackTrace()[0].toString());
 		System.out.println("Line Format: hh:mm:ss:nnnn startFloor direction endFloor");
 		System.out.println("Ex: 14:05:15.22 2 Up 4 \n");
