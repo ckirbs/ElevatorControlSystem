@@ -2,11 +2,16 @@ package Scheduler;
 
 import java.util.ArrayList;
 import Resources.*;
+import static Resources.Constants.MAX_DIFF;
 
-
+/**
+ * Dispatcher class to take care of requests from floors and choose the correct elevator
+ * 
+ * @author Darren
+ *
+ */
 public class Dispatcher {
 	private ArrayList<TempElevator> elevators;
-	public final static int MAX_DIFF = SystemFile.HIGHESTFLOOR - SystemFile.LOWESTFLOOR + 1; // + 1 so that it's always bigger than the greatest possible difference
 	
 	public Dispatcher() {
 		this.elevators = new ArrayList<TempElevator>();
@@ -16,8 +21,19 @@ public class Dispatcher {
 		this.elevators.add(elevator);
 	}
 	
-	// Determine the nearest, applicable elevator given a request consisting of a direction and originating floor
-	// Currently iterates through a list of elevators but will probably change to ping each elevator
+	public void updateElevatorInfo(Object something) {
+		// Use something to update info
+	}
+	
+	// 
+	/**
+	 * Determine the nearest, applicable elevator given a request consisting of a direction and originating floor 
+	 * Currently iterates through a list of elevators but will probably change to ping each elevator
+	 * 
+	 * @param dir		The direction of the request
+	 * @param floor		The request's originating floor
+	 * @return			The elevator to handle the request
+	 */
 	public TempElevator getNearestElevator(Directions dir, int floor) {
 		int currDif = MAX_DIFF;
 		int newDif;

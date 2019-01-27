@@ -7,7 +7,6 @@ public enum Directions {
 	
 	public static boolean isOpposite(Directions dir1, Directions dir2) {
 		
-		if (dir1 == STANDBY || dir2 == STANDBY || dir1 == dir2) return false;			
-		return true;
+		return !(dir1 == STANDBY || dir2 == STANDBY || dir1 == dir2);
 	}
 }
