@@ -14,6 +14,7 @@ public class Message {
     private Directions direction;
     private int destinationFloor;
     public static Queue<Message> messageQueue = new LinkedList<Message>();
+    public static final int ELEMENTS_IN_MESSAGE = 4;
 
     /*
      * Message - Creates a message object which stores the time the user made

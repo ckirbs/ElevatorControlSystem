@@ -21,6 +21,11 @@ public class SystemFile {
 					     // floor
     public final static int HIGHESTFLOOR = 10; // Temporary variable for highest
 					       // floor
+    public final static String FILEPATH = "src/Resources/"; // File path for
+							    // text files
+
+    public final static String FILENAME1 = "elevatorInputFile.txt"; // Filename1
+
     private String filename;
 
     /*
@@ -66,9 +71,19 @@ public class SystemFile {
      * @return- True if message created, otherwise False
      */
     private Boolean validateLine(String lineInfo) {
-	String[] messageDetails = new String[4];
+	String[] messageDetails = new String[Message.ELEMENTS_IN_MESSAGE];
 	try {
 	    messageDetails = lineInfo.split(" ");
+
+	    if (messageDetails.length != Message.ELEMENTS_IN_MESSAGE) {
+		System.out.println("Invalid Number of Elements");
+		System.out.println("Size: " + messageDetails.length);
+		System.out.println("Expected: " + Message.ELEMENTS_IN_MESSAGE + " Elements");
+		System.out.println("at " + new Exception().getStackTrace()[0].toString());
+		System.out.println("Line Format: hh:mm:ss:nnnn startFloor direction endFloor");
+		System.out.println("Ex: 14:05:15.22 2 Up 4 \n");
+		return false;
+	    }
 
 	    LocalTime time = LocalTime.parse(messageDetails[0]);
 
@@ -84,6 +99,7 @@ public class SystemFile {
 	    } else // If not "up" or "down" it's an invalid direction
 	    {
 		System.out.println("Invalid Direction");
+		System.out.println("Text: " + messageDetails[2]);
 		System.out.println("at " + new Exception().getStackTrace()[0].toString());
 		System.out.println("Line Format: hh:mm:ss:nnnn startFloor direction endFloor");
 		System.out.println("Ex: 14:05:15.22 2 Up 4 \n");
@@ -124,7 +140,7 @@ public class SystemFile {
 	Scanner scanner;
 	ArrayList<String> requestsFromInputFile = new ArrayList<String>();
 	try {
-	    File n = new File("src/Resources/" + filename);
+	    File n = new File(FILEPATH + filename);
 	    scanner = new Scanner(n);
 	    while (scanner.hasNextLine()) {
 		requestsFromInputFile.add(scanner.nextLine());
@@ -139,16 +155,23 @@ public class SystemFile {
 	return requestsFromInputFile;
     }
 
-    public static void main(String[] args) {
-	SystemFile s = new SystemFile("elevatorInputFile.txt");
-	s.readValidateAndCreateMessages();
-
-	// Example of how to retrieve MessagesQueue
-	Queue<Message> que = Message.getMessageQueue();
-	while (que.peek() != null) {
-	    Message m2 = que.remove();
-	    System.out.println(m2.toString());
-	}
+    /*
+     * testReadFile -public method for testing readFile()
+     * 
+     * @return: ArrayList<String>
+     */
+    public ArrayList<String> testReadFile() {
+	return this.readFile();
     }
 
+    /*
+     * testValidateLine -public method for testing validateLine()
+     * 
+     * @param: String lineInfo - The line it will be validating return: Boolean
+     * 
+     * @return- True if message created, otherwise False
+     */
+    public Boolean testValidateLine(String lineInfo) {
+	return this.validateLine(lineInfo);
+    }
 }
