@@ -1,44 +1,66 @@
 package elevatorSubsystem;
 
-import Resources.Message;
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ElevatorReciever implements Runnable {
+public class ElevatorReciever {
 
-	private Elevator elv;
+	private static final int NUMBER_OF_ELEVATORS = 1;
+	private List<Elevator> elevators;
+	DatagramSocket datagramSocket;
 
-	public ElevatorReciever(Elevator elevator) {
-		this.elv = elevator;
-	}
-
-	@Override
-	public void run() {
-		while(true) {
-			//receive message()
-			Message msg = null;
-			processSchedulerMsg(msg);
+	public ElevatorReciever() {
+		elevators = new ArrayList<Elevator>();
+		for(int i=0; i< NUMBER_OF_ELEVATORS; i++) {
+			elevators.add(new Elevator(i, this));
+		}
+		
+		try {
+			datagramSocket = new DatagramSocket();
+		} catch (SocketException e) {
+			e.printStackTrace();
 		}
 	}
 
+	private void recieverCommunicationLoop() {
+		byte[] buffer;
+		DatagramPacket packet;
+		while (true) {
+			buffer = new byte[4];
+			packet = new DatagramPacket(buffer, buffer.length);
+			try {
+				datagramSocket.receive(packet);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			processSchedulerMsg(buffer);
+		}
+	}
+	
 	// Receive msg from scheduler with floor number
-	private void processSchedulerMsg(Message msg) {
-		// TODO Update implementation when message class is updated
-		if (msg.getByteOne() == 4) {
+	// TODO Update implementation when byte class is updated
+	private void processSchedulerMsg(byte[] msg) {
+		if (msg[0] == 4) {
 			// New floor request
-			if (msg.getByteTwo() == 0) {
+			if (msg[1] == 0) {
 				// Voluntary Dest
-				if (elv.canServiceCall(msg.getByteFour())) {
+				if (elevators.get(msg[2]).canServiceCall(msg[4])) {
 					sendAcceptMsg();
-					addFloorToService(msg.getByteFour());
+					addFloorToService((int) msg[2], (int) msg[4]);
 				} else {
 					sendDeclineMsg();
 				}
-			} else if (msg.getByteTwo() == 1) {
+			} else if (msg[1] == 1) {
 				// Mandatory
 				sendAcceptMsg();
-				addFloorToService(msg.getByteFour());
-				elv.addToPassengerButtons(msg.getByteFour());
+				addFloorToService((int) msg[2], (int) msg[4]);
+				elevators.get(msg[2]).addToPassengerButtons(msg[4]);
 			}
-		} else if (msg.getByteOne() == 5) {
+		} else if (msg[0] == 5) {
 			sendSatusMsg();
 		}
 	}
@@ -50,9 +72,9 @@ public class ElevatorReciever implements Runnable {
 	 * 
 	 * @param floor containing calling floor and
 	 */
-	private synchronized void addFloorToService(Integer floor) {
-		elv.addToServiceQueue(floor);
-		elv.updateFloorToService();
+	private synchronized void addFloorToService(Integer elevatorNumber, Integer floor) {
+		elevators.get(elevatorNumber).addToServiceQueue(floor);
+		elevators.get(elevatorNumber).updateFloorToService();
 	}
 
 	private void sendAcceptMsg() {
@@ -75,5 +97,9 @@ public class ElevatorReciever implements Runnable {
 		// currFloor - Byte 3
 		// elevatorNumber - Byte 4
 	}
-
+	
+	public static void main(String[] args) {
+		ElevatorReciever elvReciever = new ElevatorReciever();
+		elvReciever.recieverCommunicationLoop();
+	}
 }

@@ -25,7 +25,7 @@ public class ElevatorMotor implements Runnable {
 	
 	private void  move() {
 		System.out.println("Elevator is Moving " + elv.getStatus());
-		if (elv.getCurrFloorPosition() == elv.MAX_FLOOR || elv.getCurrFloorPosition() == elv.MIN_FLOOR) {
+		if ((elv.getCurrFloorPosition() == elv.MAX_FLOOR && elv.getStatus() == Directions.UP)|| (elv.getCurrFloorPosition() == elv.MIN_FLOOR && elv.getStatus() == Directions.DOWN)) {
 			new Exception("Reached End of Track");
 		}
 
@@ -45,11 +45,13 @@ public class ElevatorMotor implements Runnable {
 	
 	private synchronized void serviceFloor() {
 		System.out.print("Opening Doors on Floor " + elv.getCurrFloorPosition());
+		elv.openDoor();
 
-		//Clear floor from queue(s)
+		//Clear floor from service and passengerLight queue(s)
 		elv.removeFromPassengerButtons(elv.pollServiceQueue());
 
 		System.out.print("Opening Closing on Floor " + elv.getCurrFloorPosition());
+		elv.closeDoor();
 
 		System.out.print("Current Floors Pressed: " + elv.getElevatorPassengerButtons());
 	}

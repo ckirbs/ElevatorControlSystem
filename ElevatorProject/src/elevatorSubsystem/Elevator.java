@@ -15,14 +15,14 @@ public class Elevator {
 	public static final int FLOOR_TRAVEL_SPEED_MS = 1000;
 	public static final int MAX_SERVICE_QUEUE_CAPACITY = 22;
 
-	private static Integer elvNumber;
+	private final Integer elvNumber;
+	private boolean isDoorOpen;
 	private Integer currFloorPosition, floorDestionation;
 	private PriorityBlockingQueue<Integer> serviceScheduleQueue;
 	private Set<Integer> elevatorPassengerButtons;
 	private Directions status;
 
 	private ElevatorMotor motor;
-	private ElevatorReciever receiver;
 
 	private Comparator<Integer> floorComparator = (Integer a, Integer b) -> a.compareTo(b);
 
@@ -33,18 +33,17 @@ public class Elevator {
 	// scheduler
 	// -- (Possibly) One responsible for listening to floor requests within the
 	// elevator
-	public Elevator(Integer elvNumber) {
+	public Elevator(Integer elvNumber, ElevatorReciever elvRecieve) {
 		this.motor = new ElevatorMotor(this);
-		this.receiver = new ElevatorReciever(this);
 		this.elvNumber = elvNumber;
 		
+		isDoorOpen = false;
 		floorDestionation = null;
 		currFloorPosition = 0;
 		elevatorPassengerButtons = new HashSet<Integer>();
 		status = Directions.STANDBY;
 		
 		motor.run();
-		receiver.run();
 	}
 	
 	synchronized void updateFloorToService() {
@@ -109,6 +108,14 @@ public class Elevator {
 	public synchronized void moveDown() {
 		currFloorPosition--;
 	}
+	
+	public void openDoor() {
+		isDoorOpen = true;
+	}
+	
+	public void closeDoor() {
+		isDoorOpen = false;
+	}
 
 	public void addToPassengerButtons(int floor) {
 		elevatorPassengerButtons.add(floor);
@@ -124,6 +131,10 @@ public class Elevator {
 
 	public int pollServiceQueue() {
 		return serviceScheduleQueue.poll();
+	}
+
+	public Integer getElvNumber() {
+		return elvNumber;
 	}
 
 	public Integer getCurrFloorPosition() {

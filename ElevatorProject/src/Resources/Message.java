@@ -89,19 +89,19 @@ public class Message {
 		+ this.getDestinationFloor());
     }
 
-	public int getByteOne() {
+	public int getMsgType() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	public int getByteTwo() {
+	public int getManditory() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	public int getByteThree() {
+	public int getElvNumber() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	public int getByteFour() {
+	public int getFloorRequested() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
