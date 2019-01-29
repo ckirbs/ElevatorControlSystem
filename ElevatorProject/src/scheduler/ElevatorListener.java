@@ -1,12 +1,12 @@
-package Scheduler;
+package scheduler;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import static Resources.Constants.ELEVATOR_PORT;
-import static Resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.ELEVATOR_PORT;
+import static resources.Constants.MESSAGE_LENGTH;
 
 public class ElevatorListener extends Communicator implements Runnable {
 	private DatagramSocket elevatorSocket;

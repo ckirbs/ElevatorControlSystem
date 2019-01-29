@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import Resources.SystemFile;
+import resources.SystemFile;
 
 public class SystemFileTest {
 

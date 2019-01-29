@@ -3,9 +3,9 @@ package Test.Scheduler;
 import org.junit.Before;
 import org.junit.Test;
 
-import Resources.Directions;
-import Scheduler.Dispatcher;
-import Scheduler.Dispatcher.TempElevator;
+import resources.Directions;
+import scheduler.Dispatcher;
+import scheduler.Dispatcher.TempElevator;
 import junit.framework.*;
 import static org.junit.Assert.*;
 

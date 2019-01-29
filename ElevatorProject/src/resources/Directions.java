@@ -1,4 +1,4 @@
-package Resources;
+package resources;
 
 public enum Directions {
 	UP,

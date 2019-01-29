@@ -1,9 +1,9 @@
-package Scheduler;
+package scheduler;
 
 import java.util.ArrayList;
 
-import Resources.*;
-import static Resources.Constants.NUMBER_OF_FLOORS;
+import resources.*;
+import static resources.Constants.NUMBER_OF_FLOORS;
 
 /**
  * Dispatcher class to take care of requests from floors and choose the correct elevator
@@ -13,7 +13,7 @@ import static Resources.Constants.NUMBER_OF_FLOORS;
  */
 public class Dispatcher {
 	private ArrayList<TempElevator> elevators;
-	public final static int MAX_DIFF = SystemFile.HIGHESTFLOOR - SystemFile.LOWESTFLOOR + 1; // + 1 so that it's always bigger than the greatest possible difference
+	public final static int MAX_DIFF = NUMBER_OF_FLOORS + 1; // + 1 so that it's always bigger than the greatest possible difference
 	
 	
 	public Dispatcher() {

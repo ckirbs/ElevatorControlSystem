@@ -1,8 +1,8 @@
-package Scheduler;
+package scheduler;
 
-import static Resources.Constants.ELEVATOR_PORT;
-import static Resources.Constants.FLOOR_PORT;
-import static Resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.ELEVATOR_PORT;
+import static resources.Constants.FLOOR_PORT;
+import static resources.Constants.MESSAGE_LENGTH;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

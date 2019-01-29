@@ -1,4 +1,4 @@
-package Resources;
+package resources;
 
 /**
  * Constants class to hold various constants that my be used in multiple classes

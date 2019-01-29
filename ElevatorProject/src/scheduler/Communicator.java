@@ -1,8 +1,8 @@
-package Scheduler;
+package scheduler;
 
-import Scheduler.Dispatcher;
-import static Resources.Constants.NUMBER_OF_ELEVATORS;
-import static Resources.Constants.NUMBER_OF_FLOORS;
+import scheduler.Dispatcher;
+import static resources.Constants.NUMBER_OF_ELEVATORS;
+import static resources.Constants.NUMBER_OF_FLOORS;
 
 public class Communicator {
 	protected Dispatcher dispatcher;
