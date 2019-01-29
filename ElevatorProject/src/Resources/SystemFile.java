@@ -55,7 +55,7 @@ public class SystemFile {
      * readValidateAndCreateMessages - reads file using readFile() and the
      * validates and creates messages using validateLine()
      */
-    private void readValidateAndCreateMessages() {
+    public void readValidateAndCreateMessages() {
 	ArrayList<String> requests = readFile();
 	for (int position = 0; position < requests.size(); position++) {
 	    validateLine(requests.get(position));

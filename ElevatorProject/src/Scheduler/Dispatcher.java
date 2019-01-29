@@ -13,6 +13,8 @@ import static Resources.Constants.NUMBER_OF_FLOORS;
  */
 public class Dispatcher {
 	private ArrayList<TempElevator> elevators;
+	public final static int MAX_DIFF = SystemFile.HIGHESTFLOOR - SystemFile.LOWESTFLOOR + 1; // + 1 so that it's always bigger than the greatest possible difference
+	
 	
 	public Dispatcher() {
 		this.elevators = new ArrayList<TempElevator>();
@@ -36,7 +38,7 @@ public class Dispatcher {
 	 * @return			The elevator to handle the request
 	 */
 	public TempElevator getNearestElevator(Directions dir, int floor) {
-		int currDif = NUMBER_OF_FLOORS + 1;
+		int currDif = MAX_DIFF;
 		int newDif;
 		TempElevator currElevator = null;
 		
