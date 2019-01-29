@@ -1,4 +1,4 @@
-package Test.Resources;
+package test.resources;
 
 import static org.junit.Assert.*;
 

@@ -1,4 +1,4 @@
-package Test.Resources;
+package test.resources;
 
 import org.junit.Test;
 

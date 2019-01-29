@@ -1,4 +1,4 @@
-package Test.Scheduler;
+package test.scheduler;
 
 import org.junit.Before;
 import org.junit.Test;
