@@ -18,7 +18,7 @@ public class Dispatcher {
 	
 	// Determine the nearest, applicable elevator given a request consisting of a direction and originating floor
 	// Currently iterates through a list of elevators but will probably change to ping each elevator
-	public TempElevator getNearestElevator(Directions dir, int floor) {
+	public TempElevator getNearestElevator(Directions dir, int callingFloor) {
 		int currDif = MAX_DIFF;
 		int newDif;
 		TempElevator currElevator = null;
@@ -31,8 +31,9 @@ public class Dispatcher {
 				// If elevator is going down, it can only hit floors below it
 				// If elevator is going up, it can only hit floors above it
 				// If elevator is on standby, it can go either direction so floor locations don't matter
-				if (elevator.getDir() == Directions.STANDBY || (dir == Directions.DOWN && elevator.getFloor() > floor && dir == elevator.getDir()) || (dir == Directions.UP && elevator.getFloor() < floor && dir == elevator.getDir())) {
-					newDif = Math.abs(elevator.getFloor() - floor);
+				// Elevators will not stop if it is already at a floor that has requested a direction as it would not be able to slow down in time
+				if (elevator.getDir() == Directions.STANDBY || (dir == Directions.DOWN && elevator.getFloor() > callingFloor) || (dir == Directions.UP && elevator.getFloor() < callingFloor)) {
+					newDif = Math.abs(elevator.getFloor() - callingFloor);
 					if (newDif < currDif) {
 						currDif = newDif;
 						currElevator = elevator;
