@@ -3,10 +3,10 @@ package Test.Scheduler;
 import org.junit.Before;
 import org.junit.Test;
 
-import junit.framework.*;
 import Resources.Directions;
 import Scheduler.Dispatcher;
 import Scheduler.Dispatcher.TempElevator;
+import junit.framework.*;
 import static org.junit.Assert.*;
 
 public class DispatcherTest {

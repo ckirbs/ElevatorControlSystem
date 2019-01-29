@@ -1,7 +1,8 @@
 package Test.Resources;
 
-import Resources.Directions;
 import org.junit.Test;
+
+import Resources.Directions;
 import static org.junit.Assert.*;
 
 public class DirectionsTest {
