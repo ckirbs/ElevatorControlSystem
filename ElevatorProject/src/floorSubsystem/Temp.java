@@ -15,12 +15,15 @@ public class Temp {
 			//Wait for another packet from the Client
 			while (true) {
 				//Re-initialize buffers and packet received from client
-				bufFromClient = new byte[30];
+				bufFromClient = new byte[4];
 				packetReceive = new DatagramPacket(bufFromClient, bufFromClient.length);
 				datagramSocketClient.receive(packetReceive);
 				
 				//Print out packet from client
 				System.out.println("Packet Received from Client: " + Arrays.toString(packetReceive.getData()) + "\n");
+				packetReceive.setData(new byte[] {3, 0, 7, 0});
+				packetReceive.setLength(4);
+				datagramSocketClient.send(packetReceive);
 			}
 		} catch (Exception e) {
 			

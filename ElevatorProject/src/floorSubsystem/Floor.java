@@ -2,12 +2,18 @@ package floorSubsystem;
 
 public class Floor {
 	
-	int level;
-	boolean isDoorOpen;
+	private int level;
+	private boolean isDoorOpen; 
+	private boolean isUpButtonPressed, isDownButtonPressed;
+	private boolean isUpDirectionLampOn, isDownDirectionLampOn;
 	
 	public Floor(int level) {
 		this.level = level;
 		isDoorOpen = false;
+		isUpButtonPressed = false;
+		isDownButtonPressed = false;
+		isUpDirectionLampOn = false;
+		isDownDirectionLampOn = false;
 	}
 	
 	public void openDoor() {
@@ -16,6 +22,10 @@ public class Floor {
 	
 	public void closeDoor() {
 		isDoorOpen = false;
+	}
+	
+	public int getLevel() {
+		return level;
 	}
 
 }
