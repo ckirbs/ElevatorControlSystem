@@ -3,7 +3,7 @@ package Scheduler;
 import java.util.ArrayList;
 
 import Resources.*;
-import static Resources.Constants.MAX_FLOOR_DIFF;
+import static Resources.Constants.NUMBER_OF_FLOORS;
 
 /**
  * Dispatcher class to take care of requests from floors and choose the correct elevator
@@ -36,7 +36,7 @@ public class Dispatcher {
 	 * @return			The elevator to handle the request
 	 */
 	public TempElevator getNearestElevator(Directions dir, int floor) {
-		int currDif = MAX_FLOOR_DIFF;
+		int currDif = NUMBER_OF_FLOORS + 1;
 		int newDif;
 		TempElevator currElevator = null;
 		
