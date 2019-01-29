@@ -19,6 +19,8 @@ public enum Directions {
 	}
 	
 	public static int getIntByDir(Directions dir) {
+		if (dir == null) return -1;
+		
 		switch (dir) {
 		case DOWN: return 0;
 		case UP: return 1;

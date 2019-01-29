@@ -39,4 +39,41 @@ public class DirectionsTest {
 	public void testOppositeSBSB() {
 		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.STANDBY, Directions.STANDBY));
 	}
+	
+	@Test
+	public void testZeroReturnsDown() {
+		assertEquals("Wrong Direction Value", Directions.DOWN, Directions.getDirByInt(0));
+	}
+	
+	@Test
+	public void testOneReturnsUp() {
+		assertEquals("Wrong Direction Value", Directions.UP, Directions.getDirByInt(1));
+	}
+	
+	@Test
+	public void testTwoReturnsSB() {
+		assertEquals("Wrong Direction Value", Directions.STANDBY, Directions.getDirByInt(2));
+	}
+	
+	@Test
+	public void testDownReturnsZero() {
+		assertEquals("Wrong Integer Value", 0, Directions.getIntByDir(Directions.DOWN));
+	}
+	
+	@Test
+	public void testUpReturnsOne() {
+		assertEquals("Wrong Integer Value", 1, Directions.getIntByDir(Directions.UP));
+	}
+	
+	@Test
+	public void testSBReturnsTwo() {
+		assertEquals("Wrong Integer Value", 2, Directions.getIntByDir(Directions.STANDBY));
+	}
+	
+	
+	@Test
+	public void testOtherValsReturnNegOne() {
+		assertEquals("Wrong Integer Value", -1, Directions.getIntByDir(null));
+	}
+	
 }
