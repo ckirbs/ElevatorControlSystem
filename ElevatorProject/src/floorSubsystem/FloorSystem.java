@@ -52,7 +52,7 @@ public class FloorSystem {
 	}
 	
 	public void startFloorSchedule() {
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(SystemFile.HIGHESTFLOOR);
 		long delay;
 		for (Message message : que) {
 			delay = ChronoUnit.MILLIS.between(LocalTime.of(STARTING_HOUR, STARTING_MINUTE), message.getTime());
