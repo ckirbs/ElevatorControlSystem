@@ -88,4 +88,21 @@ public class Message {
 	return (this.getTime().toString() + " " + this.getStartingFloor() + " " + this.getDirection().toString() + " "
 		+ this.getDestinationFloor());
     }
+
+	public int getByteOne() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	public int getByteTwo() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	public int getByteThree() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	public int getByteFour() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

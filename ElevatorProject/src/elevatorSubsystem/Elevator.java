@@ -10,16 +10,19 @@ import Resources.Message;
 
 public class Elevator {
 
-	private static final int MAX_FLOOR = 22;
-	private static final int MIN_FLOOR = 0;
+	public static final int MAX_FLOOR = 22;
+	public static final int MIN_FLOOR = 0;
+	public static final int FLOOR_TRAVEL_SPEED_MS = 1000;
+	public static final int MAX_SERVICE_QUEUE_CAPACITY = 22;
 
-	private static final int FLOOR_TRAVEL_SPEED_MS = 1000;
-	private static final int MAX_SERVICE_QUEUE_CAPACITY = 22;
-
+	private static Integer elvNumber;
 	private Integer currFloorPosition, floorDestionation;
 	private PriorityBlockingQueue<Integer> serviceScheduleQueue;
 	private Set<Integer> elevatorPassengerButtons;
 	private Directions status;
+
+	private ElevatorMotor motor;
+	private ElevatorReciever receiver;
 
 	private Comparator<Integer> floorComparator = (Integer a, Integer b) -> a.compareTo(b);
 
@@ -30,69 +33,21 @@ public class Elevator {
 	// scheduler
 	// -- (Possibly) One responsible for listening to floor requests within the
 	// elevator
-
-	public Elevator() {
+	public Elevator(Integer elvNumber) {
+		this.motor = new ElevatorMotor(this);
+		this.receiver = new ElevatorReciever(this);
+		this.elvNumber = elvNumber;
+		
 		floorDestionation = null;
 		currFloorPosition = 0;
 		elevatorPassengerButtons = new HashSet<Integer>();
 		status = Directions.STANDBY;
-	}
-
-	private void run() {
-		// -------
-		// THREAD 1 - MOTOR/MOVEMENT
-		if (currFloorPosition == floorDestionation) {
-			serviceFloor(); // open doors - remove floor from queue and grab next to service
-			nextFloorToService();
-		} else {
-			move();
-		}
-		// -------
-
-		// -------
-		// THREAD 2 - SCHED LISTENER
-		// Listen and Receive task from Scheduler
-		//replySchedulerRequest();
-		// -------
-	}
-
-	// Receive msg from scheduler with floor number
-	private void replySchedulerRequest(Message msg) {
-		//TODO find cleaner way of determining this --> Set bit that differentiates requests
-		if (currFloorPosition == msg.getStartingFloor()) {
-			//User presses button inside elevator
-			addFloorToService(msg.getDestinationFloor());
-		}
 		
-		if (canServiceCall(msg.getStartingFloor())) {
-			//User requesting elevator from floor
-			addFloorToService(msg.getStartingFloor());
-			// send reply accepting assignment
-		}
-		// send reply declining the assignment
+		motor.run();
+		receiver.run();
 	}
-
-	private void move() {
-		System.out.println("Elevator is Moving " + status);
-		if (currFloorPosition == MAX_FLOOR || currFloorPosition == MIN_FLOOR) {
-			new Exception("Reached End of Track");
-		}
-
-		if (status == Directions.UP) {
-			currFloorPosition++;
-		} else if (status == Directions.DOWN) {
-			currFloorPosition--;
-		}
-
-		try {
-			Thread.sleep(FLOOR_TRAVEL_SPEED_MS);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	private void nextFloorToService() {
+	
+	synchronized void updateFloorToService() {
 		if (!serviceScheduleQueue.isEmpty()) {
 			floorDestionation = serviceScheduleQueue.peek();
 			updateDirection();
@@ -102,24 +57,11 @@ public class Elevator {
 		}
 	}
 
-	private void serviceFloor() {
-		System.out.print("Opening Doors on Floor " + currFloorPosition);
-
-		serviceScheduleQueue.poll();
-		if (elevatorPassengerButtons.contains(currFloorPosition)) {
-			elevatorPassengerButtons.remove(currFloorPosition);
-		}
-
-		System.out.print("Opening Closing on Floor " + currFloorPosition);
-
-		System.out.print("Current Floors Pressed: " + elevatorPassengerButtons.toString());
-	}
-
 	/*
 	 * updateDirection() updates the status of elevator to represent the direction
 	 * of the currentDestionation
 	 */
-	private void updateDirection() {
+	synchronized void updateDirection() {
 		PriorityBlockingQueue<Integer> temp;
 		if (currFloorPosition < floorDestionation) {
 			if (status != Directions.UP) {
@@ -139,33 +81,11 @@ public class Elevator {
 		}
 	}
 
-	/**
-	 * addFloorToService() adds request received via message, if current floor ==
-	 * startingFloor treaded as internalElevatorPanel request (button glows) else
-	 * treated as floor request and added to service route
-	 * 
-	 * @param floor containing calling floor and 
-	 */
-	private void addFloorToService(Integer floor) {
-		if (currFloorPosition == floor) {
-			// On caller floor -- Receive destination floor
-			serviceScheduleQueue.add(floor);
-			elevatorPassengerButtons.add(floor);
-		} else {
-			// Receiving general floor request
-			serviceScheduleQueue.add(floor);
-		}
-		nextFloorToService();
-	}
-
 	// Checks to see if the current elevator can accept a floor service request
 	// returns true if request is along current route, false if outside
 	// Standby = Initializes new priorityQueue with priority depending on floor
 	// requested
-
-	// TODO Logic assumes a user will never indicate the wrong elevator call on a
-	// floor request (Clicks 'UP' on six floor but intends to go 'DOWN' to fourth)
-	private boolean canServiceCall(int floorRequested) {
+	boolean canServiceCall(int floorRequested) {
 		if (status.equals(Directions.DOWN)) {
 			if (currFloorPosition >= floorRequested) {
 				return true; // The elevator can accept service to this floor
@@ -180,5 +100,53 @@ public class Elevator {
 		}
 		// The elevator can not service during its current service
 		return false;
+	}
+	
+	public synchronized void moveUp() {
+		currFloorPosition++;
+	}
+
+	public synchronized void moveDown() {
+		currFloorPosition--;
+	}
+
+	public void addToPassengerButtons(int floor) {
+		elevatorPassengerButtons.add(floor);
+	}
+
+	public void removeFromPassengerButtons(int floor) {
+		elevatorPassengerButtons.remove(floor);
+	}
+
+	public void addToServiceQueue(int floor) {
+		serviceScheduleQueue.add(floor);
+	}
+
+	public int pollServiceQueue() {
+		return serviceScheduleQueue.poll();
+	}
+
+	public Integer getCurrFloorPosition() {
+		return currFloorPosition;
+	}
+
+	public void setCurrFloorPosition(Integer currFloorPosition) {
+		this.currFloorPosition = currFloorPosition;
+	}
+
+	public Integer getFloorDestionation() {
+		return floorDestionation;
+	}
+
+	public PriorityBlockingQueue<Integer> getServiceScheduleQueue() {
+		return serviceScheduleQueue;
+	}
+
+	public Set<Integer> getElevatorPassengerButtons() {
+		return elevatorPassengerButtons;
+	}
+
+	public Directions getStatus() {
+		return status;
 	}
 }
