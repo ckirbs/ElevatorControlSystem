@@ -81,7 +81,6 @@ public class FloorSystem {
 		while (true) {
 			buffer = new byte[4];
 			packet = new DatagramPacket(buffer, buffer.length);
-			Floor floor = null;
 			try {
 				datagramSocket.receive(packet);
 			} catch (IOException e) {
@@ -89,20 +88,17 @@ public class FloorSystem {
 			}
 			System.out.println(Arrays.toString(packet.getData()) + "\n");
 			if (buffer[0] == (byte) 3) {
-				for (Floor tempFloor : floors) {
-					if (tempFloor.getLevel() == buffer[2]) {
-						floor = tempFloor;
+				for (Floor floor : floors) {
+					if (floor.getLevel() == buffer[2]) {
+						if (buffer[1] == (byte) 1) {
+							floor.openDoor();
+							System.out.println("Doors open on floor " + floor.getLevel());
+						} else {
+							floor.closeDoor();
+							System.out.println("Doors close on floor " + floor.getLevel());
+						}
 						break;
 					}
-				}
-			}
-			if (floor != null) {
-				if (buffer[1] == (byte) 1) {
-					floor.openDoor();
-					System.out.println("Doors open on floor " + floor.getLevel());
-				} else {
-					floor.closeDoor();
-					System.out.println("Doors close on floor " + floor.getLevel());
 				}
 			}
 		}
