@@ -35,7 +35,7 @@ public class FloorSystem {
 		for (int i = 0; i < SystemFile.HIGHESTFLOOR; i++) {
 			floors.add(new Floor(i));
 		}
-		systemFile = new SystemFile("elevatorInputFile.txt");
+		systemFile = new SystemFile(SystemFile.FILENAME1);
 		systemFile.readValidateAndCreateMessages();
 		que = Message.getMessageQueue();
 		try {
@@ -49,7 +49,6 @@ public class FloorSystem {
 		FloorSystem floorSystem = new FloorSystem();
 		floorSystem.startFloorSchedule();
 		floorSystem.schedulerCommunicationLoop();
-		//DateFormat dateFormatter = new SimpleDateFormat("hh:mm:ss.mmm");
 	}
 	
 	public void startFloorSchedule() {
