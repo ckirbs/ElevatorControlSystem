@@ -3,7 +3,9 @@ package elevatorSubsystem;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +13,7 @@ public class ElevatorReciever {
 
 	private static final int NUMBER_OF_ELEVATORS = 1;
 	private List<Elevator> elevators;
-	DatagramSocket datagramSocket;
+	private DatagramSocket datagramSocket;
 
 	public ElevatorReciever() {
 		elevators = new ArrayList<Elevator>();
@@ -44,24 +46,30 @@ public class ElevatorReciever {
 	// Receive msg from scheduler with floor number
 	// TODO Update implementation when byte class is updated
 	private void processSchedulerMsg(byte[] msg) {
-		if (msg[0] == 4) {
+		int scenerio = (int) msg[0];
+		int reqType = (int) msg[1];
+		int floorReq = (int) msg[2];
+		int elvNum = (int) msg[3];
+		
+		
+		if (scenerio == 4) {
 			// New floor request
-			if (msg[1] == 0) {
+			if (reqType == 0) {
 				// Voluntary Dest
-				if (elevators.get(msg[2]).canServiceCall(msg[4])) {
-					sendAcceptMsg();
-					addFloorToService((int) msg[2], (int) msg[4]);
+				if (elevators.get(elvNum).canServiceCall(floorReq)) {
+					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
+					addFloorToService(elvNum, floorReq);
 				} else {
-					sendDeclineMsg();
+					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq));
 				}
 			} else if (msg[1] == 1) {
 				// Mandatory
-				sendAcceptMsg();
-				addFloorToService((int) msg[2], (int) msg[4]);
-				elevators.get(msg[2]).addToPassengerButtons(msg[4]);
+				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
+				addFloorToService(elvNum, floorReq);
+				elevators.get(elvNum).addToPassengerButtons(floorReq);
 			}
 		} else if (msg[0] == 5) {
-			sendSatusMsg();
+			sendResponse(elevators.get(elvNum).generateSatusMsg());
 		}
 	}
 
@@ -76,26 +84,16 @@ public class ElevatorReciever {
 		elevators.get(elevatorNumber).addToServiceQueue(floor);
 		elevators.get(elevatorNumber).updateFloorToService();
 	}
-
-	private void sendAcceptMsg() {
-		// Flag - 6
-		// Y/N - 1
-		// elevatorNumber - Byte 3
-		// floorDest - Byte 4
-	}
-
-	private void sendDeclineMsg() {
-		// Flag - 6
-		// Y/N - 1
-		// elevatorNumber - Byte 3
-		// floorDest - Byte 4
-	}
-
-	private void sendSatusMsg() {
-		// Flag - 7
-		// Status - Byte 2
-		// currFloor - Byte 3
-		// elevatorNumber - Byte 4
+	
+	private synchronized void sendResponse(byte[] msg) {
+		DatagramPacket packet;
+		try {
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), 23);
+			datagramSocket.send(packet);
+		} catch (Exception e) {
+			//Failed generating response
+			e.printStackTrace();
+		}
 	}
 	
 	public static void main(String[] args) {

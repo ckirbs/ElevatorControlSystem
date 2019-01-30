@@ -23,6 +23,7 @@ public class Elevator {
 	private Directions status;
 
 	private ElevatorMotor motor;
+	private ElevatorReciever elvReceieve;
 
 	private Comparator<Integer> floorComparator = (Integer a, Integer b) -> a.compareTo(b);
 
@@ -35,6 +36,7 @@ public class Elevator {
 	// elevator
 	public Elevator(Integer elvNumber, ElevatorReciever elvRecieve) {
 		this.motor = new ElevatorMotor(this);
+		this.elvReceieve = elvRecieve;
 		this.elvNumber = elvNumber;
 		
 		isDoorOpen = false;
@@ -43,7 +45,7 @@ public class Elevator {
 		elevatorPassengerButtons = new HashSet<Integer>();
 		status = Directions.STANDBY;
 		
-		motor.run();
+		motor.start();
 	}
 	
 	synchronized void updateFloorToService() {
@@ -133,6 +135,26 @@ public class Elevator {
 		return serviceScheduleQueue.poll();
 	}
 
+	byte[] generateAcceptMsg(int floorDest) {
+		return new byte[] { 6, 1, (byte) floorDest, (byte) (int) this.getElvNumber() };
+	}
+
+	byte[] generateDeclineMsg(int floorDest) {
+		 return new byte[] { 6, 0, (byte) floorDest, (byte) (int) this.getElvNumber() };
+	}
+
+	byte[] generateSatusMsg() {
+		 return new byte[] { 7, (byte) Directions.getIntByDir(this.getStatus()), (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
+	}	
+	
+	byte[] generateOpenMsg() {
+		 return new byte[] { 3, 1, (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
+	}	
+	
+	byte[] generateCloseMsg() {
+		 return new byte[] { 3, 1, (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
+	}
+	
 	public Integer getElvNumber() {
 		return elvNumber;
 	}

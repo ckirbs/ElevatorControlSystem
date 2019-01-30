@@ -2,7 +2,7 @@ package elevatorSubsystem;
 
 import Resources.Directions;
 
-public class ElevatorMotor implements Runnable {
+public class ElevatorMotor extends Thread {
 	
 	private Elevator elv;
 	
