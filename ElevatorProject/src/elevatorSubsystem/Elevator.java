@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.Queue;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import Resources.Directions;
+import resources.Directions;
 
 public class Elevator {
 

@@ -1,12 +1,12 @@
-package Test.Scheduler;
+package test.scheduler;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import resources.Directions;
+import scheduler.Dispatcher;
+import scheduler.Dispatcher.TempElevator;
 import junit.framework.*;
-import Resources.Directions;
-import Scheduler.Dispatcher;
-import Scheduler.Dispatcher.TempElevator;
 import static org.junit.Assert.*;
 
 public class DispatcherTest {
