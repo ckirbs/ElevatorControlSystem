@@ -8,7 +8,7 @@ import java.net.SocketException;
 import static resources.Constants.ELEVATOR_PORT;
 import static resources.Constants.MESSAGE_LENGTH;
 
-public class ElevatorCommunicator extends Communicator implements Runnable {
+public class ElevatorListener extends Communicator implements Runnable {
 	private DatagramSocket elevatorSocket;
 	private DatagramPacket packet;
 	
