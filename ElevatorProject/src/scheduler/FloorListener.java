@@ -16,7 +16,6 @@ public class FloorListener extends Communicator implements Runnable {
 		super();
 		try {
 			this.floorSocket = new DatagramSocket(FLOOR_PORT);
-			this.floorSocket.setSoTimeout(TIMEOUT_TIME);
 		} catch (SocketException e) {
 			System.out.println("Error creating floor socket.");
 			e.printStackTrace();
@@ -26,11 +25,13 @@ public class FloorListener extends Communicator implements Runnable {
 
 	private void checkForMessages() {
 		try {
-			this.packet = new DatagramPacket(new byte[MESSAGE_LENGTH], MESSAGE_LENGTH);
+			byte[] message = new byte[MESSAGE_LENGTH];
+			this.packet = new DatagramPacket(message, MESSAGE_LENGTH);
 			this.floorSocket.receive(packet);
 			
-//			decode message
-//			act accordingly
+			Communicator.floorReturnPorts[(int) message[2]] = packet.getPort();
+
+			this.dealWithMessage(message);
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

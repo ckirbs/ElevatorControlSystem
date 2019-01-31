@@ -26,11 +26,14 @@ public class ElevatorListener extends Communicator implements Runnable {
 
 	private void checkForMessages() {
 		try {
-			this.packet = new DatagramPacket(new byte[MESSAGE_LENGTH], MESSAGE_LENGTH);
+			byte[] message = new byte[MESSAGE_LENGTH];
+			this.packet = new DatagramPacket(message, MESSAGE_LENGTH);
 			this.elevatorSocket.receive(packet);
 			
-//			decode message
-//			act accordingly
+			Communicator.elevatorReturnPort = packet.getPort();
+			
+			this.dealWithMessage(message);
+			
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

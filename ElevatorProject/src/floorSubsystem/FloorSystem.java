@@ -20,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 import resources.*;
 
+import static resources.Constants.HIGHEST_FLOOR;
+
 public class FloorSystem {
 	
 	private List<Floor> floors;
@@ -32,7 +34,7 @@ public class FloorSystem {
 	
 	public FloorSystem() {
 		floors = new ArrayList<>();
-		for (int i = 0; i < SystemFile.HIGHESTFLOOR; i++) {
+		for (int i = 0; i < HIGHEST_FLOOR; i++) {
 			floors.add(new Floor(i));
 		}
 		systemFile = new SystemFile(SystemFile.FILENAME1);
@@ -52,7 +54,7 @@ public class FloorSystem {
 	}
 	
 	public void startFloorSchedule() {
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(SystemFile.HIGHESTFLOOR);
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(HIGHEST_FLOOR);
 		long delay;
 		for (Message message : que) {
 			delay = ChronoUnit.MILLIS.between(LocalTime.of(STARTING_HOUR, STARTING_MINUTE), message.getTime());
