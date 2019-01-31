@@ -44,7 +44,7 @@ public class Dispatcher {
 	public int getNearestElevator(Directions dir, int callingFloor) {
 		int currDif = MAX_DIFF;
 		int newDif;
-		Elevator currElevator = null;
+		int currElevator = -1;
 		
 		// For each elevator
 		for (Elevator elevator: this.elevators) {
@@ -58,13 +58,13 @@ public class Dispatcher {
 					newDif = Math.abs(elevator.getFloor() - callingFloor);
 					if (newDif < currDif) {
 						currDif = newDif;
-						currElevator = elevator;
+						currElevator = elevator.getId();
 					}
 				}
 			}
 		}
 		
-		return currElevator.getId();
+		return currElevator;
 	}
 	
 	
