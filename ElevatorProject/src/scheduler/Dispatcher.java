@@ -3,7 +3,7 @@ package scheduler;
 import java.util.ArrayList;
 
 import resources.*;
-import static resources.Constants.NUMBER_OF_FLOORS;
+import static resources.Constants.*;
 
 /**
  * Dispatcher class to take care of requests from floors and choose the correct elevator
@@ -12,23 +12,23 @@ import static resources.Constants.NUMBER_OF_FLOORS;
  *
  */
 public class Dispatcher {
-	private ArrayList<TempElevator> elevators;
+	private ArrayList<Elevator> elevators;
 	public final static int MAX_DIFF = NUMBER_OF_FLOORS + 1; // + 1 so that it's always bigger than the greatest possible difference
 	
 	
 	public Dispatcher() {
-		this.elevators = new ArrayList<TempElevator>();
-	}
-
-	public void addElevator(TempElevator elevator) {
-		this.elevators.add(elevator);
+		this.elevators = new ArrayList<Elevator>();
+		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) this.elevators.add(new Elevator(i, Directions.STANDBY, 0));
 	}
 	
-	public void updateElevatorInfo(Object something) {
-		// Use something to update info
+	public synchronized boolean updateElevatorInfo(int id, Directions dir, int floor) {
+		if (id > this.elevators.size() || id < 0) return false;
+		
+		this.elevators.get(id).setFloor(floor);
+		this.elevators.get(id).setDir(dir);
+		return true;
 	}
 	
-	// 
 	/**
 	 * Determine the nearest, applicable elevator given a request consisting of a direction and originating floor 
 	 * Currently iterates through a list of elevators but will probably change to ping each elevator
@@ -37,13 +37,13 @@ public class Dispatcher {
 	 * @param callingFloor		The request's originating floor
 	 * @return			The elevator to handle the request
 	 */
-	public TempElevator getNearestElevator(Directions dir, int callingFloor) {
+	public int getNearestElevator(Directions dir, int callingFloor) {
 		int currDif = MAX_DIFF;
 		int newDif;
-		TempElevator currElevator = null;
+		Elevator currElevator = null;
 		
 		// For each elevator
-		for (TempElevator elevator: this.elevators) {
+		for (Elevator elevator: this.elevators) {
 			// Only check elevators that are on standby or going the right direction
 			if (!Directions.isOpposite(dir, elevator.getDir())) {
 				
@@ -60,26 +60,40 @@ public class Dispatcher {
 			}
 		}
 		
-		return currElevator;
+		return currElevator.getId();
 	}
 	
 	
-	// Temporary elevator object to rough functionality in
-	public class TempElevator {
+	// Elevator object to hold elevator info
+	public class Elevator {
 		private Directions dir;
 		private int currFloor;
+		private int id;
 		
-		public TempElevator (Directions dir, int floor) {
+		public Elevator (int id, Directions dir, int floor) {
 			this.dir = dir;
 			this.currFloor = floor;
+			this.id = id;
 		}
 		
 		public int getFloor() {
 			return this.currFloor;
 		}
+
+		public void setFloor(int floor) {
+			this.currFloor = floor;
+		}
 		
 		public Directions getDir() {
 			return this.dir;
+		}
+
+		public void setDir(Directions dir) {
+			this.dir = dir;
+		}
+		
+		public int getId() {
+			return this.id;
 		}
 	}
 }
