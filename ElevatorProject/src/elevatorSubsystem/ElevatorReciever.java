@@ -8,6 +8,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import resources.Constants;
 
 public class ElevatorReciever {
 
@@ -52,9 +53,9 @@ public class ElevatorReciever {
 		int elvNum = (int) msg[3];
 		
 		
-		if (scenerio == 4) {
+		if (scenerio == Constants.NEW_ELEVATOR_DESTINATION) {
 			// New floor request
-			if (reqType == 0) {
+			if (reqType == Constants.VOLUNTARY) {
 				// Voluntary Dest
 				if (elevators.get(elvNum).canServiceCall(floorReq)) {
 					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
@@ -62,13 +63,13 @@ public class ElevatorReciever {
 				} else {
 					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq));
 				}
-			} else if (msg[1] == 1) {
+			} else if (reqType == Constants.MANATORY) {
 				// Mandatory
 				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
 				addFloorToService(elvNum, floorReq);
 				elevators.get(elvNum).addToPassengerButtons(floorReq);
 			}
-		} else if (msg[0] == 5) {
+		} else if (reqType == Constants.ELEVATOR_INFO_REQUEST) {
 			sendResponse(elevators.get(elvNum).generateSatusMsg());
 		}
 	}
