@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 import scheduler.Dispatcher;
 import static resources.Constants.*;
@@ -71,6 +69,6 @@ public class Communicator {
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
 		
 		return false;
-	}	
+	}
 }
 
