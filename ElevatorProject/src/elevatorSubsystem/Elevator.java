@@ -7,13 +7,14 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import resources.Directions;
 import resources.Message;
+import resources.Constants;
 
 public class Elevator {
 
-	public static final int MAX_FLOOR = 22;
-	public static final int MIN_FLOOR = 0;
+	public static final int MAX_FLOOR = Constants.HIGHEST_FLOOR;
+	public static final int MIN_FLOOR = Constants.LOWEST_FLOOR;
 	public static final int FLOOR_TRAVEL_SPEED_MS = 1000;
-	public static final int MAX_SERVICE_QUEUE_CAPACITY = 22;
+	public static final int MAX_SERVICE_QUEUE_CAPACITY = MAX_FLOOR;
 
 	private final Integer elvNumber;
 	private boolean isDoorOpen;
@@ -87,20 +88,22 @@ public class Elevator {
 	// Standby = Initializes new priorityQueue with priority depending on floor
 	// requested
 	boolean canServiceCall(int floorRequested) {
+		if(floorRequested > MAX_FLOOR || floorRequested < MIN_FLOOR){
+			//Not within the service bounds of the elevator (off of track!)
+			//This should be handled by scheduler -- fail-safe
+			return false;
+		}
+		
 		if (status.equals(Directions.DOWN)) {
-			if (currFloorPosition >= floorRequested) {
-				return true; // The elevator can accept service to this floor
-			}
+			// Check if elevator can accept service to this floor
+			return (currFloorPosition >= floorRequested);
 		} else if (status.equals(Directions.UP)) {
-			if (currFloorPosition <= floorRequested) {
-				return true; // The elevator can accept service to this floor
-			}
+			// Check if elevator can accept service to this floor
+			return (currFloorPosition <= floorRequested);
 		} else {
 			// The current elevator is not doing anything, will service request
 			return true;
 		}
-		// The elevator can not service during its current service
-		return false;
 	}
 	
 	public synchronized void moveUp() {
