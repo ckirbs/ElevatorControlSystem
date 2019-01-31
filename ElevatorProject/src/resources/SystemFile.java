@@ -2,14 +2,14 @@ package resources;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Queue;
 import java.util.Scanner;
 import java.util.regex.PatternSyntaxException;
+
+import static resources.Constants.LOWEST_FLOOR;
+import static resources.Constants.HIGHEST_FLOOR;;
 
 /*
  * SystemFile - Responsible for validating each line in the systems input file.
@@ -17,10 +17,6 @@ import java.util.regex.PatternSyntaxException;
  */
 public class SystemFile {
 
-    public final static int LOWESTFLOOR = 0; // Temporary variable for lowest
-					     // floor
-    public final static int HIGHESTFLOOR = 10; // Temporary variable for highest
-					       // floor
     public final static String FILEPATH = "src/Resources/"; // File path for
 							    // text files
 
@@ -48,7 +44,7 @@ public class SystemFile {
      * otherwise False
      */
     private Boolean validateFloorRange(int floor) {
-	return (floor >= LOWESTFLOOR && floor <= HIGHESTFLOOR);
+	return (floor >= LOWEST_FLOOR && floor <= HIGHEST_FLOOR);
     }
 
     /*

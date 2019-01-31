@@ -17,8 +17,12 @@ public class Dispatcher {
 	
 	
 	public Dispatcher() {
+		this(NUMBER_OF_ELEVATORS);
+	}
+	
+	public Dispatcher(int elevNum) {
 		this.elevators = new ArrayList<Elevator>();
-		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) this.elevators.add(new Elevator(i, Directions.STANDBY, 0));
+		for (int i = 0; i < elevNum; i++) this.elevators.add(new Elevator(i, Directions.STANDBY, 0));
 	}
 	
 	public synchronized boolean updateElevatorInfo(int id, Directions dir, int floor) {
@@ -40,7 +44,7 @@ public class Dispatcher {
 	public int getNearestElevator(Directions dir, int callingFloor) {
 		int currDif = MAX_DIFF;
 		int newDif;
-		Elevator currElevator = null;
+		int currElevator = -1;
 		
 		// For each elevator
 		for (Elevator elevator: this.elevators) {
@@ -54,13 +58,13 @@ public class Dispatcher {
 					newDif = Math.abs(elevator.getFloor() - callingFloor);
 					if (newDif < currDif) {
 						currDif = newDif;
-						currElevator = elevator;
+						currElevator = elevator.getId();
 					}
 				}
 			}
 		}
 		
-		return currElevator.getId();
+		return currElevator;
 	}
 	
 	

@@ -1,8 +1,12 @@
 package scheduler;
 
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
 import scheduler.Dispatcher;
 import static resources.Constants.*;
-
 import resources.Directions;
 
 public class Communicator {
@@ -39,14 +43,32 @@ public class Communicator {
 		return false;
 	}
 
-	private boolean openCloseDoor(byte yesNoVal, byte floorNum, byte elevatorNum) {
+	private boolean openCloseDoor(byte openClose, byte floorNum, byte elevatorNum) {
+		try {
+			DatagramSocket tempSendingSocket = new DatagramSocket();
+			byte[] msg = new byte[MESSAGE_LENGTH];
+			msg[0] = OPEN_CLOSE_DOOR;
+			msg[1] = openClose;
+			msg[1] = openClose;
+			msg[1] = openClose;
+			
+			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName("127.0.0.1"), floorReturnPorts[(int) floorNum]);
+			tempSendingSocket.send(packet);
+			tempSendingSocket.close();
+			
+		} catch (IOException e) {
+			System.out.println("Error creating socket or sending message.");
+			e.printStackTrace();
+			return false;
+		}
 		
-		return false;
+		
+		return true;
 	}
 
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
 		
 		return false;
-	}	
+	}
 }
 
