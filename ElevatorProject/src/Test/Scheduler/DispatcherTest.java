@@ -5,8 +5,6 @@ import org.junit.Test;
 
 import resources.Directions;
 import scheduler.Dispatcher;
-import scheduler.Dispatcher.Elevator;
-import junit.framework.*;
 import static org.junit.Assert.*;
 
 public class DispatcherTest {
