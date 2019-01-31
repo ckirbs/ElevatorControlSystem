@@ -1,6 +1,5 @@
 package scheduler;
 
-import static resources.Constants.ELEVATOR_PORT;
 import static resources.Constants.FLOOR_PORT;
 import static resources.Constants.MESSAGE_LENGTH;
 
@@ -9,7 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-public class FloorCommunicator extends Communicator implements Runnable {
+public class FloorListener extends Communicator implements Runnable {
 	private DatagramSocket floorSocket;
 	private DatagramPacket packet;
 	
