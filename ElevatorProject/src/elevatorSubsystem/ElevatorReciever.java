@@ -63,7 +63,7 @@ public class ElevatorReciever {
 				} else {
 					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq));
 				}
-			} else if (reqType == Constants.MANATORY) {
+			} else if (reqType == Constants.MANDATORY) {
 				// Mandatory
 				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
 				addFloorToService(elvNum, floorReq);
