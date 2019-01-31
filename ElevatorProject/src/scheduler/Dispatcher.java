@@ -17,8 +17,12 @@ public class Dispatcher {
 	
 	
 	public Dispatcher() {
+		this(NUMBER_OF_ELEVATORS);
+	}
+	
+	public Dispatcher(int elevNum) {
 		this.elevators = new ArrayList<Elevator>();
-		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) this.elevators.add(new Elevator(i, Directions.STANDBY, 0));
+		for (int i = 0; i < elevNum; i++) this.elevators.add(new Elevator(i, Directions.STANDBY, 0));
 	}
 	
 	public synchronized boolean updateElevatorInfo(int id, Directions dir, int floor) {
