@@ -139,23 +139,23 @@ public class Elevator {
 	}
 
 	byte[] generateAcceptMsg(int floorDest) {
-		return new byte[] { 6, 1, (byte) floorDest, (byte) (int) this.getElvNumber() };
+		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.YES, (byte) floorDest, (byte) (int) this.getElvNumber() };
 	}
 
 	byte[] generateDeclineMsg(int floorDest) {
-		 return new byte[] { 6, 0, (byte) floorDest, (byte) (int) this.getElvNumber() };
+		 return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.NO, (byte) floorDest, (byte) (int) this.getElvNumber() };
 	}
 
 	byte[] generateSatusMsg() {
-		 return new byte[] { 7, (byte) Directions.getIntByDir(this.getStatus()), (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
+		 return new byte[] { Constants.STATUS_REPORT, (byte) Directions.getIntByDir(this.getStatus()), (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
 	}	
 	
 	byte[] generateOpenMsg() {
-		 return new byte[] { 3, 1, (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
+		 return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
 	}	
 	
 	byte[] generateCloseMsg() {
-		 return new byte[] { 3, 1, (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
+		 return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.CLOSE, (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
 	}
 	
 	public Integer getElvNumber() {
