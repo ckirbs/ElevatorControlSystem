@@ -124,6 +124,10 @@ public class FloorSystem {
 		return null;
 	}
 	
+	public List<Floor> getFloors(){
+		return floors;
+	}
+	
 	public synchronized void printOutFloorInformation(Floor floor, String action) {
 		System.out.print("\n" + action + ", ");
 		System.out.print("On floor " + floor.getLevel() + ",");
