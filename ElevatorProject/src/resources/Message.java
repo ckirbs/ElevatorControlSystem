@@ -60,9 +60,6 @@ public class Message {
 	return direction;
     }
 
-    public void setDirection(Directions dir) {
-    	direction = dir;
-    }
     /*
      * getDestinationFloor - Gets the destination floor
      * 

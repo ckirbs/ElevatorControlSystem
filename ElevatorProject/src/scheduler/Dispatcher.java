@@ -68,27 +68,6 @@ public class Dispatcher {
 		return currElevator;
 	}
 	
-	public class Requests extends Message{
-		private int servicingElevator;
-		private boolean isMandatory;
-		
-		public Requests(LocalTime time, int reqFloor, Directions reqDir) {
-			super(time, reqFloor, reqDir, -1);
-			isMandatory = false;
-		}
-		
-		public Requests(LocalTime time, int reqFloor, int desFloor) {
-			super(time, reqFloor, null, desFloor);
-			if (reqFloor < desFloor) {
-				this.setDirection(Directions.DOWN);
-			} else if(reqFloor > desFloor){ 
-				this.setDirection(Directions.UP);
-			}
-			
-			isMandatory = true;
-		}
-	}
-	
 	// Elevator object to hold elevator info
 	public class Elevator {
 		private Directions dir;

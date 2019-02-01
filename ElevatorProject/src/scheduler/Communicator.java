@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.Set;
 
 import scheduler.Dispatcher;
 import static resources.Constants.*;
@@ -14,8 +16,12 @@ public class Communicator {
 	protected final int TIMEOUT_TIME = 50;
 	protected static int elevatorReturnPort;
 	protected static int[] floorReturnPorts = new int[NUMBER_OF_FLOORS];
+	protected static ArrayList<Set<Integer>> destinations = new ArrayList<Set<Integer>>(10);
 	
 	public Communicator() {
+		for(int i = 0; i < destinations.size(); i++) {
+			
+		}
 	}
 	
 	
@@ -67,7 +73,7 @@ public class Communicator {
 	}
 
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
-		
+		destinations.add((int) origFloor, (int) destFloor);
 		return false;
 	}
 }
