@@ -1,7 +1,6 @@
 package scheduler;
 
-import static resources.Constants.FLOOR_PORT;
-import static resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.*;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -22,7 +21,7 @@ public class FloorListener extends Communicator implements Runnable {
 			System.exit(1);
 		}
 		
-		for(int i = 0; i < 10; i++) {
+		for(int i = 0; i < NUMBER_OF_FLOORS; i++) {
 			destinations.add(new HashSet<Integer>());
 		}
 	}

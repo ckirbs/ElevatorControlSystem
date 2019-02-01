@@ -25,7 +25,7 @@ public class Communicator {
 	protected final int TIMEOUT_TIME = 50;
 	protected static int elevatorReturnPort;
 	protected static int[] floorReturnPorts = new int[NUMBER_OF_FLOORS];
-	protected static ArrayList<Set<Integer>> destinations = new ArrayList<Set<Integer>>(10);
+	protected static ArrayList<Set<Integer>> destinations = new ArrayList<Set<Integer>>();
 	
 	public Communicator() {
 		
