@@ -37,16 +37,19 @@ public class ElevatorReciever {
 			packet = new DatagramPacket(buffer, buffer.length);
 			try {
 				datagramSocket.receive(packet);
+				processSchedulerMsg(packet);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			processSchedulerMsg(buffer);
 		}
 	}
 	
 	// Receive msg from scheduler with floor number
 	// TODO Update implementation when byte class is updated
-	public void processSchedulerMsg(byte[] msg) {
+	public void processSchedulerMsg(DatagramPacket packet) {
+		
+		byte[] msg = packet.getData();
+		
 		int scenerio = (int) msg[0];
 		int reqType = (int) msg[1];
 		int floorReq = (int) msg[2];
@@ -58,19 +61,19 @@ public class ElevatorReciever {
 			if (reqType == Constants.VOLUNTARY) {
 				// Voluntary Dest
 				if (elevators.get(elvNum).canServiceCall(floorReq)) {
-					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
+					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
 					addFloorToService(elvNum, floorReq);
 				} else {
-					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq));
+					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq), packet.getPort());
 				}
 			} else if (reqType == Constants.MANDATORY) {
 				// Mandatory
-				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
+				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
 				addFloorToService(elvNum, floorReq);
 				elevators.get(elvNum).addToPassengerButtons(floorReq);
 			}
 		} else if (reqType == Constants.ELEVATOR_INFO_REQUEST) {
-			sendResponse(elevators.get(elvNum).generateSatusMsg());
+			sendResponse(elevators.get(elvNum).generateSatusMsg(), packet.getPort());
 		}
 	}
 
@@ -86,10 +89,10 @@ public class ElevatorReciever {
 		elevators.get(elevatorNumber).updateFloorToService();
 	}
 	
-	private synchronized void sendResponse(byte[] msg) {
+	private synchronized void sendResponse(byte[] msg, int port) {
 		DatagramPacket packet;
 		try {
-			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), 23);
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), port);
 			datagramSocket.send(packet);
 		} catch (Exception e) {
 			//Failed generating response
