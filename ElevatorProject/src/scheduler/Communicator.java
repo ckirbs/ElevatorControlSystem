@@ -94,11 +94,26 @@ public class Communicator {
 			msg[2] = floorNum;
 			msg[3] = elevatorNum;
 			
-			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName("127.0.0.1"), floorReturnPorts[(int) floorNum]);
+			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getLocalHost(), floorReturnPorts[(int) floorNum]);
 			tempSendingSocket.send(packet);
-			tempSendingSocket.close();
 			
-			// Check for new destination for elevator
+			if (openClose == OPEN) {
+				Set<Integer> tempSet = destinations.get((int) floorNum);
+				destinations.set((int) floorNum, new HashSet<Integer>());
+				
+				DatagramPacket pckt;
+				byte[] destMsg = new byte[MESSAGE_LENGTH];
+				destMsg[0] = NEW_ELEVATOR_DESTINATION;
+				destMsg[1] = MANDATORY;
+				destMsg[3] = (byte) 0;
+				
+				for (int i: tempSet) {
+					destMsg[2] = (byte) i;
+					pckt = new DatagramPacket(destMsg, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);
+					tempSendingSocket.send(pckt);
+				}
+			}
+			tempSendingSocket.close();
 			
 		} catch (IOException e) {
 			System.out.println("Error creating socket or sending message.");
@@ -118,8 +133,26 @@ public class Communicator {
 	 * @return
 	 */
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
+		// choose suitable elvator
+		
 		destinations.get((int) origFloor).add((int) destFloor);
 		
-		return false;
+		byte[] message = new byte[MESSAGE_LENGTH];
+		message[0] = NEW_ELEVATOR_DESTINATION;
+		message[1] = MANDATORY;
+		message[2] = origFloor;
+		message[3] = (byte) 0; //elevator id
+		
+		try {
+			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);
+			DatagramSocket sckt = new DatagramSocket();
+			sckt.send(pckt);
+			sckt.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
 	}
 }
