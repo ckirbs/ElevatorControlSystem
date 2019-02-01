@@ -5,9 +5,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
 import resources.Constants;
 
 public class ElevatorReciever {
@@ -46,7 +46,7 @@ public class ElevatorReciever {
 	
 	// Receive msg from scheduler with floor number
 	// TODO Update implementation when byte class is updated
-	private void processSchedulerMsg(byte[] msg) {
+	public void processSchedulerMsg(byte[] msg) {
 		int scenerio = (int) msg[0];
 		int reqType = (int) msg[1];
 		int floorReq = (int) msg[2];
@@ -81,7 +81,7 @@ public class ElevatorReciever {
 	 * 
 	 * @param floor containing calling floor and
 	 */
-	private synchronized void addFloorToService(Integer elevatorNumber, Integer floor) {
+	public synchronized void addFloorToService(Integer elevatorNumber, Integer floor) {
 		elevators.get(elevatorNumber).addToServiceQueue(floor);
 		elevators.get(elevatorNumber).updateFloorToService();
 	}
@@ -95,6 +95,10 @@ public class ElevatorReciever {
 			//Failed generating response
 			e.printStackTrace();
 		}
+	}
+	
+	public List<Elevator> getElevators() {
+		return elevators;
 	}
 	
 	public static void main(String[] args) {

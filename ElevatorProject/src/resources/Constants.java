@@ -39,5 +39,6 @@ public final class Constants {
 	public static final byte CLOSE = 0;
 	public static final byte MANDATORY = 1;
 	public static final byte VOLUNTARY = 0;
+	public static final int ELEVATOR_TRAVEL_SPEED_MS = 1000;
 	
 }

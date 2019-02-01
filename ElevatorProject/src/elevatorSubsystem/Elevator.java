@@ -13,7 +13,6 @@ public class Elevator {
 
 	public static final int MAX_FLOOR = Constants.HIGHEST_FLOOR;
 	public static final int MIN_FLOOR = Constants.LOWEST_FLOOR;
-	public static final int FLOOR_TRAVEL_SPEED_MS = 1000;
 	public static final int MAX_SERVICE_QUEUE_CAPACITY = MAX_FLOOR;
 
 	private final Integer elvNumber;
@@ -35,21 +34,23 @@ public class Elevator {
 	// scheduler
 	// -- (Possibly) One responsible for listening to floor requests within the
 	// elevator
+
 	public Elevator(Integer elvNumber, ElevatorReciever elvRecieve) {
 		this.motor = new ElevatorMotor(this);
 		this.elvReceieve = elvRecieve;
 		this.elvNumber = elvNumber;
-		
+
 		isDoorOpen = false;
 		floorDestionation = null;
 		currFloorPosition = 0;
 		elevatorPassengerButtons = new HashSet<Integer>();
+		serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator);
 		status = Directions.STANDBY;
-		
+
 		motor.start();
 	}
-	
-	synchronized void updateFloorToService() {
+
+	public synchronized void updateFloorToService() {
 		if (!serviceScheduleQueue.isEmpty()) {
 			floorDestionation = serviceScheduleQueue.peek();
 			updateDirection();
@@ -63,7 +64,7 @@ public class Elevator {
 	 * updateDirection() updates the status of elevator to represent the direction
 	 * of the currentDestionation
 	 */
-	synchronized void updateDirection() {
+	public synchronized void updateDirection() {
 		PriorityBlockingQueue<Integer> temp;
 		if (currFloorPosition < floorDestionation) {
 			if (status != Directions.UP) {
@@ -87,13 +88,13 @@ public class Elevator {
 	// returns true if request is along current route, false if outside
 	// Standby = Initializes new priorityQueue with priority depending on floor
 	// requested
-	boolean canServiceCall(int floorRequested) {
-		if(floorRequested > MAX_FLOOR || floorRequested < MIN_FLOOR){
-			//Not within the service bounds of the elevator (off of track!)
-			//This should be handled by scheduler -- fail-safe
+	public boolean canServiceCall(int floorRequested) {
+		if (floorRequested > MAX_FLOOR || floorRequested < MIN_FLOOR) {
+			// Not within the service bounds of the elevator (off of track!)
+			// This should be handled by scheduler -- fail-safe
 			return false;
 		}
-		
+
 		if (status.equals(Directions.DOWN)) {
 			// Check if elevator can accept service to this floor
 			return (currFloorPosition >= floorRequested);
@@ -105,7 +106,7 @@ public class Elevator {
 			return true;
 		}
 	}
-	
+
 	public synchronized void moveUp() {
 		currFloorPosition++;
 	}
@@ -113,11 +114,11 @@ public class Elevator {
 	public synchronized void moveDown() {
 		currFloorPosition--;
 	}
-	
+
 	public void openDoor() {
 		isDoorOpen = true;
 	}
-	
+
 	public void closeDoor() {
 		isDoorOpen = false;
 	}
@@ -139,35 +140,36 @@ public class Elevator {
 	}
 
 	byte[] generateAcceptMsg(int floorDest) {
-		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.YES, (byte) floorDest, (byte) (int) this.getElvNumber() };
+		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.YES, (byte) floorDest,
+				(byte) (int) this.getElvNumber() };
 	}
 
 	byte[] generateDeclineMsg(int floorDest) {
-		 return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.NO, (byte) floorDest, (byte) (int) this.getElvNumber() };
+		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.NO, (byte) floorDest,
+				(byte) (int) this.getElvNumber() };
 	}
 
 	byte[] generateSatusMsg() {
-		 return new byte[] { Constants.STATUS_REPORT, (byte) Directions.getIntByDir(this.getStatus()), (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
-	}	
-	
-	byte[] generateOpenMsg() {
-		 return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
-	}	
-	
-	byte[] generateCloseMsg() {
-		 return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.CLOSE, (byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
+		return new byte[] { Constants.STATUS_REPORT, (byte) Directions.getIntByDir(this.getStatus()),
+				(byte) (int) this.getCurrFloorPosition(), (byte) (int) this.getElvNumber() };
 	}
-	
+
+	byte[] generateOpenMsg() {
+		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) this.getCurrFloorPosition(),
+				(byte) (int) this.getElvNumber() };
+	}
+
+	byte[] generateCloseMsg() {
+		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.CLOSE, (byte) (int) this.getCurrFloorPosition(),
+				(byte) (int) this.getElvNumber() };
+	}
+
 	public Integer getElvNumber() {
 		return elvNumber;
 	}
 
 	public Integer getCurrFloorPosition() {
 		return currFloorPosition;
-	}
-
-	public void setCurrFloorPosition(Integer currFloorPosition) {
-		this.currFloorPosition = currFloorPosition;
 	}
 
 	public Integer getFloorDestionation() {
