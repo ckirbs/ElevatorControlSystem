@@ -9,7 +9,6 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 
 public class FloorListener extends Communicator implements Runnable {
-	private DatagramSocket floorSocket;
 	private DatagramPacket packet;
 	
 	public FloorListener() {

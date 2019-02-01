@@ -8,14 +8,18 @@ import java.net.SocketException;
 import static resources.Constants.ELEVATOR_PORT;
 import static resources.Constants.MESSAGE_LENGTH;
 
+/**
+ * 
+ * @author Darren
+ *
+ */
 public class ElevatorListener extends Communicator implements Runnable {
-	private DatagramSocket elevatorSocket;
 	private DatagramPacket packet;
 	
 	public ElevatorListener() {
 		super();
 		try {
-			this.elevatorSocket = new DatagramSocket(ELEVATOR_PORT);
+			this.elevatorSocket = new DatagramSocket();
 			this.elevatorSocket.setSoTimeout(TIMEOUT_TIME);
 		} catch (SocketException e) {
 			System.out.println("Error creating elevator socket.");
@@ -34,11 +38,7 @@ public class ElevatorListener extends Communicator implements Runnable {
 			
 			this.dealWithMessage(message);
 			
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
