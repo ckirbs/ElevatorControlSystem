@@ -1,5 +1,6 @@
 package elevatorSubsystem;
 
+import resources.Constants;
 import resources.Directions;
 
 public class ElevatorMotor extends Thread {
@@ -13,7 +14,7 @@ public class ElevatorMotor extends Thread {
 	@Override
 	public void run() {
 		while(true) {
-			if(elv.getCurrFloorPosition() == elv.getFloorDestionation()) {
+			if(elv.getCurrFloorPosition() == elv.getFloorDestionation() && elv.getStatus() != Directions.STANDBY) {
 				serviceFloor();
 				elv.updateFloorToService();
 			} else {
@@ -33,7 +34,7 @@ public class ElevatorMotor extends Thread {
 		}
 
 		try {
-			Thread.sleep(Elevator.FLOOR_TRAVEL_SPEED_MS);
+			Thread.sleep(Constants.ELEVATOR_TRAVEL_SPEED_MS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
