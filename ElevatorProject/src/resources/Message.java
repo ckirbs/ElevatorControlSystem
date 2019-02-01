@@ -65,7 +65,7 @@ public class Message {
      * 
      * @return: int - the destination floor
      */
-    public int getDestinatinoFloor() {
+    public int getDestinationFloor() {
 	return destinationFloor;
     }
 
