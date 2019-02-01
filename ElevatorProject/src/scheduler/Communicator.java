@@ -87,7 +87,7 @@ public class Communicator {
 			msg[0] = OPEN_CLOSE_DOOR;
 			msg[1] = openClose;
 			msg[2] = floorNum;
-			msg[1] = elevatorNum;
+			msg[3] = elevatorNum;
 			
 			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName("127.0.0.1"), floorReturnPorts[(int) floorNum]);
 			tempSendingSocket.send(packet);
