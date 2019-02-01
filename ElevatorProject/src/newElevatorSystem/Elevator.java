@@ -69,6 +69,7 @@ public class Elevator implements Runnable{
 			Thread.sleep(doorOpeningInterval);
 		} catch (InterruptedException e) {
 		}
+		elevatorSystem.sendOpenDoorMsg(0, id, currentFloor);
 		System.out.println("Closing elevator doors");
 		System.out.println("Sending packet to scheduler to tell floor to close the door\n");
 		isDoorOpen = false;
