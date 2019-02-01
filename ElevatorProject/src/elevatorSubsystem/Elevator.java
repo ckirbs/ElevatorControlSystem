@@ -187,4 +187,11 @@ public class Elevator {
 	public Directions getStatus() {
 		return status;
 	}
+	
+	public static void main(String[] args) {
+		ElevatorReciever elvRec = new ElevatorReciever();
+		Elevator elv = elvRec.getElevators().get(0);
+		elvRec.addFloorToService(elv.getElvNumber(), 10);
+		elvRec.addFloorToService(elv.getElvNumber(), 12);
+	}
 }

@@ -14,7 +14,7 @@ public class ElevatorMotor extends Thread {
 	@Override
 	public void run() {
 		while(true) {
-			if(elv.getCurrFloorPosition() == elv.getFloorDestionation()) {
+			if(elv.getCurrFloorPosition() == elv.getFloorDestionation() && elv.getStatus() != Directions.STANDBY) {
 				serviceFloor();
 				elv.updateFloorToService();
 			} else {

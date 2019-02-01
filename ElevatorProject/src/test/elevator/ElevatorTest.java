@@ -47,7 +47,7 @@ public class ElevatorTest {
 	public void testCanServiceRequestFalse() {
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
-			assertEquals("Elevator failed to refuse a invalid service request", false, elv.canServiceCall(-1));
+			assertEquals("Elevator failed to refuse a invalid service request", false, elv.canServiceCall(Constants.LOWEST_FLOOR -1));
 		}
 	}
 
