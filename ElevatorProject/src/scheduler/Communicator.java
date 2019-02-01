@@ -9,7 +9,15 @@ import scheduler.Dispatcher;
 import static resources.Constants.*;
 import resources.Directions;
 
+/**
+ * A class to handle communications, and handling of messages that the Scheduler system receives
+ * 
+ * 
+ * @author Darren, Logan
+ *
+ */
 public class Communicator {
+	protected static DatagramSocket floorSocket, elevatorSocket;
 	protected static Dispatcher dispatcher = new Dispatcher();
 	protected final int TIMEOUT_TIME = 50;
 	protected static int elevatorReturnPort;
@@ -18,7 +26,12 @@ public class Communicator {
 	public Communicator() {
 	}
 	
-	
+	/**
+	 * Takes in a message and preforms the appropriate actions on it
+	 * 
+	 * @param message	The byte array of hte message
+	 * @return			True if properly handled, false otherwise
+	 */
 	public boolean dealWithMessage(byte[] message) {
 		byte messageType = message[0];
 		byte flag = message[1];
@@ -34,27 +47,53 @@ public class Communicator {
 		}
 	}
 
+	/**
+	 * Handles a status report from an elvator, and updates dispatcher
+	 * 
+	 * @param dir			The elevator's direction
+	 * @param floorNum		The elevator's current floor
+	 * @param elevatorNum	The elvator's id number
+	 * @return
+	 */
 	private boolean processStatusReport(byte dir, byte floorNum, byte elevatorNum) {
 		return Communicator.dispatcher.updateElevatorInfo((int) elevatorNum, Directions.getDirByInt((int) dir) , (int) floorNum);
 	}
 
+	/** 
+	 * Skeleton for future iterations
+	 * 
+	 * @param yesNoVal
+	 * @param floorNum
+	 * @param elevatorNum
+	 * @return
+	 */
 	private boolean processConfirmation(byte yesNoVal, byte floorNum, byte elevatorNum) {
 		
 		return false;
 	}
 
+	/**
+	 * Handles open and close door requests from the elevator
+	 * 
+	 * @param openClose		Flag for if the door is opening or closing
+	 * @param floorNum		The floor that the elevator is on
+	 * @param elevatorNum	The elevator id
+	 * @return
+	 */
 	private boolean openCloseDoor(byte openClose, byte floorNum, byte elevatorNum) {
 		try {
 			DatagramSocket tempSendingSocket = new DatagramSocket();
 			byte[] msg = new byte[MESSAGE_LENGTH];
 			msg[0] = OPEN_CLOSE_DOOR;
 			msg[1] = openClose;
-			msg[1] = openClose;
-			msg[1] = openClose;
+			msg[2] = floorNum;
+			msg[1] = elevatorNum;
 			
 			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName("127.0.0.1"), floorReturnPorts[(int) floorNum]);
 			tempSendingSocket.send(packet);
 			tempSendingSocket.close();
+			
+			// Check for new destination for elevator
 			
 		} catch (IOException e) {
 			System.out.println("Error creating socket or sending message.");
@@ -62,10 +101,17 @@ public class Communicator {
 			return false;
 		}
 		
-		
 		return true;
 	}
 
+	/**
+	 * Method to handle new requests
+	 * 	
+	 * @param dir			The direction of travel
+	 * @param origFloor		The origin floor (where the passenger is)
+	 * @param destFloor		The destination floor (where the passenger wants to go)
+	 * @return
+	 */
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
 		
 		return false;
