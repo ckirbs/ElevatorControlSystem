@@ -13,9 +13,11 @@ public class Elevator implements Runnable{
 	public static final int elevatorSpeed = 1000;
 	public static final int doorOpeningInterval = 3000;
 	private boolean isDoorOpen;
+	private ElevatorSystem elevatorSystem;
 	
-	public Elevator(int id) {
+	public Elevator(int id, ElevatorSystem elevatorSystem) {
 		this.id = id;
+		this.elevatorSystem = elevatorSystem;
 		currentFloor = 0;
 		isDoorOpen = false;
 		serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator);
@@ -62,6 +64,7 @@ public class Elevator implements Runnable{
 		isDoorOpen = true;
 		System.out.println("Opening elevator doors");
 		System.out.println("Sending packet to scheduler to tell floor to open the door\n");
+		elevatorSystem.sendOpenDoorMsg(1, id, currentFloor);
 		try {
 			Thread.sleep(doorOpeningInterval);
 		} catch (InterruptedException e) {
