@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.HashSet;
 
 public class FloorListener extends Communicator implements Runnable {
 	private DatagramPacket packet;
@@ -14,11 +15,15 @@ public class FloorListener extends Communicator implements Runnable {
 	public FloorListener() {
 		super();
 		try {
-			this.floorSocket = new DatagramSocket(FLOOR_PORT);
+			Communicator.floorSocket = new DatagramSocket(FLOOR_PORT);
 		} catch (SocketException e) {
 			System.out.println("Error creating floor socket.");
 			e.printStackTrace();
 			System.exit(1);
+		}
+		
+		for(int i = 0; i < 10; i++) {
+			destinations.add(new HashSet<Integer>());
 		}
 	}
 
@@ -26,7 +31,7 @@ public class FloorListener extends Communicator implements Runnable {
 		try {
 			byte[] message = new byte[MESSAGE_LENGTH];
 			this.packet = new DatagramPacket(message, MESSAGE_LENGTH);
-			this.floorSocket.receive(packet);
+			Communicator.floorSocket.receive(packet);
 			
 			Communicator.floorReturnPorts[(int) message[2]] = packet.getPort();
 

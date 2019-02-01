@@ -6,6 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import scheduler.Dispatcher;
 import static resources.Constants.*;
@@ -27,9 +28,7 @@ public class Communicator {
 	protected static ArrayList<Set<Integer>> destinations = new ArrayList<Set<Integer>>(10);
 	
 	public Communicator() {
-		for(int i = 0; i < destinations.size(); i++) {
-			
-		}
+		
 	}
 	
 	/**
@@ -119,7 +118,8 @@ public class Communicator {
 	 * @return
 	 */
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
-		destinations.add((int) origFloor, (int) destFloor);
+		destinations.get((int) origFloor).add((int) destFloor);
+		
 		return false;
 	}
 }
