@@ -61,12 +61,19 @@ public class FloorSystem {
 			scheduler.schedule(new Callable<Boolean>() {
 				
 				public Boolean call() throws Exception {
-					System.out.println("Someone on floor " + message.getStartingFloor() + " wants to go " + message.getDirection() + " to floor " + message.getDestinatinoFloor());
-					byte direction = 0;
+//					System.out.println("Someone on floor " + message.getStartingFloor() + " wants to go " + message.getDirection() + " to floor " + message.getDestinationFloor());
+					byte direction;
+					Floor floor = getFloorObjectByLevel(message.getStartingFloor());
+					floor.addFloorButtonPressed(message.getDestinationFloor());
 					if (message.getDirection() == Directions.UP) {
+						floor.setUpButtonPressed(true);
 						direction = 1;
+					} else {
+						floor.setDownButtonPressed(true);
+						direction = 0;
 					}
-					byte[] buffer = new byte[]{(byte) 1, (byte) message.getStartingFloor(), (byte) message.getDestinatinoFloor(), direction};
+					printOutFloorInformation(floor, "A floor destination is chosen");
+					byte[] buffer = new byte[]{(byte) 1, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor(), direction};
 					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("127.0.0.1"), 23);
 					datagramSocket.send(packet);
 					return true;
@@ -88,21 +95,65 @@ public class FloorSystem {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			System.out.println(Arrays.toString(packet.getData()) + "\n");
+//			System.out.println(Arrays.toString(packet.getData()) + "\n");
 			if (buffer[0] == (byte) 3) {
 				for (Floor floor : floors) {
 					if (floor.getLevel() == buffer[2]) {
 						if (buffer[1] == (byte) 1) {
 							floor.openDoor();
-							System.out.println("Doors open on floor " + floor.getLevel());
+							printOutFloorInformation(floor, "door has opened");
+//							System.out.println("Doors open on floor " + floor.getLevel());
 						} else {
 							floor.closeDoor();
-							System.out.println("Doors close on floor " + floor.getLevel());
+							printOutFloorInformation(floor, "door has closed");
+//							System.out.println("Doors close on floor " + floor.getLevel());
 						}
 						break;
 					}
 				}
 			}
+		}
+	}
+	
+	public Floor getFloorObjectByLevel(int floorLevel) {
+		for (Floor floor : floors) {
+			if (floor.getLevel() == floorLevel) {
+				return floor;
+			}
+		}
+		return null;
+	}
+	
+	public List<Floor> getFloors(){
+		return floors;
+	}
+	
+	public synchronized void printOutFloorInformation(Floor floor, String action) {
+		System.out.print("\n" + action + ", ");
+		System.out.print("On floor " + floor.getLevel() + ",");
+		if (floor.isDoorOpen()) {
+			System.out.print(" The door is open, ");
+		} else {
+			System.out.print(" The door is closed, ");
+		}
+		if (floor.isUpButtonPressed()) {
+			System.out.print(" The up button pressed, ");
+		}
+		if (floor.isDownButtonPressed()) {
+			System.out.print("The down button pressed, ");
+		}
+//		if (floor.isUpDirectionLampOn()) {
+//			System.out.print("The up lamp is on, ");
+//		}
+//		if (floor.isDownDirectionLampOn()) {
+//			System.out.print("The down lamp is on, ");
+//		}
+		if (!floor.getFloorDestinationButtonsPressed().isEmpty()) {
+			System.out.print("and buttons ");
+			for (int floorPressed : floor.getFloorDestinationButtonsPressed()) {
+				System.out.print(floorPressed + " ");
+			}
+			System.out.print("are pressed");
 		}
 	}
 	

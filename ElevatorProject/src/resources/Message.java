@@ -86,6 +86,6 @@ public class Message {
      */
     public String toString() {
 	return (this.getTime().toString() + " " + this.getStartingFloor() + " " + this.getDirection().toString() + " "
-		+ this.getDestinatinoFloor());
+		+ this.getDestinationFloor());
     }
 }
