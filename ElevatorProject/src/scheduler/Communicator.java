@@ -101,6 +101,8 @@ public class Communicator {
 				Set<Integer> tempSet = destinations.get((int) floorNum);
 				destinations.set((int) floorNum, new HashSet<Integer>());
 				
+				System.out.println("Sending elevator " + (int) elevatorNum + " new destinations: " + tempSet.toString());
+				
 				DatagramPacket pckt;
 				byte[] destMsg = new byte[MESSAGE_LENGTH];
 				destMsg[0] = NEW_ELEVATOR_DESTINATION;
@@ -142,6 +144,8 @@ public class Communicator {
 		message[1] = MANDATORY;
 		message[2] = origFloor;
 		message[3] = (byte) 0; //elevator id
+		
+		System.out.println("Sending elevator new destination: " + (int) origFloor);
 		
 		try {
 			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);

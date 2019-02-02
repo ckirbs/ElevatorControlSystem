@@ -19,6 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import resources.*;
+import static resources.Constants.FLOOR_PORT;
 
 import static resources.Constants.HIGHEST_FLOOR;
 
@@ -74,7 +75,7 @@ public class FloorSystem {
 					}
 					printOutFloorInformation(floor, "A floor destination is chosen");
 					byte[] buffer = new byte[]{(byte) 1, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor(), direction};
-					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("127.0.0.1"), 23);
+					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("127.0.0.1"), FLOOR_PORT);
 					datagramSocket.send(packet);
 					return true;
 				}
