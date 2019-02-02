@@ -110,7 +110,7 @@ public class Communicator {
 				for (int i: tempSet) {
 					destMsg[2] = (byte) i;
 					pckt = new DatagramPacket(destMsg, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);
-					tempSendingSocket.send(pckt);
+					elevatorSocket.send(pckt);
 				}
 			}
 			tempSendingSocket.close();
@@ -145,9 +145,7 @@ public class Communicator {
 		
 		try {
 			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);
-			DatagramSocket sckt = new DatagramSocket();
-			sckt.send(pckt);
-			sckt.close();
+			elevatorSocket.send(pckt);
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
