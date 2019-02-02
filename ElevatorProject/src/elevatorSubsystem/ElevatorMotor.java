@@ -14,7 +14,7 @@ import resources.Directions;
 public class ElevatorMotor extends Thread {
 
 	private Elevator elv;
-	private ElevatorState elvState;
+	private ElevatorState currentElvState, previousElvState;
 
 	/*
 	 * ElevatorMotor - Elevator motor constructor
@@ -29,7 +29,8 @@ public class ElevatorMotor extends Thread {
 	 */
 	public ElevatorMotor(Elevator elevator) {
 		this.elv = elevator;
-		this.elvState = ElevatorState.STANDBY; // standby state
+		this.currentElvState = ElevatorState.STANDBY; // start in standby state
+		this.previousElvState = ElevatorState.DOOR_OPEN; // previous state is Door_OPEN
 	}
 
 	@Override
@@ -39,17 +40,21 @@ public class ElevatorMotor extends Thread {
 	 */
 	public void run() {
 		while (true) {
-			switch (elvState) {
+			switch (currentElvState) {
 			case STANDBY:
-				System.out.println("Elevator " + elv.getElvNumber() + " is on StandBy");
+				if (previousElvState != currentElvState){
+					System.out.println("Elevator " + elv.getElvNumber() + " is on StandBy");
+					previousElvState = currentElvState;
+				}
 				if (!elv.isPriorityQueueEmpty()) { // Check if there is a floor to service
-					elvState = ElevatorState.DOOR_CLOSE;
+					previousElvState = currentElvState;
+					currentElvState = ElevatorState.DOOR_CLOSE;
 				}
 				break;
 			case MOVE:
-				System.out.println("Elevator " + elv.getElvNumber() + " is Moving" );
 				if (elv.getCurrFloorPosition() == elv.getFloorDestionation()) { // Arrived at destination floor
-					elvState = ElevatorState.STOP;
+					previousElvState = currentElvState;
+					currentElvState = ElevatorState.STOP;
 				} else {
 					move(); // Keep moving
 				}
@@ -58,7 +63,8 @@ public class ElevatorMotor extends Thread {
 				System.out.println("Elevator " + elv.getElvNumber() + " close door");
 				elv.getElevatorReciever().sendMessage(elv.generateDoorCloseMsg());
 				elv.closeDoor();
-				elvState = ElevatorState.MOVE;
+				previousElvState = currentElvState;
+				currentElvState = ElevatorState.MOVE;
 				break;
 			case DOOR_OPEN:
 				System.out.println("Elevator " + elv.getElvNumber() + " open door");
@@ -66,15 +72,18 @@ public class ElevatorMotor extends Thread {
 				elv.openDoor();
 				serviceFloor();
 				if (elv.updateFloorToService()) { // If there is an item to service close door
-					elvState = ElevatorState.DOOR_CLOSE;
+					previousElvState = currentElvState;
+					currentElvState = ElevatorState.DOOR_CLOSE;
 				} else { // Else nothing to services so sit in standby at the current position with doors
 							// open
-					elvState = ElevatorState.STANDBY;
+					previousElvState = currentElvState;
+					currentElvState = ElevatorState.STANDBY;
 				}
 				break;
 			case STOP:
 				System.out.println("Elevator " + elv.getElvNumber() + " stopped");
-				elvState = ElevatorState.DOOR_OPEN;
+				previousElvState = currentElvState;
+				currentElvState = ElevatorState.DOOR_OPEN;
 				break;
 			default:
 				System.out.println("uh oh");
@@ -89,7 +98,7 @@ public class ElevatorMotor extends Thread {
 	 * to represent travel time
 	 */
 	private synchronized void move() {
-		System.out.println("Elevator " + elv.getElvNumber() + " isis Moving " + elv.getStatus());
+		System.out.println("Elevator " + elv.getElvNumber() + " is Moving " + elv.getStatus());
 
 		if (elv.getStatus() == Directions.UP) {
 			elv.moveUp();
