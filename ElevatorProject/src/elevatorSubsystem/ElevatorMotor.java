@@ -43,12 +43,14 @@ public class ElevatorMotor extends Thread {
 	
 	private synchronized void serviceFloor() {
 		System.out.print("Opening Doors on Floor " + elv.getCurrFloorPosition());
+		elv.getElevatorReciever().sendMessage(elv.generateDoorOpentMsg());
 		elv.openDoor();
 
 		//Clear floor from service and passengerLight queue(s)
 		elv.removeFromPassengerButtons(elv.pollServiceQueue());
 
 		System.out.print("Opening Closing on Floor " + elv.getCurrFloorPosition());
+		elv.getElevatorReciever().sendMessage(elv.generateDoorCloseMsg());
 		elv.closeDoor();
 
 		System.out.print("Current Floors Pressed: " + elv.getElevatorPassengerButtons());
