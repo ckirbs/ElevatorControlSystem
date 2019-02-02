@@ -14,7 +14,9 @@ public class ElevatorReciever {
 
 	private static final int NUMBER_OF_ELEVATORS = 1;
 	private List<Elevator> elevators;
-	private DatagramSocket datagramSocket;
+	private DatagramSocket schedulerSocket;
+	int messagePort;
+	
 
 	public ElevatorReciever() {
 		elevators = new ArrayList<Elevator>();
@@ -23,7 +25,7 @@ public class ElevatorReciever {
 		}
 		
 		try {
-			datagramSocket = new DatagramSocket();
+			schedulerSocket = new DatagramSocket();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -36,7 +38,8 @@ public class ElevatorReciever {
 			buffer = new byte[4];
 			packet = new DatagramPacket(buffer, buffer.length);
 			try {
-				datagramSocket.receive(packet);
+				messagePort = packet.getPort();
+				schedulerSocket.receive(packet);
 				processSchedulerMsg(packet);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -89,11 +92,22 @@ public class ElevatorReciever {
 		elevators.get(elevatorNumber).updateFloorToService();
 	}
 	
+	public void sendMessage(byte[] msg) {
+		DatagramPacket packet;
+		
+		try {
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), messagePort);
+			schedulerSocket.send(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private synchronized void sendResponse(byte[] msg, int port) {
 		DatagramPacket packet;
 		try {
 			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), port);
-			datagramSocket.send(packet);
+			schedulerSocket.send(packet);
 		} catch (Exception e) {
 			//Failed generating response
 			e.printStackTrace();
