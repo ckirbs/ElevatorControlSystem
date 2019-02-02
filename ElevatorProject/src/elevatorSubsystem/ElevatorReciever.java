@@ -33,7 +33,7 @@ public class ElevatorReciever {
 		}
 
 		try {
-			schedulerSocket = new DatagramSocket();
+			schedulerSocket = new DatagramSocket(Constants.ELEVATOR_PORT);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -46,8 +46,8 @@ public class ElevatorReciever {
 			buffer = new byte[4];
 			packet = new DatagramPacket(buffer, buffer.length);
 			try {
-				messagePort = packet.getPort();
 				schedulerSocket.receive(packet);
+				messagePort = packet.getPort();
 				processSchedulerMsg(packet);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -145,5 +145,9 @@ public class ElevatorReciever {
 	public static void main(String[] args) {
 		ElevatorReciever elvReciever = new ElevatorReciever();
 		elvReciever.recieverCommunicationLoop();
+	}
+	
+	public void closeSocket() {
+		schedulerSocket.close();
 	}
 }
