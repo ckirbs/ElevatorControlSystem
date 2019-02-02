@@ -36,7 +36,7 @@ public class ElevatorListener extends Communicator implements Runnable {
 			
 			Communicator.elevatorReturnPort = packet.getPort();
 			
-			this.dealWithMessage(message);
+			this.handleNewMessage(message);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
