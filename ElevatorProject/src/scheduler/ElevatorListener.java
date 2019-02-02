@@ -20,7 +20,6 @@ public class ElevatorListener extends Communicator implements Runnable {
 		super();
 		try {
 			this.elevatorSocket = new DatagramSocket();
-			this.elevatorSocket.setSoTimeout(TIMEOUT_TIME);
 		} catch (SocketException e) {
 			System.out.println("Error creating elevator socket.");
 			e.printStackTrace();
