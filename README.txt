@@ -1,8 +1,8 @@
 File Names and Descriptions
 	Elevator System
-		Elevator
+		Elevator - A class responsiable for holding states, and information regarding the elevator subsystem
 		ElevatorMotor - A class responsible for moving the elevator. Contains the state machine for the elevator
-		ElevatorReceiver
+		ElevatorReceiver - Responsible for receiving, interpreting, and assigning floor request sent via the scheduler.
 		ElevatorState - An enumerated type denoting the different states for the elevator
 		
 	Scheduler
@@ -36,7 +36,9 @@ Group Memebers and Responsibilities
 		Programming the Scheduler system classes
 		Writing documention
 	Callum Kirby
-		Programming the Elevator system classes
+		Programming the Elevator, ElevatorMotor, and ElevatorReciever
+		Writing JUnit Test Cases
+		Documentation
 	Christopher Molnar
 		Programming SystemFile, Message, and Elevator State Machine
 		Created JUnit Tests
