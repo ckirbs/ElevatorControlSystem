@@ -5,16 +5,18 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
 import resources.Constants;
 
 public class ElevatorReciever {
 
 	private static final int NUMBER_OF_ELEVATORS = 1;
 	private List<Elevator> elevators;
-	private DatagramSocket datagramSocket;
+	private DatagramSocket schedulerSocket;
+	int messagePort;
+	
 
 	public ElevatorReciever() {
 		elevators = new ArrayList<Elevator>();
@@ -23,7 +25,7 @@ public class ElevatorReciever {
 		}
 		
 		try {
-			datagramSocket = new DatagramSocket();
+			schedulerSocket = new DatagramSocket();
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -36,17 +38,21 @@ public class ElevatorReciever {
 			buffer = new byte[4];
 			packet = new DatagramPacket(buffer, buffer.length);
 			try {
-				datagramSocket.receive(packet);
+				messagePort = packet.getPort();
+				schedulerSocket.receive(packet);
+				processSchedulerMsg(packet);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			processSchedulerMsg(buffer);
 		}
 	}
 	
 	// Receive msg from scheduler with floor number
 	// TODO Update implementation when byte class is updated
-	private void processSchedulerMsg(byte[] msg) {
+	public void processSchedulerMsg(DatagramPacket packet) {
+		
+		byte[] msg = packet.getData();
+		
 		int scenerio = (int) msg[0];
 		int reqType = (int) msg[1];
 		int floorReq = (int) msg[2];
@@ -58,19 +64,19 @@ public class ElevatorReciever {
 			if (reqType == Constants.VOLUNTARY) {
 				// Voluntary Dest
 				if (elevators.get(elvNum).canServiceCall(floorReq)) {
-					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
+					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
 					addFloorToService(elvNum, floorReq);
 				} else {
-					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq));
+					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq), packet.getPort());
 				}
 			} else if (reqType == Constants.MANDATORY) {
 				// Mandatory
-				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq));
+				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
 				addFloorToService(elvNum, floorReq);
 				elevators.get(elvNum).addToPassengerButtons(floorReq);
 			}
 		} else if (reqType == Constants.ELEVATOR_INFO_REQUEST) {
-			sendResponse(elevators.get(elvNum).generateSatusMsg());
+			sendResponse(elevators.get(elvNum).generateSatusMsg(), packet.getPort());
 		}
 	}
 
@@ -81,20 +87,35 @@ public class ElevatorReciever {
 	 * 
 	 * @param floor containing calling floor and
 	 */
-	private synchronized void addFloorToService(Integer elevatorNumber, Integer floor) {
+	public synchronized void addFloorToService(Integer elevatorNumber, Integer floor) {
 		elevators.get(elevatorNumber).addToServiceQueue(floor);
 		elevators.get(elevatorNumber).updateFloorToService();
 	}
 	
-	private synchronized void sendResponse(byte[] msg) {
+	public void sendMessage(byte[] msg) {
+		DatagramPacket packet;
+		
+		try {
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), messagePort);
+			schedulerSocket.send(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private synchronized void sendResponse(byte[] msg, int port) {
 		DatagramPacket packet;
 		try {
-			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), 23);
-			datagramSocket.send(packet);
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), port);
+			schedulerSocket.send(packet);
 		} catch (Exception e) {
 			//Failed generating response
 			e.printStackTrace();
 		}
+	}
+	
+	public List<Elevator> getElevators() {
+		return elevators;
 	}
 	
 	public static void main(String[] args) {

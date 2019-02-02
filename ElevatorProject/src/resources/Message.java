@@ -65,7 +65,7 @@ public class Message {
      * 
      * @return: int - the destination floor
      */
-    public int getDestinatinoFloor() {
+    public int getDestinationFloor() {
 	return destinationFloor;
     }
 
@@ -86,6 +86,6 @@ public class Message {
      */
     public String toString() {
 	return (this.getTime().toString() + " " + this.getStartingFloor() + " " + this.getDirection().toString() + " "
-		+ this.getDestinatinoFloor());
+		+ this.getDestinationFloor());
     }
 }

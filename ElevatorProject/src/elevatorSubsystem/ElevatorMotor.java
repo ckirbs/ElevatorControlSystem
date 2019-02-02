@@ -1,5 +1,6 @@
 package elevatorSubsystem;
 
+import resources.Constants;
 import resources.Directions;
 
 public class ElevatorMotor extends Thread {
@@ -40,11 +41,13 @@ public class ElevatorMotor extends Thread {
 		    	    break;
 		    	case DOOR_CLOSE:
 		    	    System.out.println("elevator close door");
+		    	    elv.getElevatorReciever().sendMessage(elv.generateDoorCloseMsg());
 		    	    elv.closeDoor();
 		    	    elvState = ElevatorState.MOVE;
 		    	    break;
 		    	case DOOR_OPEN:
 		    		System.out.println("elevator open door");
+		    		elv.getElevatorReciever().sendMessage(elv.generateDoorOpenMsg());
 				    elv.openDoor();
 				    serviceFloor();
 		    		if (elv.updateFloorToService()){ // If there is an item to service close door
@@ -79,7 +82,7 @@ public class ElevatorMotor extends Thread {
 		}
 
 		try {
-			Thread.sleep(Elevator.FLOOR_TRAVEL_SPEED_MS);
+			Thread.sleep(Constants.ELEVATOR_TRAVEL_SPEED_MS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
