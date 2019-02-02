@@ -37,7 +37,7 @@ public class Communicator {
 	 * @param message	The byte array of hte message
 	 * @return			True if properly handled, false otherwise
 	 */
-	public boolean dealWithMessage(byte[] message) {
+	public boolean handleNewMessage(byte[] message) {
 		byte messageType = message[0];
 		byte flag = message[1];
 		byte val1 = message[2];

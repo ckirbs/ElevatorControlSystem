@@ -34,7 +34,7 @@ public class FloorListener extends Communicator implements Runnable {
 			
 			Communicator.floorReturnPorts[(int) message[2]] = packet.getPort();
 
-			this.dealWithMessage(message);
+			this.handleNewMessage(message);
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
