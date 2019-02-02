@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ public class Communicator {
 	protected static int elevatorReturnPort;
 	protected static int floorPort;
 	protected static ArrayList<Set<Integer>> destinations = new ArrayList<Set<Integer>>();
+	protected static ArrayList<byte[]> deniedReqs = new ArrayList<byte[]>();
 	
 	public Communicator() {
 		
@@ -65,16 +67,20 @@ public class Communicator {
 	}
 
 	/** 
-	 * Skeleton for future iterations
+	 * If a voluntary request was denied, add it to a list to be retried later.
 	 * 
 	 * @param yesNoVal
 	 * @param floorNum
 	 * @param elevatorNum
 	 * @return
 	 */
-	private boolean processConfirmation(byte yesNoVal, byte floorNum, byte elevatorNum) {
+	private synchronized boolean processConfirmation(byte yesNoVal, byte floorNum, byte elevatorNum) {
+		if (yesNoVal == NO) {
+			deniedReqs.add(new byte[] {NEW_ELEVATOR_DESTINATION, VOLUNTARY, floorNum, elevatorNum});
+			return false;
+		}
 		
-		return false;
+		return true;
 	}
 
 	/**
@@ -135,13 +141,12 @@ public class Communicator {
 	 * @return
 	 */
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
-		// choose suitable elvator
 		
 		destinations.get((int) origFloor).add((int) destFloor);
 		
 		byte[] message = new byte[MESSAGE_LENGTH];
 		message[0] = NEW_ELEVATOR_DESTINATION;
-		message[1] = MANDATORY;
+		message[1] = VOLUNTARY;
 		message[2] = origFloor;
 		message[3] = (byte) 0; //elevator id
 		
@@ -156,5 +161,22 @@ public class Communicator {
 		}
 
 		return true;
+	}
+	
+	/**
+	 * Retry all of the voluntary requests that were previously denied
+	 */
+	protected static synchronized void retryDeniedReqs() {
+		for (byte[] msg: deniedReqs) {
+			DatagramPacket pckt;
+			try {
+				pckt = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);
+				elevatorSocket.send(pckt);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		deniedReqs.clear();
 	}
 }

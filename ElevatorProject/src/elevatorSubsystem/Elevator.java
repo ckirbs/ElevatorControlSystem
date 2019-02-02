@@ -59,7 +59,6 @@ public class Elevator {
 	public synchronized boolean updateFloorToService() {
 		if (!serviceScheduleQueue.isEmpty()) {
 			floorDestionation = serviceScheduleQueue.peek();
-			System.out.println(floorDestionation);
 			updateDirection();
 			return true;
 		} else {
@@ -153,14 +152,15 @@ public class Elevator {
 
 	public int pollServiceQueue() {
 		int floorVal = serviceScheduleQueue.poll();
-		if (floorVal == currFloorPosition) return floorVal;
-		else {
+		if (floorVal != currFloorPosition) {
 			serviceScheduleQueue.add(floorVal);
-			while (serviceScheduleQueue.contains(currFloorPosition)) {
-				serviceScheduleQueue.remove(currFloorPosition);
-			}
-			return currFloorPosition;
+			floorVal =  currFloorPosition;
 		}
+		
+		while (serviceScheduleQueue.contains(floorVal)) {
+			serviceScheduleQueue.remove(floorVal);
+		}
+		return floorVal;
 	}
 
 	/**

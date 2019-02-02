@@ -9,6 +9,7 @@ import static resources.Constants.ELEVATOR_PORT;
 import static resources.Constants.MESSAGE_LENGTH;
 
 /**
+ * An object to listen to the elevator system and deal with any received messages
  * 
  * @author Darren
  *
@@ -27,6 +28,9 @@ public class ElevatorListener extends Communicator implements Runnable {
 		}
 	}
 
+	/**
+	 * Check for incoming messages, address them if any
+	 */
 	private void checkForMessages() {
 		try {
 			byte[] message = new byte[MESSAGE_LENGTH];
@@ -47,6 +51,7 @@ public class ElevatorListener extends Communicator implements Runnable {
 	public void run() {
 		while (true) {
 			checkForMessages();
+			super.retryDeniedReqs();
 		}
 	}
 }

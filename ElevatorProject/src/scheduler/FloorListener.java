@@ -8,6 +8,12 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.HashSet;
 
+/**
+ * An object to listen to the floor system and deal with any received messages
+ * 
+ * @author Darren
+ *
+ */
 public class FloorListener extends Communicator implements Runnable {
 	private DatagramPacket packet;
 	
@@ -26,6 +32,9 @@ public class FloorListener extends Communicator implements Runnable {
 		}
 	}
 
+	/**
+	 * Check for incoming messages, address them if any
+	 */
 	private void checkForMessages() {
 		try {
 			byte[] message = new byte[MESSAGE_LENGTH];
@@ -49,6 +58,7 @@ public class FloorListener extends Communicator implements Runnable {
 	public void run() {
 		while (true) {
 			checkForMessages();
+			super.retryDeniedReqs();
 		}
 	}
 
