@@ -24,7 +24,7 @@ public class Communicator {
 	protected static Dispatcher dispatcher = new Dispatcher();
 	protected final int TIMEOUT_TIME = 50;
 	protected static int elevatorReturnPort;
-	protected static int[] floorReturnPorts = new int[NUMBER_OF_FLOORS];
+	protected static int floorPort;
 	protected static ArrayList<Set<Integer>> destinations = new ArrayList<Set<Integer>>();
 	
 	public Communicator() {
@@ -87,7 +87,6 @@ public class Communicator {
 	 */
 	private boolean openCloseDoor(byte openClose, byte floorNum, byte elevatorNum) {
 		try {
-			DatagramSocket tempSendingSocket = new DatagramSocket();
 			byte[] msg = new byte[MESSAGE_LENGTH];
 			msg[0] = OPEN_CLOSE_DOOR;
 			msg[1] = openClose;
@@ -96,8 +95,8 @@ public class Communicator {
 			
 			System.out.println(((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
-			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getLocalHost(), floorReturnPorts[(int) floorNum]);
-			tempSendingSocket.send(packet);
+			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getLocalHost(), floorPort);
+			floorSocket.send(packet);
 			
 			if (openClose == OPEN) {
 				Set<Integer> tempSet = destinations.get((int) floorNum);
@@ -117,7 +116,6 @@ public class Communicator {
 					elevatorSocket.send(pckt);
 				}
 			}
-			tempSendingSocket.close();
 			
 		} catch (IOException e) {
 			System.out.println("Error creating socket or sending message.");

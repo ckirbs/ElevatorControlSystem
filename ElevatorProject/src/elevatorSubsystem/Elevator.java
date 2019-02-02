@@ -152,7 +152,15 @@ public class Elevator {
 	}
 
 	public int pollServiceQueue() {
-		return serviceScheduleQueue.poll();
+		int floorVal = serviceScheduleQueue.poll();
+		if (floorVal == currFloorPosition) return floorVal;
+		else {
+			serviceScheduleQueue.add(floorVal);
+			while (serviceScheduleQueue.contains(currFloorPosition)) {
+				serviceScheduleQueue.remove(currFloorPosition);
+			}
+			return currFloorPosition;
+		}
 	}
 
 	/**

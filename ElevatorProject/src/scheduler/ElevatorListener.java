@@ -19,7 +19,7 @@ public class ElevatorListener extends Communicator implements Runnable {
 	public ElevatorListener() {
 		super();
 		try {
-			this.elevatorSocket = new DatagramSocket();
+			Communicator.elevatorSocket = new DatagramSocket();
 		} catch (SocketException e) {
 			System.out.println("Error creating elevator socket.");
 			e.printStackTrace();
@@ -31,7 +31,7 @@ public class ElevatorListener extends Communicator implements Runnable {
 		try {
 			byte[] message = new byte[MESSAGE_LENGTH];
 			this.packet = new DatagramPacket(message, MESSAGE_LENGTH);
-			this.elevatorSocket.receive(packet);
+			Communicator.elevatorSocket.receive(packet);
 			
 			Communicator.elevatorReturnPort = packet.getPort();
 			

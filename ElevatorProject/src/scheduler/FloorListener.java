@@ -32,7 +32,7 @@ public class FloorListener extends Communicator implements Runnable {
 			this.packet = new DatagramPacket(message, MESSAGE_LENGTH);
 			Communicator.floorSocket.receive(packet);
 			
-			Communicator.floorReturnPorts[(int) message[2]] = packet.getPort();
+			Communicator.floorPort = packet.getPort();
 
 			this.handleNewMessage(message);
 		} catch (SocketException e) {
