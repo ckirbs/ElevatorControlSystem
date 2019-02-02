@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +28,12 @@ public class ElevatorTest {
 	public void initElvSubSystem() {
 		elvRec = new ElevatorReciever();
 		elvList = elvRec.getElevators().iterator();
+	}
+
+	@After
+	public void teardown() {
+		elvRec.closeSocket();
+		elvRec = null;
 	}
 
 	@Test
@@ -103,13 +110,13 @@ public class ElevatorTest {
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
 			
-			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10, (byte) (int) elv.getElvNumber() };
+			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.MANDATORY, 10, (byte) (int) elv.getElvNumber() };
 			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), Constants.ELEVATOR_PORT);
 			
 			elvRec.processSchedulerMsg(packet);
 
 			try {
-				Thread.sleep(Constants.ELEVATOR_TRAVEL_SPEED_MS);
+				Thread.sleep(Constants.ELEVATOR_TRAVEL_SPEED_MS + 200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

@@ -9,23 +9,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import resources.Constants;
+import resources.Message;
 
+/**
+ * ElevatorReceiver Responsible for receiving, interpreting, and assigning
+ * request sent via the scheduler. Generates X elevators for a given subsystem
+ * 
+ * @author Callum Kirby
+ * @version 1.0
+ *
+ */
 public class ElevatorReciever {
 
 	private static final int NUMBER_OF_ELEVATORS = 1;
 	private List<Elevator> elevators;
 	private DatagramSocket schedulerSocket;
 	int messagePort;
-	
 
 	public ElevatorReciever() {
 		elevators = new ArrayList<Elevator>();
-		for(int i=0; i< NUMBER_OF_ELEVATORS; i++) {
+		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
 			elevators.add(new Elevator(i, this));
 		}
-		
+
 		try {
-			schedulerSocket = new DatagramSocket();
+			schedulerSocket = new DatagramSocket(Constants.ELEVATOR_PORT);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -38,27 +46,31 @@ public class ElevatorReciever {
 			buffer = new byte[4];
 			packet = new DatagramPacket(buffer, buffer.length);
 			try {
-				messagePort = packet.getPort();
 				schedulerSocket.receive(packet);
+				messagePort = packet.getPort();
 				processSchedulerMsg(packet);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	// Receive msg from scheduler with floor number
-	// TODO Update implementation when byte class is updated
+
+	/**
+	 * processSchedulerMsg() interpret messages received from scheduler and pass to
+	 * the elevator indicated in the body
+	 * 
+	 * @param packet containing requestPort and messageInfo (Type, request, floor,
+	 *               and elevator)
+	 */
 	public void processSchedulerMsg(DatagramPacket packet) {
-		
+
 		byte[] msg = packet.getData();
-		
+
 		int scenerio = (int) msg[0];
 		int reqType = (int) msg[1];
 		int floorReq = (int) msg[2];
 		int elvNum = (int) msg[3];
-		
-		
+
 		if (scenerio == Constants.NEW_ELEVATOR_DESTINATION) {
 			// New floor request
 			if (reqType == Constants.VOLUNTARY) {
@@ -91,10 +103,16 @@ public class ElevatorReciever {
 		elevators.get(elevatorNumber).addToServiceQueue(floor);
 		elevators.get(elevatorNumber).updateFloorToService();
 	}
-	
+
+	/**
+	 * sendMessage() sends a new message to send to the scheduler (async on floor
+	 * arrival)
+	 * 
+	 * @param msg contains doorOpen/doorClose signal
+	 */
 	public void sendMessage(byte[] msg) {
 		DatagramPacket packet;
-		
+
 		try {
 			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), messagePort);
 			schedulerSocket.send(packet);
@@ -102,24 +120,34 @@ public class ElevatorReciever {
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * sendResponse() send a response to a message received from the scheduler
+	 * 
+	 * @param msg  containing confirm/deny/acknowledgment of request
+	 * @param port address that the originating message was received on
+	 */
 	private synchronized void sendResponse(byte[] msg, int port) {
 		DatagramPacket packet;
 		try {
 			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), port);
 			schedulerSocket.send(packet);
 		} catch (Exception e) {
-			//Failed generating response
+			// Failed generating response
 			e.printStackTrace();
 		}
 	}
-	
+
 	public List<Elevator> getElevators() {
 		return elevators;
 	}
-	
+
 	public static void main(String[] args) {
 		ElevatorReciever elvReciever = new ElevatorReciever();
 		elvReciever.recieverCommunicationLoop();
+	}
+	
+	public void closeSocket() {
+		schedulerSocket.close();
 	}
 }

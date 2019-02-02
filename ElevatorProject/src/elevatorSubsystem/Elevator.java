@@ -50,9 +50,16 @@ public class Elevator {
 		motor.start();
 	}
 
-	synchronized boolean updateFloorToService() {
+	/**
+	 * updateFloorToService() Update the current destination of the elevator
+	 * 
+	 * @return true if a new destionationFloor is set, false if there are no floors
+	 *         in the serviceQueue
+	 */
+	public synchronized boolean updateFloorToService() {
 		if (!serviceScheduleQueue.isEmpty()) {
 			floorDestionation = serviceScheduleQueue.peek();
+			System.out.println(floorDestionation);
 			updateDirection();
 			return true;
 		} else {
@@ -62,12 +69,13 @@ public class Elevator {
 		}
 	}
 
-	/*
-	 * updateDirection() updates the status of elevator to represent the direction
-	 * of the currentDestionation
+	/**
+	 * updateDirection() Update the direction of the elevator to match that of the
+	 * current service.
 	 */
 	public synchronized void updateDirection() {
 		PriorityBlockingQueue<Integer> temp;
+		//System.out.println("Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestionation);
 		if (currFloorPosition < floorDestionation) {
 			if (status != Directions.UP) {
 				temp = serviceScheduleQueue;
@@ -86,10 +94,16 @@ public class Elevator {
 		}
 	}
 
-	// Checks to see if the current elevator can accept a floor service request
-	// returns true if request is along current route, false if outside
-	// Standby = Initializes new priorityQueue with priority depending on floor
-	// requested
+	/**
+	 * canServiceCall() Checks to see if the current elevator can accept a floor
+	 * service request returns true if request is along current route, false if
+	 * outside Standby = Initializes new priorityQueue with priority depending on
+	 * floor requested
+	 * 
+	 * @param floorRequested the stop to check against the current service route
+	 * @return true if the floor can be added ALONG the service route, false
+	 *         otherwise
+	 */
 	public boolean canServiceCall(int floorRequested) {
 		if (floorRequested > MAX_FLOOR || floorRequested < MIN_FLOOR) {
 			// Not within the service bounds of the elevator (off of track!)
@@ -109,11 +123,11 @@ public class Elevator {
 		}
 	}
 
-	public synchronized void moveUp() {
+	public void moveUp() {
 		currFloorPosition++;
 	}
 
-	public synchronized void moveDown() {
+	public void moveDown() {
 		currFloorPosition--;
 	}
 
@@ -138,38 +152,82 @@ public class Elevator {
 	}
 
 	public int pollServiceQueue() {
-		return serviceScheduleQueue.poll();
+		int floorVal = serviceScheduleQueue.poll();
+		if (floorVal == currFloorPosition) return floorVal;
+		else {
+			serviceScheduleQueue.add(floorVal);
+			while (serviceScheduleQueue.contains(currFloorPosition)) {
+				serviceScheduleQueue.remove(currFloorPosition);
+			}
+			return currFloorPosition;
+		}
 	}
 
-	byte[] generateDoorOpenMsg() {
+	/**
+	 * generateDoorOpenMsg() generates a doorOpenMessage
+	 * 
+	 * @return msg containing open, elevator, and floor number
+	 */
+	public byte[] generateDoorOpenMsg() {
 		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) currFloorPosition,
 				(byte) (int) elvNumber };
 	}
 
-	byte[] generateDoorCloseMsg() {
-		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) currFloorPosition,
+	/**
+	 * generateDoorCloseMsg() generates a doorClsoeMessage
+	 * 
+	 * @return msg containing close, elevator, and floor number
+	 */
+	public byte[] generateDoorCloseMsg() {
+		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.CLOSE, (byte) (int) currFloorPosition,
 				(byte) (int) elvNumber };
 	}
 
-	byte[] generateAcceptMsg(int floorDest) {
+	/**
+	 * generateAcceptMsg() generates a acceptFloorRequest msg
+	 * 
+	 * @return msg signaling a new floor has been added to service queue
+	 */
+	public byte[] generateAcceptMsg(int floorDest) {
 		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.YES, (byte) floorDest,
 				(byte) (int) elvNumber };
 	}
 
-	byte[] generateDeclineMsg(int floorDest) {
+	/**
+	 * generateAcceptMsg() generates a declineFloorRequest msg
+	 * 
+	 * @return msg indicating a voluntary request has been declined by the elevator
+	 */
+	public byte[] generateDeclineMsg(int floorDest) {
 		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.NO, (byte) floorDest, (byte) (int) elvNumber };
 	}
 
+	/**
+	 * generateStatusMsg() generates a msg summarizing the current state and
+	 * position of a elevator
+	 * 
+	 * @return msg containing elevator status, number, and current position
+	 */
 	byte[] generateSatusMsg() {
 		return new byte[] { Constants.STATUS_REPORT, (byte) Directions.getIntByDir(this.getStatus()),
 				(byte) (int) currFloorPosition, (byte) (int) elvNumber };
 	}
 
+	/**
+	 * generateOpenMsg() generates a msg indicating the elevator is opening it's doors
+	 * 
+	 * @return msg containing elevator number and position, and doorOpenRequest
+	 */
 	byte[] generateOpenMsg() {
 		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) currFloorPosition,
 				(byte) (int) elvNumber };
 	}
 
+	/**
+	 * generateOpenMsg() generates a msg indicating the elevator is closing it's doors
+	 * 
+	 * @return msg containing elevator number and position, and doorCloseRequest
+	 */
 	byte[] generateCloseMsg() {
 		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.CLOSE, (byte) (int) currFloorPosition,
 				(byte) (int) elvNumber };
@@ -178,7 +236,7 @@ public class Elevator {
 	public Integer getElvNumber() {
 		return elvNumber;
 	}
-	
+
 	public ElevatorReciever getElevatorReciever() {
 		return elvReceieve;
 	}
@@ -194,9 +252,9 @@ public class Elevator {
 	public PriorityBlockingQueue<Integer> getServiceScheduleQueue() {
 		return serviceScheduleQueue;
 	}
-	
-	public Boolean isPriorityQueueEmpty(){
-	    return (getServiceScheduleQueue().isEmpty());
+
+	public Boolean isPriorityQueueEmpty() {
+		return (getServiceScheduleQueue().isEmpty());
 	}
 
 	public Set<Integer> getElevatorPassengerButtons() {
@@ -205,12 +263,5 @@ public class Elevator {
 
 	public Directions getStatus() {
 		return status;
-	}
-
-	public static void main(String[] args) {
-		ElevatorReciever elvRec = new ElevatorReciever();
-		Elevator elv = elvRec.getElevators().get(0);
-		elvRec.addFloorToService(elv.getElvNumber(), 10);
-		elvRec.addFloorToService(elv.getElvNumber(), 12);
 	}
 }

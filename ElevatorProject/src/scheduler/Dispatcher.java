@@ -1,6 +1,7 @@
 package scheduler;
 
 import java.util.ArrayList;
+import java.time.LocalTime;
 
 import resources.*;
 import static resources.Constants.*;
@@ -66,7 +67,6 @@ public class Dispatcher {
 		
 		return currElevator;
 	}
-	
 	
 	// Elevator object to hold elevator info
 	public class Elevator {
