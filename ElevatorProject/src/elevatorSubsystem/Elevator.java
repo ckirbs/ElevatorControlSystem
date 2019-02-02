@@ -49,13 +49,15 @@ public class Elevator {
 		motor.start();
 	}
 	
-	synchronized void updateFloorToService() {
+	synchronized boolean updateFloorToService() {
 		if (!serviceScheduleQueue.isEmpty()) {
 			floorDestionation = serviceScheduleQueue.peek();
 			updateDirection();
+			return true;
 		} else {
 			// No floors to service, wait to receive request
 			status = Directions.STANDBY;
+			return false;
 		}
 	}
 
@@ -176,6 +178,10 @@ public class Elevator {
 
 	public PriorityBlockingQueue<Integer> getServiceScheduleQueue() {
 		return serviceScheduleQueue;
+	}
+	
+	public Boolean isPriorityQueueEmpty(){
+	    return (getServiceScheduleQueue().isEmpty());
 	}
 
 	public Set<Integer> getElevatorPassengerButtons() {
