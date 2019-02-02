@@ -146,4 +146,8 @@ public class ElevatorReciever {
 		ElevatorReciever elvReciever = new ElevatorReciever();
 		elvReciever.recieverCommunicationLoop();
 	}
+	
+	public void closeSocket() {
+		schedulerSocket.close();
+	}
 }
