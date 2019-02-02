@@ -52,6 +52,7 @@ public class ElevatorMotor extends Thread {
 				}
 				break;
 			case MOVE:
+	    	    System.out.println("Elevator " + elv.getElvNumber() + " Current Queue: " + elv.getServiceScheduleQueue().toString());
 				if (elv.getCurrFloorPosition() == elv.getFloorDestionation()) { // Arrived at destination floor
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.STOP;
@@ -67,7 +68,7 @@ public class ElevatorMotor extends Thread {
 				currentElvState = ElevatorState.MOVE;
 				break;
 			case DOOR_OPEN:
-				System.out.println("Elevator " + elv.getElvNumber() + " open door");
+				System.out.println("Elevator " + elv.getElvNumber() + " open door on floor " + elv.getCurrFloorPosition());
 				elv.getElevatorReciever().sendMessage(elv.generateDoorOpenMsg());
 				elv.openDoor();
 				serviceFloor();
@@ -89,6 +90,7 @@ public class ElevatorMotor extends Thread {
 				System.out.println("uh oh");
 				break;
 			}
+		}
 		}
 
 	}
