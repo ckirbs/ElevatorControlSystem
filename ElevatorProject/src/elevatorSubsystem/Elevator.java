@@ -53,6 +53,7 @@ public class Elevator {
 	synchronized boolean updateFloorToService() {
 		if (!serviceScheduleQueue.isEmpty()) {
 			floorDestionation = serviceScheduleQueue.peek();
+			System.out.println(floorDestionation);
 			updateDirection();
 			return true;
 		} else {
@@ -68,6 +69,7 @@ public class Elevator {
 	 */
 	public synchronized void updateDirection() {
 		PriorityBlockingQueue<Integer> temp;
+		//System.out.println("Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestionation);
 		if (currFloorPosition < floorDestionation) {
 			if (status != Directions.UP) {
 				temp = serviceScheduleQueue;
@@ -147,7 +149,7 @@ public class Elevator {
 	}
 
 	byte[] generateDoorCloseMsg() {
-		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) currFloorPosition,
+		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.CLOSE, (byte) (int) currFloorPosition,
 				(byte) (int) elvNumber };
 	}
 

@@ -94,6 +94,8 @@ public class Communicator {
 			msg[2] = floorNum;
 			msg[3] = elevatorNum;
 			
+			System.out.println(((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
+			
 			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getLocalHost(), floorReturnPorts[(int) floorNum]);
 			tempSendingSocket.send(packet);
 			

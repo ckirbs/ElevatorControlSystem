@@ -74,7 +74,7 @@ public class FloorSystem {
 						direction = 0;
 					}
 					printOutFloorInformation(floor, "A floor destination is chosen");
-					byte[] buffer = new byte[]{(byte) 1, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor(), direction};
+					byte[] buffer = new byte[]{(byte) 1, direction, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor()};
 					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("127.0.0.1"), FLOOR_PORT);
 					datagramSocket.send(packet);
 					return true;

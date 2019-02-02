@@ -23,16 +23,22 @@ public class ElevatorMotor extends Thread {
 	 * run() - elevator state machine
 	 */
 	public void run() {
+		int count = 0;
 		while(true) {
 		    switch(elvState){
 		    	case STANDBY:
-		    	    System.out.println("elevator on StandBy");
+		    		if (count == 0) {
+		    			System.out.println("elevator on StandBy");
+		    			count++;
+		    		}
 		    	    if (!elv.isPriorityQueueEmpty()){ // Check if there is a floor to service
 		    	    	elvState = ElevatorState.DOOR_CLOSE;
 		    	    }
 		    	    break;
 		    	case MOVE:
+		    		count = 0;
 		    	    System.out.println("elevator Moving");
+		    	    System.out.println("Current Queue: " + elv.getServiceScheduleQueue().toString());
     		    	if(elv.getCurrFloorPosition() == elv.getFloorDestionation()) { // Arrived at destination floor
     		    		elvState = ElevatorState.STOP;
     		    	} else {
@@ -40,13 +46,15 @@ public class ElevatorMotor extends Thread {
     		    	}
 		    	    break;
 		    	case DOOR_CLOSE:
+		    		count = 0;
 		    	    System.out.println("elevator close door");
 		    	    elv.getElevatorReciever().sendMessage(elv.generateDoorCloseMsg());
 		    	    elv.closeDoor();
 		    	    elvState = ElevatorState.MOVE;
 		    	    break;
 		    	case DOOR_OPEN:
-		    		System.out.println("elevator open door");
+		    		count = 0;
+		    		System.out.println("elevator open door on floor " + elv.getCurrFloorPosition());
 		    		elv.getElevatorReciever().sendMessage(elv.generateDoorOpenMsg());
 				    elv.openDoor();
 				    serviceFloor();
@@ -58,10 +66,12 @@ public class ElevatorMotor extends Thread {
 		    		}
 		    	    break;
 		    	case STOP:
+		    		count = 0;
 		    	    System.out.println("elevator stopped");
 		    	    elvState = ElevatorState.DOOR_OPEN;
 		    	    break;
 		    	default:
+		    		count = 0;
 		    		System.out.println("uh oh");
 		    		break;
 		    }
