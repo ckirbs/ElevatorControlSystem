@@ -91,7 +91,6 @@ public class ElevatorMotor extends Thread {
 				break;
 			}
 		}
-		}
 
 	}
 
