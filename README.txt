@@ -1,23 +1,23 @@
 File Names and Descriptions
-	Elevator System
+	elevatorSubsystem
 		Elevator - A class responsiable for holding states, and information regarding the elevator subsystem
 		ElevatorMotor - A class responsible for moving the elevator. Contains the state machine for the elevator
 		ElevatorReceiver - Responsible for receiving, interpreting, and assigning floor request sent via the scheduler.
 		ElevatorState - An enumerated type denoting the different states for the elevator
 		
-	Scheduler
+	scheduler
 		Communicator - A class that handles reading messages and generating responses for them
-		Dispatcher - A class responsible for choosing the most suitable elevator to handle a new request
+		Dispatcher - A class responsible for choosing the most suitable elevator to handle a new request (not used in this iteration)
 		ElevatorListener - A subclass of Communicator that listens for messages from the elevator and deals with them (by responding or passing them to a floor)
 		FloorListener - A subclass of Communicator that listens for messages from the floor and deals with them (by responding or passing them to an elevator)
 		SchedulerRunner - A main class that starts the Elevator and Floor Listeners
 		
-	Floor System
+	floorSubsystem
 		Floor - A class that holds the information of each floor such as the doors and the lights
 		FloorSystem - A class that schedules the events from the text file to be sent as packetsto the scheduler
 		and receives packets from the scheulder to open/close doors and turn on lights
 		
-	Resources
+	resources
 		Constants - A static class which only holds constant values to be used by other classes
 		Directions - An enumerated type denoting directions that an elevator can move
 		Message - A class responsible for creating and holding all of the users requests
@@ -27,14 +27,17 @@ File Names and Descriptions
 		elevator - 
 		floor - 
 		resources -
-			DirectionTest - 
+			DirectionTest - Junit tests for testing functionality 
 			SystemFileTest - JUnit tests for testing the input validation
 		scheduler -
+			DispatcherTests - JUnit tests for testing the dispatcher in the scheduler system
 	
 Group Memebers and Responsibilities
 	Darren Holden
 		Programming the Scheduler system classes
 		Writing documention
+		Writing JUnit test cases
+		Performing end-to-end tests and debugging
 	Callum Kirby
 		Programming the Elevator, ElevatorMotor, and ElevatorReciever
 		Writing JUnit Test Cases
@@ -57,13 +60,13 @@ Set Up Instructions/Run
 		2.3 - Give Project a Name (ex: ElevatorProjectGroup5) and Finish
 		2.4 - Import File (file->import) and then General - File System and click Next
 		2.5 - From Directory: Select from the unzipped folder the java project "ElevatorProject"
-		2.6 - Check the Elevatpr box to grab all of the files
+		2.6 - Check the Elevator box to grab all of the files
 		2.7 - Into Folder: Select the Java Project you created (ex: ElevatorProjectGroup5) and hit finish
 	3 - Navigate in the Package Explorer to the Java Project you imported the files into -> src
 		3.1 - Select from elevatorSubsystem -> ElevatorReciever.java
 		3.2 - Select from scheduler -> SchedulerRunner.java
 		3.3 - Select from floorSubsytem -> FloorSystem.java
-	4 - To run our project run ElevatorReciever.java, SchedulerRunner.java and floorSubsystem.java
+	4 - To run our project run ElevatorReciever.java, SchedulerRunner.java and floorSubsystem.java (in that order)
 		4.1 - The elevatorReciever output will show the progress of the elevator (where its going and what state its in)
 	5 - To acces JUnit Tests navigate to ElevatorProject -> src -> test
 		5.1 - Included are JUnit Tests for all of the subsystems (elevator, floor, scheduler and resources)
