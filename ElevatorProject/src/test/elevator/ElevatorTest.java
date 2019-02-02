@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 import java.lang.invoke.ConstantCallSite;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Iterator;
 
 import org.junit.Before;
@@ -47,7 +50,8 @@ public class ElevatorTest {
 	public void testCanServiceRequestFalse() {
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
-			assertEquals("Elevator failed to refuse a invalid service request", false, elv.canServiceCall(Constants.LOWEST_FLOOR -1));
+			assertEquals("Elevator failed to refuse a invalid service request", false,
+					elv.canServiceCall(Constants.LOWEST_FLOOR - 1));
 		}
 	}
 
@@ -62,40 +66,56 @@ public class ElevatorTest {
 	}
 
 	@Test
-	public void testProcessMessageVolValid() {
+	public void testProcessMessageVolValid() throws UnknownHostException {
+		DatagramPacket packet;
+		byte[] msg;
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
-			elvRec.processSchedulerMsg(new byte[] { Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10,
-					(byte) (int) elv.getElvNumber() });
-			assertEquals("Elevator " + elv.getElvNumber() + " should have destionation 10", 10,
-					(int) elv.getFloorDestionation());
+			
+			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10, (byte) (int) elv.getElvNumber() };
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), Constants.ELEVATOR_PORT);
+			
+			elvRec.processSchedulerMsg(packet);
 		}
 	}
 
 	@Test
-	public void testProcessMessageVolInvalid() {
+	public void testProcessMessageVolInvalid() throws UnknownHostException {
+		
+		DatagramPacket packet;
+		byte[] msg;
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
-			elvRec.processSchedulerMsg(new byte[] { Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, -1,
-					(byte) (int) elv.getElvNumber() });
+			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, -1, (byte) (int) elv.getElvNumber() };
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), Constants.ELEVATOR_PORT);
+			
+			elvRec.processSchedulerMsg(packet);
+			
 			assertEquals("Elevator " + elv.getElvNumber() + " should not have a destionation", null,
 					elv.getFloorDestionation());
 		}
 	}
 
 	@Test
-	public void testElevatorMovement() {
+	public void testElevatorMovement() throws UnknownHostException {
+		DatagramPacket packet;
+		byte[] msg;
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
-			elvRec.processSchedulerMsg(new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10, (byte) (int) elv.getElvNumber()});
 			
+			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10, (byte) (int) elv.getElvNumber() };
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), Constants.ELEVATOR_PORT);
+			
+			elvRec.processSchedulerMsg(packet);
+
 			try {
 				Thread.sleep(Constants.ELEVATOR_TRAVEL_SPEED_MS);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			
-			assertNotEquals("Elevator " + elv.getElvNumber() + " has position 0 but should move towards floor 10", 0, (int) elv.getCurrFloorPosition());
+
+			assertNotEquals("Elevator " + elv.getElvNumber() + " has position 0 but should move towards floor 10", 0,
+					(int) elv.getCurrFloorPosition());
 		}
 	}
 }
