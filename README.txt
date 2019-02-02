@@ -13,9 +13,9 @@ File Names and Descriptions
 		SchedulerRunner - A main class that starts the Elevator and Floor Listeners
 		
 	Floor System
-		Floor
-		FloorSystem
-		Temp
+		Floor - A class that holds the information of each floor such as the doors and the lights
+		FloorSystem - A class that schedules the events from the text file to be sent as packetsto the scheduler
+		and receives packets from the scheulder to open/close doors and turn on lights
 		
 	Resources
 		Constants - A static class which only holds constant values to be used by other classes
