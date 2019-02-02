@@ -24,10 +24,10 @@ File Names and Descriptions
 		SystemFile - A class responsible for validating each line in the systems input file and delegating the creation of the 	messages to the Message class
 		
 	test
-		elevator - 
-		floor - 
+		elevator - JUnit tests for testing the elevator functionality
+		floor - JUnit tests for testing the floor functionality
 		resources -
-			DirectionTest - Junit tests for testing functionality 
+			DirectionTest - JUnit tests for testing functionality 
 			SystemFileTest - JUnit tests for testing the input validation
 		scheduler -
 			DispatcherTests - JUnit tests for testing the dispatcher in the scheduler system
@@ -46,11 +46,14 @@ Group Memebers and Responsibilities
 		Programming SystemFile, Message, and Elevator State Machine
 		Created JUnit Tests
 		Writing documentation
-		Drawing state machine diagrams
+		Drawing the elevator state machine diagram
 	Logan MacGillivary
 		Programming the Scheduler system classes
+		Drawing UML Class diagram
 	Brandon Hartford
 		Programming the Floor system classes
+		Writing JUnit Test Cases
+		Documentation
 	
 Set Up Instructions/Run
 	1 - Unzip project
