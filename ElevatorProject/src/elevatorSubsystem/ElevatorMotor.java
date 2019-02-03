@@ -52,7 +52,7 @@ public class ElevatorMotor extends Thread {
 				}
 				break;
 			case MOVE:
-	    	    System.out.println("Elevator " + elv.getElvNumber() + " Current Queue: " + elv.getServiceScheduleQueue().toString());
+	    	    System.out.println("Elevator " + elv.getElvNumber() + " Current Service List: " + elv.getServiceScheduleQueue().toString());
 				if (elv.getCurrFloorPosition() == elv.getFloorDestionation()) { // Arrived at destination floor
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.STOP;
@@ -98,7 +98,7 @@ public class ElevatorMotor extends Thread {
 	 * to represent travel time
 	 */
 	private synchronized void move() {
-		System.out.println("Elevator " + elv.getElvNumber() + " is Moving " + elv.getStatus());
+		System.out.println("Elevator " + elv.getElvNumber() + " is at floor " + elv.getCurrFloorPosition() + " Moving " + elv.getStatus());
 
 		if (elv.getStatus() == Directions.UP) {
 			elv.moveUp();
