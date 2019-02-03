@@ -69,7 +69,7 @@ Set Up Instructions/Run
 		3.1 - Select from elevatorSubsystem -> ElevatorReciever.java
 		3.2 - Select from scheduler -> SchedulerRunner.java
 		3.3 - Select from floorSubsytem -> FloorSystem.java
-	4 - To run our project run ElevatorReciever.java, SchedulerRunner.java and floorSubsystem.java (in that order)
+	4 - To run our project run ElevatorReciever.java, SchedulerRunner.java and floorSystem.java (in that order)
 		4.1 - The elevatorReciever output will show the progress of the elevator (where its going and what state its in)
 	5 - To acces JUnit Tests navigate to ElevatorProject -> src -> test
 		5.1 - Included are JUnit Tests for all of the subsystems (elevator, floor, scheduler and resources)
