@@ -22,6 +22,10 @@ public final class Constants {
 	public static final int HIGHEST_FLOOR = 10;
 	public static final int NUMBER_OF_FLOORS = HIGHEST_FLOOR - LOWEST_FLOOR + 1;
 	
+	public static final String SCHED_IP_ADDRESS = "127.0.0.1";
+	public static final String FLOOR_SYS_IP_ADDRESS = "127.0.0.1";
+	public static final String ELEVATOR_SYS_IP_ADDRESS = "127.0.0.1";
+	
 	// Message Type Values
 	public static final byte ERROR = 0;
 	public static final byte NEW_REQUEST_FROM_FLOOR = 1;

@@ -20,8 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 import resources.*;
 import static resources.Constants.FLOOR_PORT;
-
 import static resources.Constants.HIGHEST_FLOOR;
+import static resources.Constants.SCHED_IP_ADDRESS;
 
 public class FloorSystem {
 	
@@ -87,7 +87,7 @@ public class FloorSystem {
 					printOutFloorInformation(floor, "A floor destination is chosen");
 					//puts the information of the floor event into a packet and sends it to the scheduler
 					byte[] buffer = new byte[]{(byte) 1, direction, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor()};
-					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName("127.0.0.1"), FLOOR_PORT);
+					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName(SCHED_IP_ADDRESS), FLOOR_PORT);
 					datagramSocket.send(packet);
 					return true;
 				}
