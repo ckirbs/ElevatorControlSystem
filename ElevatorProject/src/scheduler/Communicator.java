@@ -76,7 +76,7 @@ public class Communicator {
 	 */
 	private synchronized boolean processConfirmation(byte yesNoVal, byte floorNum, byte elevatorNum) {
 		if (yesNoVal == NO) {
-			deniedReqs.add(new byte[] {NEW_ELEVATOR_DESTINATION, VOLUNTARY, floorNum, elevatorNum});
+			deniedReqs.add(new byte[] {NEW_ELEVATOR_DESTINATION, VOLUNTARY, floorNum, elevatorNum, (byte) 0});
 			return false;
 		}
 		
@@ -114,7 +114,8 @@ public class Communicator {
 				byte[] destMsg = new byte[MESSAGE_LENGTH];
 				destMsg[0] = NEW_ELEVATOR_DESTINATION;
 				destMsg[1] = MANDATORY;
-				destMsg[3] = (byte) 0;
+				destMsg[3] = (byte) 0; // elevator number
+				destMsg[4] = (byte) 0; // Direction (not used atm)
 				
 				for (int i: tempSet) {
 					destMsg[2] = (byte) i;
@@ -149,8 +150,9 @@ public class Communicator {
 		message[1] = VOLUNTARY;
 		message[2] = origFloor;
 		message[3] = (byte) 0; //elevator id
+		message[4] = dir;
 		
-		System.out.println("Sending elevator new destination: " + (int) origFloor);
+		System.out.println("Sending elevator new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
 		
 		try {
 			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);

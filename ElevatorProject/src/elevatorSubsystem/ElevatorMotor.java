@@ -46,13 +46,13 @@ public class ElevatorMotor extends Thread {
 					System.out.println("Elevator " + elv.getElvNumber() + " is on StandBy");
 					previousElvState = currentElvState;
 				}
-				if (!elv.isPriorityQueueEmpty()) { // Check if there is a floor to service
+				if (!elv.isServiceListEmpty()) { // Check if there is a floor to service
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.DOOR_CLOSE;
 				}
 				break;
 			case MOVE:
-	    	    System.out.println("Elevator " + elv.getElvNumber() + " Current Service List: " + elv.getServiceScheduleQueue().toString());
+	    	    System.out.println("Elevator " + elv.getElvNumber() + " Current Service List: " + elv.getServiceList().toString());
 				if (elv.getCurrFloorPosition() == elv.getFloorDestionation()) { // Arrived at destination floor
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.STOP;
@@ -119,6 +119,13 @@ public class ElevatorMotor extends Thread {
 	 * from service queue
 	 */
 	private synchronized void serviceFloor() {
-		elv.removeFromPassengerButtons(elv.pollServiceQueue());
+		elv.droppedPassengerOff();
+		elv.removeFromPassengerButtons(elv.getCurrFloorPosition());
+		try {
+			Thread.sleep(Constants.ELEVATOR_STOP_TIME);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

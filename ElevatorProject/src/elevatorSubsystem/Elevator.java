@@ -3,7 +3,8 @@ package elevatorSubsystem;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.PriorityBlockingQueue;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import resources.Directions;
 import resources.Message;
@@ -17,15 +18,15 @@ public class Elevator {
 
 	private final Integer elvNumber;
 	private boolean isDoorOpen;
-	private Integer currFloorPosition, floorDestionation;
-	private PriorityBlockingQueue<Integer> serviceScheduleQueue;
+	private Integer currFloorPosition, floorDestination;
+	private SortedSet<Integer> upList; 
+	private SortedSet<Integer> downList; 
+	private SortedSet<Integer> currentServiceList; 
 	private Set<Integer> elevatorPassengerButtons;
 	private Directions status;
 
 	private ElevatorMotor motor;
 	private ElevatorReciever elvReceieve;
-
-	private Comparator<Integer> floorComparator = (Integer a, Integer b) -> a.compareTo(b);
 
 	// TODO Two/Three threads are necessary for the function of the elevator
 	// -- One Responsible for the travel of the elevator (traveling between
@@ -41,10 +42,12 @@ public class Elevator {
 		this.elvNumber = elvNumber;
 
 		isDoorOpen = false;
-		floorDestionation = null;
+		floorDestination = null;
 		currFloorPosition = 0;
 		elevatorPassengerButtons = new HashSet<Integer>();
-		serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator);
+		upList = new TreeSet<Integer>();
+		downList = new TreeSet<Integer>();
+		currentServiceList = upList;
 		status = Directions.STANDBY;
 
 		motor.start();
@@ -57,8 +60,38 @@ public class Elevator {
 	 *         in the serviceQueue
 	 */
 	public synchronized boolean updateFloorToService() {
-		if (!serviceScheduleQueue.isEmpty()) {
-			floorDestionation = serviceScheduleQueue.peek();
+		if (!upList.isEmpty() || !downList.isEmpty()){
+			System.out.println("UPLIST: " + upList.toString());
+			System.out.println("DOWNLIST: " + downList.toString());
+			boolean serviceUpList = true;
+			if (status == Directions.UP){ // If direction is up
+				if (! upList.subSet(currFloorPosition, MAX_FLOOR  + 1).isEmpty()){ // There is stuff to service above the current floor keep going
+					floorDestination = upList.subSet(currFloorPosition, MAX_FLOOR  + 1).first();
+				} else if (! downList.isEmpty()) { // If these isn't up requests above us check to see if there are down requests
+					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last(); // Start at the top and work down
+					serviceUpList = false;
+				} else { // Still must be some up requests from lower floors
+					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).first(); // Start at the bottom and go up
+				}
+			} else if (status == Directions.DOWN) {
+				if (! downList.subSet(MIN_FLOOR, currFloorPosition  + 1).isEmpty()) {// There is down services below us
+					floorDestination = downList.subSet(MIN_FLOOR, currFloorPosition  + 1).last(); 
+					serviceUpList = false;
+				} else if (! upList.isEmpty()){ // IF there aren't down requests below us check for up requests
+					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).first(); // Start service at the lowest up floor
+				} else { // still down floors to service above the currentFloorPosition
+					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last(); // Start at top and go down
+					serviceUpList = false;
+				}
+			} else { // status == Directions.STANDBY
+				if (! upList.isEmpty()) {
+					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR + 1).first();
+				} else {
+					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last();
+					serviceUpList = false;
+				}
+			}
+			setCurrentServiceList(serviceUpList);
 			updateDirection();
 			return true;
 		} else {
@@ -73,24 +106,17 @@ public class Elevator {
 	 * current service.
 	 */
 	public synchronized void updateDirection() {
-		PriorityBlockingQueue<Integer> temp;
-		//System.out.println("Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestionation);
-		if (currFloorPosition < floorDestionation) {
+		System.out.println("Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestination);
+		
+		if (currFloorPosition < floorDestination){
 			if (status != Directions.UP) {
-				temp = serviceScheduleQueue;
 				status = Directions.UP;
-				serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator);
-				serviceScheduleQueue.addAll(temp);
-			}
-		} else if (currFloorPosition > floorDestionation) {
+			}	
+		}else if (currFloorPosition > floorDestination){
 			if (status != Directions.DOWN) {
-				temp = serviceScheduleQueue;
 				status = Directions.DOWN;
-				serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY,
-						floorComparator.reversed());
-				serviceScheduleQueue.addAll(temp);
 			}
-		}
+		} 
 	}
 
 	/**
@@ -121,6 +147,18 @@ public class Elevator {
 			return true;
 		}
 	}
+	
+	public synchronized SortedSet<Integer> getServiceList(){
+		return currentServiceList;
+	}
+	
+	public void setCurrentServiceList(boolean isUpList){
+		if (isUpList){
+			currentServiceList = upList;
+		} else {
+			currentServiceList = downList;
+		}
+	}
 
 	public void moveUp() {
 		currFloorPosition++;
@@ -146,21 +184,44 @@ public class Elevator {
 		elevatorPassengerButtons.remove(floor);
 	}
 
-	public void addToServiceQueue(int floor) {
-		serviceScheduleQueue.add(floor);
+	/**
+	 *  addToServiceList - Adds floor to the serviceList based on the direction 
+	 *  specified (if no direction is specified, add to list based on relation
+	 *  to current floor)
+	 *  * External request from floor
+	 * @param floor: floor requested
+	 * @param direction: direction of request
+	 */
+	public synchronized void addToServiceList(int floor, Directions direction){
+		if (direction == Directions.UP){
+			upList.add(floor);
+		} else if (direction == Directions.DOWN){
+			downList.add(floor);
+		} else {
+			if (currFloorPosition < floor){
+				upList.add(floor);
+			} else {
+				downList.add(floor);
+			}
+		}
+	}
+	
+	/*
+	 * userSelectsFloor - Add to list based on relation to current floor)
+	 * *Pressed by user inside of the elevator
+	 * @param floor: floor requested
+	 */
+	public synchronized void userSelectsFloor (int floor){
+		if (currFloorPosition < floor){
+			upList.add(floor);
+		} else {
+			downList.add(floor);
+		}
 	}
 
-	public int pollServiceQueue() {
-		int floorVal = serviceScheduleQueue.poll();
-		if (floorVal != currFloorPosition) {
-			serviceScheduleQueue.add(floorVal);
-			floorVal =  currFloorPosition;
-		}
-		
-		while (serviceScheduleQueue.contains(floorVal)) {
-			serviceScheduleQueue.remove(floorVal);
-		}
-		return floorVal;
+	public synchronized void droppedPassengerOff(){
+		upList.remove(currFloorPosition);
+		downList.remove(currFloorPosition);
 	}
 
 	/**
@@ -246,15 +307,11 @@ public class Elevator {
 	}
 
 	public Integer getFloorDestionation() {
-		return floorDestionation;
+		return floorDestination;
 	}
 
-	public PriorityBlockingQueue<Integer> getServiceScheduleQueue() {
-		return serviceScheduleQueue;
-	}
-
-	public Boolean isPriorityQueueEmpty() {
-		return (getServiceScheduleQueue().isEmpty());
+	public synchronized boolean isServiceListEmpty() {
+		return (downList.isEmpty() && upList.isEmpty());
 	}
 
 	public Set<Integer> getElevatorPassengerButtons() {

@@ -8,8 +8,8 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
-import resources.Constants;
-import resources.Message;
+import resources.Directions;
+import static resources.Constants.*;
 
 /**
  * ElevatorReceiver Responsible for receiving, interpreting, and assigning
@@ -33,7 +33,7 @@ public class ElevatorReciever {
 		}
 
 		try {
-			schedulerSocket = new DatagramSocket(Constants.ELEVATOR_PORT);
+			schedulerSocket = new DatagramSocket(ELEVATOR_PORT);
 		} catch (SocketException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +43,7 @@ public class ElevatorReciever {
 		byte[] buffer;
 		DatagramPacket packet;
 		while (true) {
-			buffer = new byte[4];
+			buffer = new byte[MESSAGE_LENGTH];
 			packet = new DatagramPacket(buffer, buffer.length);
 			try {
 				schedulerSocket.receive(packet);
@@ -70,24 +70,26 @@ public class ElevatorReciever {
 		int reqType = (int) msg[1];
 		int floorReq = (int) msg[2];
 		int elvNum = (int) msg[3];
+		int dirReq = (int) msg[4];
 
-		if (scenerio == Constants.NEW_ELEVATOR_DESTINATION) {
+		if (scenerio == NEW_ELEVATOR_DESTINATION) {
 			// New floor request
-			if (reqType == Constants.VOLUNTARY) {
+			if (reqType == VOLUNTARY) {
 				// Voluntary Dest
 				if (elevators.get(elvNum).canServiceCall(floorReq)) {
 					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
-					addFloorToService(elvNum, floorReq);
+					addFloorToService(elvNum, floorReq, Directions.getDirByInt(dirReq));
 				} else {
 					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq), packet.getPort());
 				}
-			} else if (reqType == Constants.MANDATORY) {
+			} else if (reqType == MANDATORY) {
 				// Mandatory
 				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
-				addFloorToService(elvNum, floorReq);
+				// Only works if Mandatory means inside elevator request
+				userSelectFloorToService(elvNum, floorReq); 
 				elevators.get(elvNum).addToPassengerButtons(floorReq);
 			}
-		} else if (reqType == Constants.ELEVATOR_INFO_REQUEST) {
+		} else if (reqType == ELEVATOR_INFO_REQUEST) {
 			sendResponse(elevators.get(elvNum).generateSatusMsg(), packet.getPort());
 		}
 	}
@@ -99,8 +101,20 @@ public class ElevatorReciever {
 	 * 
 	 * @param floor containing calling floor and
 	 */
-	public synchronized void addFloorToService(Integer elevatorNumber, Integer floor) {
-		elevators.get(elevatorNumber).addToServiceQueue(floor);
+	public synchronized void addFloorToService(Integer elevatorNumber, Integer floor, Directions direction) {
+		elevators.get(elevatorNumber).addToServiceList(floor, direction);
+		elevators.get(elevatorNumber).updateFloorToService();
+	}
+	
+	/**
+	 * userSelectFloorToService() adds request to the serviceList, calls select floor
+	 * for adding the floor to the correct serviceList
+	 * 
+	 * @param  elevatorNumber: the elevator that is servicing the request
+	 * @param  floor: the floor the user wants to go to
+	 */
+	public synchronized void userSelectFloorToService(Integer elevatorNumber, Integer floor) {
+		elevators.get(elevatorNumber).userSelectsFloor(floor);
 		elevators.get(elevatorNumber).updateFloorToService();
 	}
 
