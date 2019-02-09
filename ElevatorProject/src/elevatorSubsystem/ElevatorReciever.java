@@ -114,7 +114,7 @@ public class ElevatorReciever {
 		DatagramPacket packet;
 
 		try {
-			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), messagePort);
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName(Constants.SCHED_IP_ADDRESS), messagePort);
 			schedulerSocket.send(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -130,7 +130,7 @@ public class ElevatorReciever {
 	private synchronized void sendResponse(byte[] msg, int port) {
 		DatagramPacket packet;
 		try {
-			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), port);
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName(Constants.SCHED_IP_ADDRESS), port);
 			schedulerSocket.send(packet);
 		} catch (Exception e) {
 			// Failed generating response

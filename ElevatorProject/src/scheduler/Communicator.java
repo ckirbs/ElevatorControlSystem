@@ -101,7 +101,7 @@ public class Communicator {
 			
 			System.out.println(((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
-			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getLocalHost(), floorPort);
+			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(FLOOR_SYS_IP_ADDRESS), floorPort);
 			floorSocket.send(packet);
 			
 			if (openClose == OPEN) {
@@ -118,7 +118,7 @@ public class Communicator {
 				
 				for (int i: tempSet) {
 					destMsg[2] = (byte) i;
-					pckt = new DatagramPacket(destMsg, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);
+					pckt = new DatagramPacket(destMsg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
 					elevatorSocket.send(pckt);
 				}
 			}
@@ -153,7 +153,7 @@ public class Communicator {
 		System.out.println("Sending elevator new destination: " + (int) origFloor);
 		
 		try {
-			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);
+			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
 			elevatorSocket.send(pckt);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -170,7 +170,7 @@ public class Communicator {
 		for (byte[] msg: deniedReqs) {
 			DatagramPacket pckt;
 			try {
-				pckt = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getLocalHost(), ELEVATOR_PORT);
+				pckt = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
 				elevatorSocket.send(pckt);
 			} catch (IOException e) {
 				e.printStackTrace();
