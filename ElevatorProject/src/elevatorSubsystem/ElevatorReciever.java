@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import resources.Constants;
-import resources.Message;
 
 /**
  * ElevatorReceiver Responsible for receiving, interpreting, and assigning

@@ -1,11 +1,12 @@
 package test.scheduler;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.After;
 import org.junit.Test;
 
 import resources.Directions;
 import scheduler.Dispatcher;
-import static org.junit.Assert.*;
 
 public class DispatcherTest {
 	private Dispatcher dispatcher;

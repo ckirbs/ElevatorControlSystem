@@ -1,6 +1,8 @@
 package scheduler;
 
-import static resources.Constants.*;
+import static resources.Constants.FLOOR_PORT;
+import static resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.NUMBER_OF_FLOORS;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

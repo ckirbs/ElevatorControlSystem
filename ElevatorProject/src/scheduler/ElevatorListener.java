@@ -1,12 +1,11 @@
 package scheduler;
 
+import static resources.Constants.MESSAGE_LENGTH;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-
-import static resources.Constants.ELEVATOR_PORT;
-import static resources.Constants.MESSAGE_LENGTH;
 
 /**
  * An object to listen to the elevator system and deal with any received messages

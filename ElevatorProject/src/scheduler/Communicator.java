@@ -1,16 +1,25 @@
 package scheduler;
 
+import static resources.Constants.CONFIRM_VOL_DESTINATION;
+import static resources.Constants.ELEVATOR_PORT;
+import static resources.Constants.MANDATORY;
+import static resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.NEW_ELEVATOR_DESTINATION;
+import static resources.Constants.NEW_REQUEST_FROM_FLOOR;
+import static resources.Constants.NO;
+import static resources.Constants.OPEN;
+import static resources.Constants.OPEN_CLOSE_DOOR;
+import static resources.Constants.STATUS_REPORT;
+import static resources.Constants.VOLUNTARY;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
-import scheduler.Dispatcher;
-import static resources.Constants.*;
 import resources.Directions;
 
 /**

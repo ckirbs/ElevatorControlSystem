@@ -1,9 +1,12 @@
 package test.resources;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import resources.Directions;
-import static org.junit.Assert.*;
 
 public class DirectionsTest {
 	

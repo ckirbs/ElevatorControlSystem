@@ -1,10 +1,11 @@
 package scheduler;
 
-import java.util.ArrayList;
-import java.time.LocalTime;
+import static resources.Constants.NUMBER_OF_ELEVATORS;
+import static resources.Constants.NUMBER_OF_FLOORS;
 
-import resources.*;
-import static resources.Constants.*;
+import java.util.ArrayList;
+
+import resources.Directions;
 
 /**
  * Dispatcher class to take care of requests from floors and choose the correct elevator

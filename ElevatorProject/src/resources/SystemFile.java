@@ -1,15 +1,15 @@
 package resources;
 
+import static resources.Constants.HIGHEST_FLOOR;
+import static resources.Constants.LOWEST_FLOOR;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.regex.PatternSyntaxException;
-
-import static resources.Constants.LOWEST_FLOOR;
-import static resources.Constants.HIGHEST_FLOOR;;
+import java.util.regex.PatternSyntaxException;;
 
 /*
  * SystemFile - Responsible for validating each line in the systems input file.

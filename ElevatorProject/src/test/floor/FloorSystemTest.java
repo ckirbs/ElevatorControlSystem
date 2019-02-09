@@ -1,13 +1,15 @@
 package test.floor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import floorSubsystem.*;
+import floorSubsystem.Floor;
+import floorSubsystem.FloorSystem;
 
 public class FloorSystemTest {
 	

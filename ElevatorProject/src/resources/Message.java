@@ -1,8 +1,8 @@
 package resources;
 
 import java.time.LocalTime;
-import java.util.Queue;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /*
  * Message - Responsible for creating all of the users requests

@@ -5,9 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import resources.Directions;
-import resources.Message;
 import resources.Constants;
+import resources.Directions;
 
 public class Elevator {
 
@@ -18,7 +17,7 @@ public class Elevator {
 	private final Integer elvNumber;
 	private boolean isDoorOpen;
 	private Integer currFloorPosition, floorDestionation;
-	private PriorityBlockingQueue<Integer> serviceScheduleQueue;
+	private PriorityBlockingQueue<Integer> primaryScheduleQueue, secondaryScheduleQueue;
 	private Set<Integer> elevatorPassengerButtons;
 	private Directions status;
 
@@ -44,7 +43,8 @@ public class Elevator {
 		floorDestionation = null;
 		currFloorPosition = 0;
 		elevatorPassengerButtons = new HashSet<Integer>();
-		serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator);
+		primaryScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator);
+		secondaryScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator.reversed());
 		status = Directions.STANDBY;
 
 		motor.start();
@@ -57,10 +57,13 @@ public class Elevator {
 	 *         in the serviceQueue
 	 */
 	public synchronized boolean updateFloorToService() {
-		if (!serviceScheduleQueue.isEmpty()) {
-			floorDestionation = serviceScheduleQueue.peek();
+		if (!primaryScheduleQueue.isEmpty()) {
+			floorDestionation = primaryScheduleQueue.peek();
 			updateDirection();
 			return true;
+		}else if (!secondaryScheduleQueue.isEmpty()) {
+			swapServiceQueues();
+			return updateFloorToService(); //@TODO Should this logic be reworked? Swaps the Queues and grabs the next floor to service
 		} else {
 			// No floors to service, wait to receive request
 			status = Directions.STANDBY;
@@ -77,18 +80,18 @@ public class Elevator {
 		//System.out.println("Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestionation);
 		if (currFloorPosition < floorDestionation) {
 			if (status != Directions.UP) {
-				temp = serviceScheduleQueue;
+				temp = primaryScheduleQueue;
 				status = Directions.UP;
-				serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator);
-				serviceScheduleQueue.addAll(temp);
+				primaryScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY, floorComparator);
+				primaryScheduleQueue.addAll(temp);
 			}
 		} else if (currFloorPosition > floorDestionation) {
 			if (status != Directions.DOWN) {
-				temp = serviceScheduleQueue;
+				temp = primaryScheduleQueue;
 				status = Directions.DOWN;
-				serviceScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY,
+				primaryScheduleQueue = new PriorityBlockingQueue<Integer>(MAX_SERVICE_QUEUE_CAPACITY,
 						floorComparator.reversed());
-				serviceScheduleQueue.addAll(temp);
+				primaryScheduleQueue.addAll(temp);
 			}
 		}
 	}
@@ -121,6 +124,16 @@ public class Elevator {
 			return true;
 		}
 	}
+	
+	/**
+	 * swapServiceQueue() swap the primary queue with the secondary queue 
+	 * (Elevator will change directions)
+	 */
+	private void swapServiceQueues() {
+		PriorityBlockingQueue<Integer> tempQueue = primaryScheduleQueue;
+		primaryScheduleQueue = secondaryScheduleQueue;
+		secondaryScheduleQueue = tempQueue;
+	}
 
 	public void moveUp() {
 		currFloorPosition++;
@@ -147,18 +160,23 @@ public class Elevator {
 	}
 
 	public void addToServiceQueue(int floor) {
-		serviceScheduleQueue.add(floor);
+		if(canServiceCall(floor)) {
+			primaryScheduleQueue.add(floor);
+		}else {
+			secondaryScheduleQueue.add(floor);
+		}
 	}
 
+	//@TODO This fcn should not be doing this. Poll should only be removing
 	public int pollServiceQueue() {
-		int floorVal = serviceScheduleQueue.poll();
+		int floorVal = primaryScheduleQueue.poll();
 		if (floorVal != currFloorPosition) {
-			serviceScheduleQueue.add(floorVal);
+			primaryScheduleQueue.add(floorVal);
 			floorVal =  currFloorPosition;
 		}
 		
-		while (serviceScheduleQueue.contains(floorVal)) {
-			serviceScheduleQueue.remove(floorVal);
+		while (primaryScheduleQueue.contains(floorVal)) {
+			primaryScheduleQueue.remove(floorVal);
 		}
 		return floorVal;
 	}
@@ -250,7 +268,7 @@ public class Elevator {
 	}
 
 	public PriorityBlockingQueue<Integer> getServiceScheduleQueue() {
-		return serviceScheduleQueue;
+		return primaryScheduleQueue;
 	}
 
 	public Boolean isPriorityQueueEmpty() {
