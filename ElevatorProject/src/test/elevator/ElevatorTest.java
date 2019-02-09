@@ -66,7 +66,7 @@ public class ElevatorTest {
 	public void testAddToServiceQueue() {
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
-			elvRec.addFloorToService(elv.getElvNumber(), 10);
+			elvRec.addFloorToService(elv.getElvNumber(), 10, Directions.UP);
 			assertEquals("Elevator " + elv.getElvNumber() + " should have destionation 10", 10,
 					(int) elv.getFloorDestionation());
 		}
@@ -79,7 +79,7 @@ public class ElevatorTest {
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
 			
-			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10, (byte) (int) elv.getElvNumber() };
+			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10, (byte) (int) elv.getElvNumber(), (byte) Directions.getIntByDir(Directions.UP) };
 			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), Constants.ELEVATOR_PORT);
 			
 			elvRec.processSchedulerMsg(packet);
@@ -93,7 +93,7 @@ public class ElevatorTest {
 		byte[] msg;
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
-			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, -1, (byte) (int) elv.getElvNumber() };
+			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, -1, (byte) (int) elv.getElvNumber(), (byte) Directions.getIntByDir(Directions.UP) };
 			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), Constants.ELEVATOR_PORT);
 			
 			elvRec.processSchedulerMsg(packet);
@@ -110,7 +110,7 @@ public class ElevatorTest {
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
 			
-			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.MANDATORY, 10, (byte) (int) elv.getElvNumber() };
+			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.MANDATORY, 10, (byte) (int) elv.getElvNumber(), (byte) Directions.getIntByDir(Directions.UP) };
 			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), Constants.ELEVATOR_PORT);
 			
 			elvRec.processSchedulerMsg(packet);
