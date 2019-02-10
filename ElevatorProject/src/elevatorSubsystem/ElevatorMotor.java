@@ -119,7 +119,7 @@ public class ElevatorMotor extends Thread {
 	 * from service queue
 	 */
 	private synchronized void serviceFloor() {
-		elv.droppedPassengerOff();
+		elv.serviceFloor();
 		elv.removeFromPassengerButtons(elv.getCurrFloorPosition());
 		try {
 			Thread.sleep(Constants.ELEVATOR_STOP_TIME);
