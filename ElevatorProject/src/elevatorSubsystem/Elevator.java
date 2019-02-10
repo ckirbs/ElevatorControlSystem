@@ -63,32 +63,32 @@ public class Elevator {
 		if (!upList.isEmpty() || !downList.isEmpty()){
 			System.out.println("UPLIST: " + upList.toString());
 			System.out.println("DOWNLIST: " + downList.toString());
-			boolean serviceUpList = true;
+			Directions serviceUpList = Directions.UP;
 			if (status == Directions.UP){ // If direction is up
 				if (! upList.subSet(currFloorPosition, MAX_FLOOR  + 1).isEmpty()){ // There is stuff to service above the current floor keep going
 					floorDestination = upList.subSet(currFloorPosition, MAX_FLOOR  + 1).first();
 				} else if (! downList.isEmpty()) { // If these isn't up requests above us check to see if there are down requests
 					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last(); // Start at the top and work down
-					serviceUpList = false;
+					serviceUpList = Directions.DOWN;
 				} else { // Still must be some up requests from lower floors
 					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).first(); // Start at the bottom and go up
 				}
 			} else if (status == Directions.DOWN) {
 				if (! downList.subSet(MIN_FLOOR, currFloorPosition  + 1).isEmpty()) {// There is down services below us
 					floorDestination = downList.subSet(MIN_FLOOR, currFloorPosition  + 1).last(); 
-					serviceUpList = false;
+					serviceUpList = Directions.UP;
 				} else if (! upList.isEmpty()){ // IF there aren't down requests below us check for up requests
 					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).first(); // Start service at the lowest up floor
 				} else { // still down floors to service above the currentFloorPosition
 					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last(); // Start at top and go down
-					serviceUpList = false;
+					serviceUpList = Directions.UP;
 				}
 			} else { // status == Directions.STANDBY
 				if (! upList.isEmpty()) {
 					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR + 1).first();
 				} else {
 					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last();
-					serviceUpList = false;
+					serviceUpList = Directions.UP;
 				}
 			}
 			setCurrentServiceList(serviceUpList);
@@ -152,8 +152,8 @@ public class Elevator {
 		return currentServiceList;
 	}
 	
-	public void setCurrentServiceList(boolean isUpList){
-		if (isUpList){
+	public void setCurrentServiceList(Directions direction){
+		if (direction == Directions.UP){
 			currentServiceList = upList;
 		} else {
 			currentServiceList = downList;
@@ -206,20 +206,24 @@ public class Elevator {
 		}
 	}
 	
-	/*
-	 * userSelectsFloor - Add to list based on relation to current floor)
+	/**
+	 * addToServiceList - Add to list based on relation to current floor)
 	 * *Pressed by user inside of the elevator
-	 * @param floor: floor requested
+	 *
+	 * @param  floor: floor requested
 	 */
-	public synchronized void userSelectsFloor (int floor){
+	public synchronized void addToServiceList(int floor){
 		if (currFloorPosition < floor){
 			upList.add(floor);
 		} else {
 			downList.add(floor);
 		}
 	}
-
-	public synchronized void droppedPassengerOff(){
+	
+	/**
+	 * serviceFloor - Services the floor, removing it from the queue
+	 */
+	public synchronized void serviceFloor(){
 		upList.remove(currFloorPosition);
 		downList.remove(currFloorPosition);
 	}

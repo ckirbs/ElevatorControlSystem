@@ -86,7 +86,7 @@ public class ElevatorReciever {
 				// Mandatory
 				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
 				// Only works if Mandatory means inside elevator request
-				userSelectFloorToService(elvNum, floorReq); 
+				addFloorToService(elvNum, floorReq); 
 				elevators.get(elvNum).addToPassengerButtons(floorReq);
 			}
 		} else if (reqType == ELEVATOR_INFO_REQUEST) {
@@ -107,14 +107,14 @@ public class ElevatorReciever {
 	}
 	
 	/**
-	 * userSelectFloorToService() adds request to the serviceList, calls select floor
+	 * addFloorToService() adds request to the serviceList, calls select floor
 	 * for adding the floor to the correct serviceList
 	 * 
 	 * @param  elevatorNumber: the elevator that is servicing the request
 	 * @param  floor: the floor the user wants to go to
 	 */
-	public synchronized void userSelectFloorToService(Integer elevatorNumber, Integer floor) {
-		elevators.get(elevatorNumber).userSelectsFloor(floor);
+	public synchronized void addFloorToService(Integer elevatorNumber, Integer floor) {
+		elevators.get(elevatorNumber).addToServiceList(floor);
 		elevators.get(elevatorNumber).updateFloorToService();
 	}
 
