@@ -1,5 +1,13 @@
 package elevatorSubsystem;
 
+import static resources.Constants.ELEVATOR_INFO_REQUEST;
+import static resources.Constants.ELEVATOR_PORT;
+import static resources.Constants.MANDATORY;
+import static resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.NEW_ELEVATOR_DESTINATION;
+import static resources.Constants.SCHED_IP_ADDRESS;
+import static resources.Constants.VOLUNTARY;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -9,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import resources.Directions;
-import static resources.Constants.*;
 
 /**
  * ElevatorReceiver Responsible for receiving, interpreting, and assigning

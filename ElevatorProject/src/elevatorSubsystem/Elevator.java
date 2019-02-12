@@ -1,14 +1,12 @@
 package elevatorSubsystem;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import resources.Directions;
-import resources.Message;
 import resources.Constants;
+import resources.Directions;
 
 public class Elevator {
 
@@ -19,9 +17,9 @@ public class Elevator {
 	private final Integer elvNumber;
 	private boolean isDoorOpen;
 	private Integer currFloorPosition, floorDestination;
-	private SortedSet<Integer> upList; 
-	private SortedSet<Integer> downList; 
-	private SortedSet<Integer> currentServiceList; 
+	private SortedSet<Integer> upList;
+	private SortedSet<Integer> downList;
+	private SortedSet<Integer> currentServiceList;
 	private Set<Integer> elevatorPassengerButtons;
 	private Directions status;
 
@@ -60,34 +58,38 @@ public class Elevator {
 	 *         in the serviceQueue
 	 */
 	public synchronized boolean updateFloorToService() {
-		if (!upList.isEmpty() || !downList.isEmpty()){
+		if (!upList.isEmpty() || !downList.isEmpty()) {
 			System.out.println("UPLIST: " + upList.toString());
 			System.out.println("DOWNLIST: " + downList.toString());
 			Directions serviceUpList = Directions.UP;
-			if (status == Directions.UP){ // If direction is up
-				if (! upList.subSet(currFloorPosition, MAX_FLOOR  + 1).isEmpty()){ // There is stuff to service above the current floor keep going
-					floorDestination = upList.subSet(currFloorPosition, MAX_FLOOR  + 1).first();
-				} else if (! downList.isEmpty()) { // If these isn't up requests above us check to see if there are down requests
-					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last(); // Start at the top and work down
+			if (status == Directions.UP) { // If direction is up
+				if (!upList.subSet(currFloorPosition, MAX_FLOOR + 1).isEmpty()) { // There is stuff to service above the
+																					// current floor keep going
+					floorDestination = upList.subSet(currFloorPosition, MAX_FLOOR + 1).first();
+				} else if (!downList.isEmpty()) { // If these isn't up requests above us check to see if there are down
+													// requests
+					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR + 1).last(); // Start at the top and work
+																							// down
 					serviceUpList = Directions.DOWN;
 				} else { // Still must be some up requests from lower floors
-					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).first(); // Start at the bottom and go up
+					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR + 1).first(); // Start at the bottom and go up
 				}
 			} else if (status == Directions.DOWN) {
-				if (! downList.subSet(MIN_FLOOR, currFloorPosition  + 1).isEmpty()) {// There is down services below us
-					floorDestination = downList.subSet(MIN_FLOOR, currFloorPosition  + 1).last(); 
+				if (!downList.subSet(MIN_FLOOR, currFloorPosition + 1).isEmpty()) {// There is down services below us
+					floorDestination = downList.subSet(MIN_FLOOR, currFloorPosition + 1).last();
 					serviceUpList = Directions.UP;
-				} else if (! upList.isEmpty()){ // IF there aren't down requests below us check for up requests
-					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).first(); // Start service at the lowest up floor
+				} else if (!upList.isEmpty()) { // IF there aren't down requests below us check for up requests
+					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR + 1).first(); // Start service at the lowest
+																						// up floor
 				} else { // still down floors to service above the currentFloorPosition
-					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last(); // Start at top and go down
+					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR + 1).last(); // Start at top and go down
 					serviceUpList = Directions.UP;
 				}
 			} else { // status == Directions.STANDBY
-				if (! upList.isEmpty()) {
+				if (!upList.isEmpty()) {
 					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR + 1).first();
 				} else {
-					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR  + 1).last();
+					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR + 1).last();
 					serviceUpList = Directions.UP;
 				}
 			}
@@ -107,16 +109,16 @@ public class Elevator {
 	 */
 	public synchronized void updateDirection() {
 		System.out.println("Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestination);
-		
-		if (currFloorPosition < floorDestination){
+
+		if (currFloorPosition < floorDestination) {
 			if (status != Directions.UP) {
 				status = Directions.UP;
-			}	
-		}else if (currFloorPosition > floorDestination){
+			}
+		} else if (currFloorPosition > floorDestination) {
 			if (status != Directions.DOWN) {
 				status = Directions.DOWN;
 			}
-		} 
+		}
 	}
 
 	/**
@@ -147,13 +149,13 @@ public class Elevator {
 			return true;
 		}
 	}
-	
-	public synchronized SortedSet<Integer> getServiceList(){
+
+	public synchronized SortedSet<Integer> getServiceList() {
 		return currentServiceList;
 	}
-	
-	public void setCurrentServiceList(Directions direction){
-		if (direction == Directions.UP){
+
+	public void setCurrentServiceList(Directions direction) {
+		if (direction == Directions.UP) {
 			currentServiceList = upList;
 		} else {
 			currentServiceList = downList;
@@ -185,45 +187,45 @@ public class Elevator {
 	}
 
 	/**
-	 *  addToServiceList - Adds floor to the serviceList based on the direction 
-	 *  specified (if no direction is specified, add to list based on relation
-	 *  to current floor)
-	 *  * External request from floor
+	 * addToServiceList - Adds floor to the serviceList based on the direction
+	 * specified (if no direction is specified, add to list based on relation to
+	 * current floor) * External request from floor
+	 * 
 	 * @param floor: floor requested
 	 * @param direction: direction of request
 	 */
-	public synchronized void addToServiceList(int floor, Directions direction){
-		if (direction == Directions.UP){
+	public synchronized void addToServiceList(int floor, Directions direction) {
+		if (direction == Directions.UP) {
 			upList.add(floor);
-		} else if (direction == Directions.DOWN){
+		} else if (direction == Directions.DOWN) {
 			downList.add(floor);
 		} else {
-			if (currFloorPosition < floor){
+			if (currFloorPosition < floor) {
 				upList.add(floor);
 			} else {
 				downList.add(floor);
 			}
 		}
 	}
-	
+
 	/**
-	 * addToServiceList - Add to list based on relation to current floor)
-	 * *Pressed by user inside of the elevator
+	 * addToServiceList - Add to list based on relation to current floor) *Pressed
+	 * by user inside of the elevator
 	 *
-	 * @param  floor: floor requested
+	 * @param floor: floor requested
 	 */
-	public synchronized void addToServiceList(int floor){
-		if (currFloorPosition < floor){
+	public synchronized void addToServiceList(int floor) {
+		if (currFloorPosition < floor) {
 			upList.add(floor);
 		} else {
 			downList.add(floor);
 		}
 	}
-	
+
 	/**
 	 * serviceFloor - Services the floor, removing it from the queue
 	 */
-	public synchronized void serviceFloor(){
+	public synchronized void serviceFloor() {
 		upList.remove(currFloorPosition);
 		downList.remove(currFloorPosition);
 	}
@@ -235,7 +237,7 @@ public class Elevator {
 	 */
 	public byte[] generateDoorOpenMsg() {
 		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) currFloorPosition,
-				(byte) (int) elvNumber };
+				(byte) (int) elvNumber, (byte) Directions.getIntByDir(getNextDirection())};
 	}
 
 	/**
@@ -245,7 +247,7 @@ public class Elevator {
 	 */
 	public byte[] generateDoorCloseMsg() {
 		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.CLOSE, (byte) (int) currFloorPosition,
-				(byte) (int) elvNumber };
+				(byte) (int) elvNumber, 0 };
 	}
 
 	/**
@@ -254,8 +256,8 @@ public class Elevator {
 	 * @return msg signaling a new floor has been added to service queue
 	 */
 	public byte[] generateAcceptMsg(int floorDest) {
-		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.YES, (byte) floorDest,
-				(byte) (int) elvNumber };
+		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.YES, (byte) floorDest, (byte) (int) elvNumber,
+				0 };
 	}
 
 	/**
@@ -264,7 +266,8 @@ public class Elevator {
 	 * @return msg indicating a voluntary request has been declined by the elevator
 	 */
 	public byte[] generateDeclineMsg(int floorDest) {
-		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.NO, (byte) floorDest, (byte) (int) elvNumber };
+		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.NO, (byte) floorDest, (byte) (int) elvNumber,
+				0 };
 	}
 
 	/**
@@ -275,27 +278,64 @@ public class Elevator {
 	 */
 	byte[] generateSatusMsg() {
 		return new byte[] { Constants.STATUS_REPORT, (byte) Directions.getIntByDir(this.getStatus()),
-				(byte) (int) currFloorPosition, (byte) (int) elvNumber };
+				(byte) (int) currFloorPosition, (byte) (int) elvNumber, 0 };
 	}
 
 	/**
-	 * generateOpenMsg() generates a msg indicating the elevator is opening it's doors
+	 * generateOpenMsg() generates a msg indicating the elevator is opening it's
+	 * doors
 	 * 
 	 * @return msg containing elevator number and position, and doorOpenRequest
 	 */
 	byte[] generateOpenMsg() {
 		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.OPEN, (byte) (int) currFloorPosition,
-				(byte) (int) elvNumber };
+				(byte) (int) elvNumber, 0 };
 	}
 
 	/**
-	 * generateOpenMsg() generates a msg indicating the elevator is closing it's doors
+	 * generateCloseMsg() generates a msg indicating the elevator is closing it's
+	 * doors
 	 * 
 	 * @return msg containing elevator number and position, and doorCloseRequest
 	 */
 	byte[] generateCloseMsg() {
 		return new byte[] { Constants.OPEN_CLOSE_DOOR, Constants.CLOSE, (byte) (int) currFloorPosition,
-				(byte) (int) elvNumber };
+				(byte) (int) elvNumber, 0 };
+	}
+	
+	private Directions getNextDirection() {
+		Integer nextFloor = null;
+		if (currentServiceList.size() > 1) {
+			// There are currently more floors in the ServiceList, the elevator will
+			// continue to travel in the given direction
+			return status;
+		} else {
+			// The current floor is the only floor in the current service list
+			if (currentServiceList == upList) {
+				if (!downList.isEmpty()) { // If there aren't up requests above us check to see if there are any down
+											// requests
+					nextFloor = downList.subSet(MIN_FLOOR, currFloorPosition + 1).last();
+					if (nextFloor > currFloorPosition) {
+						return Directions.UP;
+					} else {
+						return Directions.DOWN;
+					}
+
+				} else {
+					if (!upList.isEmpty()) { // If there aren't up requests above us check to see if there are any up
+												// requests
+						nextFloor = upList.subSet(MIN_FLOOR, currFloorPosition + 1).first();
+						if (nextFloor < currFloorPosition) {
+							return Directions.DOWN;
+						} else {
+							return Directions.UP;
+						}
+					}
+				}
+			}
+		}
+		//Both ServiceLists are empty, the elevator will remain stationary
+		return Directions.STANDBY;
 	}
 
 	public Integer getElvNumber() {
