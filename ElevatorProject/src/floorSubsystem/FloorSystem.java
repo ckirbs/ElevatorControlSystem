@@ -22,6 +22,7 @@ import resources.*;
 import static resources.Constants.FLOOR_PORT;
 import static resources.Constants.HIGHEST_FLOOR;
 import static resources.Constants.SCHED_IP_ADDRESS;
+import static resources.Constants.MESSAGE_LENGTH;
 
 public class FloorSystem {
 	
@@ -103,7 +104,7 @@ public class FloorSystem {
 		byte[] buffer;
 		DatagramPacket packet;
 		while (true) {
-			buffer = new byte[4];
+			buffer = new byte[MESSAGE_LENGTH];
 			packet = new DatagramPacket(buffer, buffer.length);
 			try {
 				//wait to receive a packet from the scheduler
