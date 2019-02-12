@@ -37,7 +37,7 @@ public class Floor {
 	 * @param floor  the floor to remove from the list of floors that were pressed
 	 */
 	public void removeFloorButtonPressed(int floor) {
-		floorDestinationButtonsPressed.remove(new Integer(floor));
+		floorDestinationButtonsPressed.remove(Integer.valueOf(floor));
 	}
 	
 	/**
