@@ -321,7 +321,7 @@ public class Elevator {
 						return Directions.DOWN;
 					}
 
-				} else if (currentServiceList == downList) {
+				} else {
 					if (!upList.isEmpty()) { // If there aren't up requests above us check to see if there are any up
 												// requests
 						nextFloor = upList.subSet(MIN_FLOOR, currFloorPosition + 1).first();
