@@ -31,7 +31,7 @@ public class Communicator {
 	private static int currReqId;
 	
 	public Communicator() {
-		Communicator.currReqId = 0;
+		Communicator.currReqId = 1;
 	}
 	
 	/**
@@ -65,6 +65,7 @@ public class Communicator {
 	 * @return
 	 */
 	private boolean processStatusReport(byte dir, byte floorNum, byte elevatorNum) {
+		System.out.println("Updating status of elev " + (int) elevatorNum);
 		return Communicator.dispatcher.updateElevatorInfo((int) elevatorNum, Directions.getDirByInt((int) dir) , (int) floorNum);
 	}
 
@@ -77,15 +78,17 @@ public class Communicator {
 	 * @return
 	 */
 	private boolean processConfirmation(byte yesNoVal, byte floorNum, byte elevatorNum, byte id) {
+		if (id == (byte) 0) return true;
+		
 		byte[] req = null;
 		synchronized (pendingReqs) {
 			for (byte[] b: pendingReqs) {
 				if (b[0] == id) {
 					req = b;
-					pendingReqs.remove(b);
 					break;
 				}
 			}
+			pendingReqs.remove(req);
 		}
 		
 		if (yesNoVal == NO) {
@@ -166,8 +169,6 @@ public class Communicator {
 	 */
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
 		
-		//destinations.get((int) origFloor).add((int) destFloor);
-		
 		byte[] message = new byte[MESSAGE_LENGTH];
 		message[0] = NEW_ELEVATOR_DESTINATION;
 		message[1] = VOLUNTARY;
@@ -175,14 +176,14 @@ public class Communicator {
 		message[4] = dir;
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
-		
-		System.out.println("Sending elevator new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
-		
+				
 		Communicator.updateDispatcher();
 		
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
 		
 		if (elevatorNumber != -1) {
+			System.out.println("Sending elevator " + elevatorNumber + " new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
+			
 			pendingReqs.add(new byte[] {message[5], dir, origFloor, destFloor, (byte) elevatorNumber});
 			try {
 				message[3] = (byte) elevatorNumber;
@@ -203,7 +204,7 @@ public class Communicator {
 		DatagramPacket pckt;
 		
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
-			byte[] msg = new byte[] {ELEVATOR_INFO_REQUEST, (byte) 0, (byte) 0, (byte) i, (byte) 0};
+			byte[] msg = new byte[] {ELEVATOR_INFO_REQUEST, (byte) 0, (byte) 0, (byte) i, (byte) 0, (byte) 0};
 			try {
 				pckt = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
 				elevatorSocket.send(pckt);

@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * An object to listen to the floor system and deal with any received messages
@@ -28,9 +30,11 @@ public class FloorListener extends Communicator implements Runnable {
 		}
 		
 		for (int e = 0; e < NUMBER_OF_ELEVATORS; e++) {
+			ArrayList<Set<Integer>> tempList = new ArrayList<Set<Integer>>();
 			for(int i = 0; i < NUMBER_OF_FLOORS; i++) {
-				destinations.get(e).add(new HashSet<Integer>());
+				tempList.add(new HashSet<Integer>());
 			}
+			Communicator.destinations.add(tempList);
 		}
 	}
 
