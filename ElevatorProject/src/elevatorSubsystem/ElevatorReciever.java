@@ -7,6 +7,7 @@ import static resources.Constants.MESSAGE_LENGTH;
 import static resources.Constants.NEW_ELEVATOR_DESTINATION;
 import static resources.Constants.SCHED_IP_ADDRESS;
 import static resources.Constants.VOLUNTARY;
+import static resources.Constants.NUMBER_OF_ELEVATORS;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -28,7 +29,6 @@ import resources.Directions;
  */
 public class ElevatorReciever {
 
-	private static final int NUMBER_OF_ELEVATORS = 1;
 	private List<Elevator> elevators;
 	private DatagramSocket schedulerSocket;
 	int messagePort;
@@ -38,7 +38,7 @@ public class ElevatorReciever {
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
 			elevators.add(new Elevator(i, this));
 		}
-
+		
 		try {
 			schedulerSocket = new DatagramSocket(ELEVATOR_PORT);
 		} catch (SocketException e) {
@@ -73,30 +73,30 @@ public class ElevatorReciever {
 
 		byte[] msg = packet.getData();
 
-		int scenerio = (int) msg[0];
+		int scenario = (int) msg[0];
 		int reqType = (int) msg[1];
 		int floorReq = (int) msg[2];
 		int elvNum = (int) msg[3];
 		int dirReq = (int) msg[4];
 
-		if (scenerio == NEW_ELEVATOR_DESTINATION) {
+		if (scenario == (int) NEW_ELEVATOR_DESTINATION) {
 			// New floor request
-			if (reqType == VOLUNTARY) {
+			if (reqType == (int) VOLUNTARY) {
 				// Voluntary Dest
 				if (elevators.get(elvNum).canServiceCall(floorReq)) {
-					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
+					sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq, msg[5]), packet.getPort());
 					addFloorToService(elvNum, floorReq, Directions.getDirByInt(dirReq));
 				} else {
-					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq), packet.getPort());
+					sendResponse(elevators.get(elvNum).generateDeclineMsg(floorReq, msg[4]), packet.getPort());
 				}
-			} else if (reqType == MANDATORY) {
+			} else if (reqType == (int) MANDATORY) {
 				// Mandatory
-				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq), packet.getPort());
+				sendResponse(elevators.get(elvNum).generateAcceptMsg(floorReq, (byte) 0), packet.getPort());
 				// Only works if Mandatory means inside elevator request
 				addFloorToService(elvNum, floorReq); 
 				elevators.get(elvNum).addToPassengerButtons(floorReq);
 			}
-		} else if (reqType == ELEVATOR_INFO_REQUEST) {
+		} else if (scenario == (int) ELEVATOR_INFO_REQUEST) {
 			sendResponse(elevators.get(elvNum).generateSatusMsg(), packet.getPort());
 		}
 	}

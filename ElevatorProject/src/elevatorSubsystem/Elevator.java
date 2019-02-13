@@ -255,9 +255,9 @@ public class Elevator {
 	 * 
 	 * @return msg signaling a new floor has been added to service queue
 	 */
-	public byte[] generateAcceptMsg(int floorDest) {
+	public byte[] generateAcceptMsg(int floorDest, byte id) {
 		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.YES, (byte) floorDest, (byte) (int) elvNumber,
-				0 };
+				id };
 	}
 
 	/**
@@ -265,9 +265,9 @@ public class Elevator {
 	 * 
 	 * @return msg indicating a voluntary request has been declined by the elevator
 	 */
-	public byte[] generateDeclineMsg(int floorDest) {
+	public byte[] generateDeclineMsg(int floorDest, byte id) {
 		return new byte[] { Constants.CONFIRM_VOL_DESTINATION, Constants.NO, (byte) floorDest, (byte) (int) elvNumber,
-				0 };
+				id };
 	}
 
 	/**
