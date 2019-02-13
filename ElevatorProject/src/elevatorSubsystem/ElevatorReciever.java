@@ -35,10 +35,8 @@ public class ElevatorReciever {
 
 	public ElevatorReciever() {
 		elevators = new ArrayList<Elevator>();
-		Elevator tempElev;
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
-			tempElev = new Elevator(i, this);
-			elevators.add(tempElev);
+			elevators.add(new Elevator(i, this));
 		}
 		
 		try {
