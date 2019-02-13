@@ -2,26 +2,29 @@ package floorSubsystem;
 
 import java.util.ArrayList;
 import java.util.List;
+import static resources.Constants.NUMBER_OF_ELEVATORS;
 
 public class Floor {
 	
 	private int level;
-	private boolean isDoorOpen; 
+	//private boolean isDoorOpen; 
 	private boolean isUpButtonPressed, isDownButtonPressed;
-	private boolean isUpDirectionLampOn, isDownDirectionLampOn;
+	//private boolean isUpDirectionLampOn, isDownDirectionLampOn;
 	private List<Integer> floorDestinationButtonsPressed;
+	private List<ElevatorForFloor> elevatorsAtFloor;
 	/**
 	 * creates a floor
 	 * @param level the level of the floor
 	 */
 	public Floor(int level) {
 		floorDestinationButtonsPressed = new ArrayList<>();
+		elevatorsAtFloor = new ArrayList<>();
 		this.level = level;
-		isDoorOpen = false;
 		isUpButtonPressed = false;
 		isDownButtonPressed = false;
-		isUpDirectionLampOn = false;
-		isDownDirectionLampOn = false;
+		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
+			elevatorsAtFloor.add(new ElevatorForFloor(i));
+		}
 	}
 	
 	/**
@@ -51,15 +54,15 @@ public class Floor {
 	/**
 	 * opens the door on the floor
 	 */
-	public void openDoor() {
-		isDoorOpen = true;
+	public void openDoor(int elevatorIndex) {
+		elevatorsAtFloor.get(elevatorIndex).setDoorOpen(true);
 	}
 	
 	/**
 	 * opens the door on the floor
 	 */
-	public void closeDoor() {
-		isDoorOpen = false;
+	public void closeDoor(int elevatorIndex) {
+		elevatorsAtFloor.get(elevatorIndex).setDoorOpen(false);
 		floorDestinationButtonsPressed.clear();
 		isUpButtonPressed = false;
 		isDownButtonPressed = false;
@@ -77,16 +80,8 @@ public class Floor {
 	 * returns true or false if the door is open
 	 * @return
 	 */
-	public boolean isDoorOpen() {
-		return isDoorOpen;
-	}
-	
-	/**
-	 * Sets the value of if the door is open
-	 * @param isDoorOpen
-	 */
-	public void setDoorOpen(boolean isDoorOpen) {
-		this.isDoorOpen = isDoorOpen;
+	public boolean isDoorOpen(int elevatorIndex) {
+		return elevatorsAtFloor.get(elevatorIndex).isDoorOpen();
 	}
 	
 	/**
@@ -125,32 +120,32 @@ public class Floor {
 	 * Returns true or false if the up direction lamp is on
 	 * @return
 	 */
-	public boolean isUpDirectionLampOn() {
-		return isUpDirectionLampOn;
+	public boolean isUpDirectionLampOn(int elevatorIndex) {
+		return elevatorsAtFloor.get(elevatorIndex).isUpDirectionLampOn();
 	}
 	
 	/**
 	 * Sets the value of if the up direction lamp is on
 	 * @param isUpDirectionLampOn
 	 */
-	public void setUpDirectionLampOn(boolean isUpDirectionLampOn) {
-		this.isUpDirectionLampOn = isUpDirectionLampOn;
+	public void setUpDirectionLampOn(boolean isUpDirectionLampOn, int elevatorIndex) {
+		elevatorsAtFloor.get(elevatorIndex).setUpDirectionLampOn(isUpDirectionLampOn);
 	}
 	
 	/**
 	 * Returns true or false if the down direction lamp is on
 	 * @return
 	 */
-	public boolean isDownDirectionLampOn() {
-		return isDownDirectionLampOn;
+	public boolean isDownDirectionLampOn(int elevatorIndex) {
+		return elevatorsAtFloor.get(elevatorIndex).isDownDirectionLampOn();
 	}
 	
 	/**
 	 * Sets the value of if the down direction lamp is on
 	 * @param isDownDirectionLampOn
 	 */
-	public void setDownDirectionLampOn(boolean isDownDirectionLampOn) {
-		this.isDownDirectionLampOn = isDownDirectionLampOn;
+	public void setDownDirectionLampOn(boolean isDownDirectionLampOn, int elevatorIndex) {
+		elevatorsAtFloor.get(elevatorIndex).setDownDirectionLampOn(isDownDirectionLampOn);
 	}
 	
 	/**
@@ -160,6 +155,16 @@ public class Floor {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+
+	public List<ElevatorForFloor> getElevatorsAtFloor() {
+		return elevatorsAtFloor;
+	}
+
+	public void setElevatorsAtFloor(List<ElevatorForFloor> elevatorsAtFloor) {
+		this.elevatorsAtFloor = elevatorsAtFloor;
+	}
+	
+	
 
 	
 }
