@@ -1,5 +1,13 @@
 package elevatorSubsystem;
 
+import static resources.Constants.ELEVATOR_INFO_REQUEST;
+import static resources.Constants.ELEVATOR_PORT;
+import static resources.Constants.MANDATORY;
+import static resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.NEW_ELEVATOR_DESTINATION;
+import static resources.Constants.SCHED_IP_ADDRESS;
+import static resources.Constants.VOLUNTARY;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -9,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import resources.Directions;
-import static resources.Constants.*;
 
 /**
  * ElevatorReceiver Responsible for receiving, interpreting, and assigning
@@ -128,7 +135,7 @@ public class ElevatorReciever {
 		DatagramPacket packet;
 
 		try {
-			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName(Constants.SCHED_IP_ADDRESS), messagePort);
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName(SCHED_IP_ADDRESS), messagePort);
 			schedulerSocket.send(packet);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -144,7 +151,7 @@ public class ElevatorReciever {
 	private synchronized void sendResponse(byte[] msg, int port) {
 		DatagramPacket packet;
 		try {
-			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName(Constants.SCHED_IP_ADDRESS), port);
+			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName(SCHED_IP_ADDRESS), port);
 			schedulerSocket.send(packet);
 		} catch (Exception e) {
 			// Failed generating response
