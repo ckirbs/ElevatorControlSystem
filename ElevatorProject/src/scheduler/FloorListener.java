@@ -27,8 +27,10 @@ public class FloorListener extends Communicator implements Runnable {
 			System.exit(1);
 		}
 		
-		for(int i = 0; i < NUMBER_OF_FLOORS; i++) {
-			destinations.add(new HashSet<Integer>());
+		for (int e = 0; e < NUMBER_OF_ELEVATORS; e++) {
+			for(int i = 0; i < NUMBER_OF_FLOORS; i++) {
+				destinations.get(e).add(new HashSet<Integer>());
+			}
 		}
 	}
 

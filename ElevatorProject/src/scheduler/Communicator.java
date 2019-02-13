@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,11 +25,13 @@ public class Communicator {
 	protected final int TIMEOUT_TIME = 50;
 	protected static int elevatorReturnPort;
 	protected static int floorPort;
-	protected static ArrayList<Set<Integer>> destinations = new ArrayList<Set<Integer>>();
+	protected static ArrayList<ArrayList<Set<Integer>>> destinations = new ArrayList<ArrayList<Set<Integer>>>();
 	protected static ArrayList<byte[]> deniedReqs = new ArrayList<byte[]>();
+	protected static ArrayList<byte[]> pendingReqs = new ArrayList<byte[]>();
+	private static int currReqId;
 	
 	public Communicator() {
-		
+		Communicator.currReqId = 0;
 	}
 	
 	/**
@@ -44,11 +45,12 @@ public class Communicator {
 		byte flag = message[1];
 		byte val1 = message[2];
 		byte val2 = message[3]; 
+		byte val3 = message[4]; 
 		
 		switch (messageType) {
 		case (byte) NEW_REQUEST_FROM_FLOOR: return this.processNewRequest(flag, val1, val2);
-		case (byte) OPEN_CLOSE_DOOR: return this.openCloseDoor(flag, val1, val2);
-		case (byte) CONFIRM_VOL_DESTINATION: return this.processConfirmation(flag, val1, val2);
+		case (byte) OPEN_CLOSE_DOOR: return this.openCloseDoor(flag, val1, val2, val3);
+		case (byte) CONFIRM_VOL_DESTINATION: return this.processConfirmation(flag, val1, val2, val3);
 		case (byte) STATUS_REPORT: return this.processStatusReport(flag, val1, val2);
 		default: return false;
 		}
@@ -74,10 +76,27 @@ public class Communicator {
 	 * @param elevatorNum
 	 * @return
 	 */
-	private synchronized boolean processConfirmation(byte yesNoVal, byte floorNum, byte elevatorNum) {
+	private boolean processConfirmation(byte yesNoVal, byte floorNum, byte elevatorNum, byte id) {
+		byte[] req = null;
+		synchronized (pendingReqs) {
+			for (byte[] b: pendingReqs) {
+				if (b[0] == id) {
+					req = b;
+					pendingReqs.remove(b);
+					break;
+				}
+			}
+		}
+		
 		if (yesNoVal == NO) {
-			deniedReqs.add(new byte[] {NEW_ELEVATOR_DESTINATION, VOLUNTARY, floorNum, elevatorNum, (byte) 0});
+			synchronized (deniedReqs) {
+				deniedReqs.add(new byte[] {req[1], req[2], req[3]});
+			}
 			return false;
+		} else {
+			synchronized (destinations) {
+				destinations.get((int) elevatorNum).get((int) floorNum).add((int) req[3]);
+			}
 		}
 		
 		return true;
@@ -91,13 +110,14 @@ public class Communicator {
 	 * @param elevatorNum	The elevator id
 	 * @return
 	 */
-	private boolean openCloseDoor(byte openClose, byte floorNum, byte elevatorNum) {
+	private boolean openCloseDoor(byte openClose, byte floorNum, byte elevatorNum, byte dir) {
 		try {
 			byte[] msg = new byte[MESSAGE_LENGTH];
 			msg[0] = OPEN_CLOSE_DOOR;
 			msg[1] = openClose;
 			msg[2] = floorNum;
 			msg[3] = elevatorNum;
+			msg[4] = dir;
 			
 			System.out.println(((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
@@ -105,8 +125,11 @@ public class Communicator {
 			floorSocket.send(packet);
 			
 			if (openClose == OPEN) {
-				Set<Integer> tempSet = destinations.get((int) floorNum);
-				destinations.set((int) floorNum, new HashSet<Integer>());
+				Set<Integer> tempSet;
+				synchronized (destinations) {
+					tempSet = destinations.get((int) elevatorNum).get((int) floorNum);
+					destinations.get((int) elevatorNum).set((int) floorNum, new HashSet<Integer>());
+				}
 				
 				System.out.println("Sending elevator " + (int) elevatorNum + " new destinations: " + tempSet.toString());
 				
@@ -114,7 +137,7 @@ public class Communicator {
 				byte[] destMsg = new byte[MESSAGE_LENGTH];
 				destMsg[0] = NEW_ELEVATOR_DESTINATION;
 				destMsg[1] = MANDATORY;
-				destMsg[3] = (byte) 0; // elevator number
+				destMsg[3] = elevatorNum; // elevator number
 				destMsg[4] = (byte) 0; // Direction (not used atm)
 				
 				for (int i: tempSet) {
@@ -143,34 +166,44 @@ public class Communicator {
 	 */
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
 		
-		destinations.get((int) origFloor).add((int) destFloor);
+		//destinations.get((int) origFloor).add((int) destFloor);
 		
 		byte[] message = new byte[MESSAGE_LENGTH];
 		message[0] = NEW_ELEVATOR_DESTINATION;
 		message[1] = VOLUNTARY;
 		message[2] = origFloor;
-		message[3] = (byte) 0; //elevator id
 		message[4] = dir;
+		message[5] = (byte) Communicator.currReqId;
+		Communicator.currReqId++;
 		
 		System.out.println("Sending elevator new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
 		
-		try {
-			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
-			elevatorSocket.send(pckt);
-		} catch (IOException e) {
-			e.printStackTrace();
+		Communicator.updateDispatcher();
+		
+		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
+		
+		if (elevatorNumber != -1) {
+			pendingReqs.add(new byte[] {message[5], dir, origFloor, destFloor, (byte) elevatorNumber});
+			try {
+				message[3] = (byte) elevatorNumber;
+				DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
+				elevatorSocket.send(pckt);
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+			return true;
+		} else {
 			return false;
 		}
 
-		return true;
 	}
 	
-	/**
-	 * Retry all of the voluntary requests that were previously denied
-	 */
-	protected static synchronized void retryDeniedReqs() {
-		for (byte[] msg: deniedReqs) {
-			DatagramPacket pckt;
+	private static synchronized void updateDispatcher() {
+		DatagramPacket pckt;
+		
+		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
+			byte[] msg = new byte[] {ELEVATOR_INFO_REQUEST, (byte) 0, (byte) 0, (byte) i, (byte) 0};
 			try {
 				pckt = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
 				elevatorSocket.send(pckt);
@@ -179,6 +212,22 @@ public class Communicator {
 			}
 		}
 		
-		deniedReqs.clear();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Retry all of the voluntary requests that were previously denied
+	 */
+	protected void retryDeniedReqs() {
+		synchronized (deniedReqs) {
+			for (byte[] req: deniedReqs) {
+				processNewRequest(req[0], req[1], req[2]);
+			}
+			deniedReqs.clear();
+		}
 	}
 }
