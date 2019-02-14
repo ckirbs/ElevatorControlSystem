@@ -52,8 +52,8 @@ public class FloorSystemTest {
 	
 	@Test
 	public void testDoorOpen() {
-		firstFloor.setDoorOpen(true);
-		assertTrue(firstFloor.isDoorOpen());
+		firstFloor.openDoor(0);
+		assertTrue(firstFloor.isDoorOpen(0));
 	}
 	
 	@Test
