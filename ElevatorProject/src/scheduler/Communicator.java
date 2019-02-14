@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Date;
 
 import scheduler.Dispatcher;
 import static resources.Constants.*;
@@ -65,7 +66,7 @@ public class Communicator {
 	 * @return
 	 */
 	private boolean processStatusReport(byte dir, byte floorNum, byte elevatorNum) {
-		System.out.println("Updating status of elev " + (int) elevatorNum);
+		System.out.println(FORMATTER.format(new Date()) + ": Updating status of elev " + (int) elevatorNum);
 		return Communicator.dispatcher.updateElevatorInfo((int) elevatorNum, Directions.getDirByInt((int) dir) , (int) floorNum);
 	}
 
@@ -90,6 +91,8 @@ public class Communicator {
 			}
 			pendingReqs.remove(req);
 		}
+		
+		//System.out.println(req);
 		
 		if (yesNoVal == NO) {
 			synchronized (deniedReqs) {
@@ -122,7 +125,7 @@ public class Communicator {
 			msg[3] = elevatorNum;
 			msg[4] = dir;
 			
-			System.out.println(((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
+			System.out.println(FORMATTER.format(new Date()) + ": " + ((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
 			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(FLOOR_SYS_IP_ADDRESS), floorPort);
 			floorSocket.send(packet);
@@ -134,7 +137,7 @@ public class Communicator {
 					destinations.get((int) elevatorNum).set((int) floorNum, new HashSet<Integer>());
 				}
 				
-				System.out.println("Sending elevator " + (int) elevatorNum + " new destinations: " + tempSet.toString());
+				System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + (int) elevatorNum + " new destinations: " + tempSet.toString());
 				
 				DatagramPacket pckt;
 				byte[] destMsg = new byte[MESSAGE_LENGTH];
@@ -151,7 +154,7 @@ public class Communicator {
 			}
 			
 		} catch (IOException e) {
-			System.out.println("Error creating socket or sending message.");
+			System.out.println(FORMATTER.format(new Date()) + ": Error creating socket or sending message.");
 			e.printStackTrace();
 			return false;
 		}
@@ -182,7 +185,7 @@ public class Communicator {
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
 		
 		if (elevatorNumber != -1) {
-			System.out.println("Sending elevator " + elevatorNumber + " new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
+			System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
 			
 			pendingReqs.add(new byte[] {message[5], dir, origFloor, destFloor, (byte) elevatorNumber});
 			try {

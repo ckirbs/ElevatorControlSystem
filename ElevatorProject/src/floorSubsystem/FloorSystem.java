@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Callable;
@@ -23,6 +24,7 @@ import static resources.Constants.FLOOR_PORT;
 import static resources.Constants.HIGHEST_FLOOR;
 import static resources.Constants.SCHED_IP_ADDRESS;
 import static resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.FORMATTER;
 
 public class FloorSystem {
 	
@@ -164,7 +166,7 @@ public class FloorSystem {
 	 * @param action  the action causing the information to be printed out eg. a door opens
 	 */
 	public synchronized void printOutFloorInformation(Floor floor, String action) {
-		System.out.print(action + ", ");
+		System.out.print(FORMATTER.format(new Date()) + ": " + action + ", ");
 		System.out.print("On floor " + floor.getLevel() + ",");
 //		if (floor.isDoorOpen(elevatorIndex)) {
 //			System.out.print(" The elevator " + elevatorIndex + " door is open, ");
@@ -184,7 +186,7 @@ public class FloorSystem {
 			}
 			System.out.print("are pressed");
 		}
-		System.out.print("\nFor each Elevator,");
+		System.out.print("\n" + FORMATTER.format(new Date()) + " For each Elevator,");
 		for (ElevatorForFloor elvFloor : floor.getElevatorsAtFloor()) {
 			System.out.print("\nElevator " + elvFloor.getIndex());
 			if (elvFloor.isDoorOpen()) {
