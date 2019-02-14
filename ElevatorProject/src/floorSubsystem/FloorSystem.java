@@ -21,10 +21,10 @@ import java.util.concurrent.TimeUnit;
 
 import resources.*;
 import static resources.Constants.FLOOR_PORT;
-import static resources.Constants.FORMATTER;
 import static resources.Constants.HIGHEST_FLOOR;
 import static resources.Constants.SCHED_IP_ADDRESS;
 import static resources.Constants.MESSAGE_LENGTH;
+import static resources.Constants.FORMATTER;
 
 public class FloorSystem {
 	
@@ -121,11 +121,16 @@ public class FloorSystem {
 					if (floor.getLevel() == buffer[2]) {
 						//open the door on the floor
 						if (buffer[1] == (byte) 1) {
-							floor.openDoor();
+							floor.openDoor(buffer[3]);
+							if (buffer[4] == (byte) 0) {
+								floor.setDownDirectionLampOn(true, buffer[3]);
+							} else {
+								floor.setUpDirectionLampOn(true, buffer[3]);
+							}
 							printOutFloorInformation(floor, "door has opened");
 						} else {
 							//close the door on the floor
-							floor.closeDoor();
+							floor.closeDoor(buffer[3]);
 							printOutFloorInformation(floor, "door has closed");
 						}
 						break;
@@ -161,13 +166,13 @@ public class FloorSystem {
 	 * @param action  the action causing the information to be printed out eg. a door opens
 	 */
 	public synchronized void printOutFloorInformation(Floor floor, String action) {
-		System.out.print("\n" + FORMATTER.format(new Date()) + ": " + action + ", ");
+		System.out.print(FORMATTER.format(new Date()) + ": " + action + ", ");
 		System.out.print("On floor " + floor.getLevel() + ",");
-		if (floor.isDoorOpen()) {
-			System.out.print(" The door is open, ");
-		} else {
-			System.out.print(" The door is closed, ");
-		}
+//		if (floor.isDoorOpen(elevatorIndex)) {
+//			System.out.print(" The elevator " + elevatorIndex + " door is open, ");
+//		} else {
+//			System.out.print(" The elevator " + elevatorIndex + " door is closed, ");
+//		}
 		if (floor.isUpButtonPressed()) {
 			System.out.print(" The up button pressed, ");
 		}
@@ -181,6 +186,22 @@ public class FloorSystem {
 			}
 			System.out.print("are pressed");
 		}
+		System.out.print("\n" + FORMATTER.format(new Date()) + " For each Elevator,");
+		for (ElevatorForFloor elvFloor : floor.getElevatorsAtFloor()) {
+			System.out.print("\nElevator " + elvFloor.getIndex());
+			if (elvFloor.isDoorOpen()) {
+				System.out.print(" The elevator door is open, ");
+			} else {
+				System.out.print(" The elevator door is closed, ");
+			}
+			if (elvFloor.isUpDirectionLampOn()) {
+				System.out.print(" The elevator up direction lamp is on");
+			}
+			if (elvFloor.isDownDirectionLampOn()) {
+				System.out.print(" The elevator down direction lamp is on");
+			} 
+		}
+		System.out.print("\n\n");
 	}
 	
 	public Queue<Message> getQue(){
