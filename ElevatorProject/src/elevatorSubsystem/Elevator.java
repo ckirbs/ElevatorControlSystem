@@ -1,5 +1,8 @@
 package elevatorSubsystem;
 
+import static resources.Constants.FORMATTER;
+
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -59,8 +62,8 @@ public class Elevator {
 	 */
 	public synchronized boolean updateFloorToService() {
 		if (!upList.isEmpty() || !downList.isEmpty()) {
-			System.out.println("UPLIST: " + upList.toString());
-			System.out.println("DOWNLIST: " + downList.toString());
+			System.out.println(FORMATTER.format(new Date()) + " Elevator " + this.elvNumber + " UPLIST: " + upList.toString());
+			System.out.println(FORMATTER.format(new Date()) + " Elevator " + this.elvNumber + " DOWNLIST: " + downList.toString());
 			Directions serviceUpList = Directions.UP;
 			if (status == Directions.UP) { // If direction is up
 				if (!upList.subSet(currFloorPosition, MAX_FLOOR + 1).isEmpty()) { // There is stuff to service above the
@@ -108,7 +111,7 @@ public class Elevator {
 	 * current service.
 	 */
 	public synchronized void updateDirection() {
-		System.out.println("Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestination);
+		System.out.println(FORMATTER.format(new Date()) + " Elevator " + this.elvNumber + " Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestination);
 
 		if (currFloorPosition < floorDestination) {
 			if (status != Directions.UP) {

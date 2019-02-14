@@ -1,5 +1,7 @@
 package resources;
 
+import java.text.SimpleDateFormat;
+
 /**
  * Constants class to hold various constants that my be used in multiple classes
  * 
@@ -27,6 +29,8 @@ public final class Constants {
 	public static final String SCHED_IP_ADDRESS = "127.0.0.1";
 	public static final String FLOOR_SYS_IP_ADDRESS = "127.0.0.1";
 	public static final String ELEVATOR_SYS_IP_ADDRESS = "127.0.0.1";
+	
+	public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss");
 	
 	// Message Type Values
 	public static final byte ERROR = 0;
