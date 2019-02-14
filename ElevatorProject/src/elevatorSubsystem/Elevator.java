@@ -1,7 +1,5 @@
 package elevatorSubsystem;
 
-import static resources.Constants.FORMATTER;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +8,8 @@ import java.util.TreeSet;
 
 import resources.Constants;
 import resources.Directions;
+import static resources.Constants.FORMATTER;
+
 
 public class Elevator {
 

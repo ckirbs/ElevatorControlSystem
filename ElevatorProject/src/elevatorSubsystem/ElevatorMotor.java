@@ -1,11 +1,11 @@
 package elevatorSubsystem;
 
-import static resources.Constants.FORMATTER;
 
 import java.util.Date;
 
 import resources.Constants;
 import resources.Directions;
+import static resources.Constants.FORMATTER;
 
 /**
  * Elevator Motor Controls movement of a single elevator and it's service route,
