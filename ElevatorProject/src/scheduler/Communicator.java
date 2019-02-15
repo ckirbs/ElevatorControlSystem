@@ -135,9 +135,11 @@ public class Communicator {
 			
 			System.out.println(FORMATTER.format(new Date()) + ": " + ((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
+			// Pass the message to the floor
 			DatagramPacket packet = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(FLOOR_SYS_IP_ADDRESS), floorPort);
 			floorSocket.send(packet);
 			
+			// If it's an open request, check for any new destination (i.e. from passengers getting on)
 			if (openClose == OPEN) {
 				Set<Integer> tempSet;
 				synchronized (destinations) {
@@ -147,13 +149,14 @@ public class Communicator {
 				
 				System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + (int) elevatorNum + " new destinations: " + tempSet.toString());
 				
+				// Construct the generic message structure
 				DatagramPacket pckt;
 				byte[] destMsg = new byte[MESSAGE_LENGTH];
 				destMsg[0] = NEW_ELEVATOR_DESTINATION;
 				destMsg[1] = MANDATORY;
-				destMsg[3] = elevatorNum; // elevator number
-				destMsg[4] = (byte) 0; // Direction (not used atm)
+				destMsg[3] = elevatorNum;
 				
+				// For each new destination, send it to the elevator
 				for (int i: tempSet) {
 					destMsg[2] = (byte) i;
 					pckt = new DatagramPacket(destMsg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
@@ -180,6 +183,7 @@ public class Communicator {
 	 */
 	private boolean processNewRequest(byte dir, byte origFloor, byte destFloor) {
 		
+		// Create the request, giving it an id
 		byte[] message = new byte[MESSAGE_LENGTH];
 		message[0] = NEW_ELEVATOR_DESTINATION;
 		message[1] = VOLUNTARY;
@@ -188,14 +192,20 @@ public class Communicator {
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
 				
+		// Update the dispatcher information
 		Communicator.updateDispatcher();
 		
+		// Pick an elevator to send a request to
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
 		
+		// If an elevator was chosen
 		if (elevatorNumber != -1) {
 			System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
 			
+			// The request is now pending
 			pendingReqs.add(new byte[] {message[5], dir, origFloor, destFloor, (byte) elevatorNumber});
+			
+			// Send the request to the elevator
 			try {
 				message[3] = (byte) elevatorNumber;
 				DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
@@ -205,7 +215,10 @@ public class Communicator {
 				return false;
 			}
 			return true;
+			
+		// If no elevator was chosen, consider the request denied
 		} else {
+			deniedReqs.add(new byte[] {dir, origFloor, destFloor});
 			return false;
 		}
 

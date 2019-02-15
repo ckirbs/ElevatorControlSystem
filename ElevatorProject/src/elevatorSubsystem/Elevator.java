@@ -2,6 +2,7 @@ package elevatorSubsystem;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -37,14 +38,14 @@ public class Elevator {
 	// -- (Possibly) One responsible for listening to floor requests within the
 	// elevator
 
-	public Elevator(Integer elvNumber, ElevatorReciever elvRecieve) {
+	public Elevator(Integer elvNumber, ElevatorReciever elvRecieve, int initialFloor) {
 		this.motor = new ElevatorMotor(this);
 		this.elvReceieve = elvRecieve;
 		this.elvNumber = elvNumber;
 
 		isDoorOpen = false;
 		floorDestination = null;
-		currFloorPosition = 0;
+		currFloorPosition = initialFloor;
 		elevatorPassengerButtons = new HashSet<Integer>();
 		upList = new TreeSet<Integer>();
 		downList = new TreeSet<Integer>();
@@ -317,7 +318,12 @@ public class Elevator {
 			if (currentServiceList == upList) {
 				if (!downList.isEmpty()) { // If there aren't up requests above us check to see if there are any down
 											// requests
-					nextFloor = downList.subSet(MIN_FLOOR, currFloorPosition + 1).last();
+					try {
+						nextFloor = downList.subSet(MIN_FLOOR, currFloorPosition + 1).last();
+					} catch (NoSuchElementException e) {
+						return Directions.UP;
+					}
+					
 					if (nextFloor > currFloorPosition) {
 						return Directions.UP;
 					} else {
@@ -327,7 +333,12 @@ public class Elevator {
 				} else {
 					if (!upList.isEmpty()) { // If there aren't up requests above us check to see if there are any up
 												// requests
-						nextFloor = upList.subSet(MIN_FLOOR, currFloorPosition + 1).first();
+						try {
+							nextFloor = upList.subSet(MIN_FLOOR, currFloorPosition + 1).first();
+						} catch (NoSuchElementException e) {
+							return Directions.DOWN;
+						}
+						
 						if (nextFloor < currFloorPosition) {
 							return Directions.DOWN;
 						} else {

@@ -8,6 +8,7 @@ import static resources.Constants.NEW_ELEVATOR_DESTINATION;
 import static resources.Constants.SCHED_IP_ADDRESS;
 import static resources.Constants.VOLUNTARY;
 import static resources.Constants.NUMBER_OF_ELEVATORS;
+import static resources.Constants.HIGHEST_FLOOR;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -36,7 +37,7 @@ public class ElevatorReciever {
 	public ElevatorReciever() {
 		elevators = new ArrayList<Elevator>();
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
-			elevators.add(new Elevator(i, this));
+			elevators.add(new Elevator(i, this, (int) (i * (HIGHEST_FLOOR + 1) / NUMBER_OF_ELEVATORS)));
 		}
 		
 		try {
