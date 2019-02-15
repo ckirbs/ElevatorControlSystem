@@ -79,8 +79,10 @@ public class Communicator {
 	 * @return
 	 */
 	private boolean processConfirmation(byte yesNoVal, byte floorNum, byte elevatorNum, byte id) {
+		// Confirmation for mandatory requests - no action needed
 		if (id == (byte) 0) return true;
 		
+		// Find the corresponding pending request and remove from the list
 		byte[] req = null;
 		synchronized (pendingReqs) {
 			for (byte[] b: pendingReqs) {
@@ -92,19 +94,25 @@ public class Communicator {
 			pendingReqs.remove(req);
 		}
 		
-		//System.out.println(req);
+		// If no request was found, this is an error
+		if (req == null) {
+			System.out.println(FORMATTER.format(new Date()) + ": Confirmation error (floor: " + floorNum + ", elevator: " + elevatorNum + ", request id: " + id);
+			return false;
+		}
 		
+		// If denied, add the request to the denied requests list
 		if (yesNoVal == NO) {
 			synchronized (deniedReqs) {
 				deniedReqs.add(new byte[] {req[1], req[2], req[3]});
 			}
 			return false;
+			
+		// If accepted, add the new destinations to the elevators future destination set
 		} else {
 			synchronized (destinations) {
 				destinations.get((int) elevatorNum).get((int) floorNum).add((int) req[3]);
 			}
 		}
-		
 		return true;
 	}
 
@@ -203,10 +211,15 @@ public class Communicator {
 
 	}
 	
+	/**
+	 * Sends a status request to each elevator so that the dispatcher can update its data.
+	 */
 	private static synchronized void updateDispatcher() {
 		DatagramPacket pckt;
 		
+		// For each elevator
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
+			// Generate and send a status report request
 			byte[] msg = new byte[] {ELEVATOR_INFO_REQUEST, (byte) 0, (byte) 0, (byte) i, (byte) 0, (byte) 0};
 			try {
 				pckt = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
@@ -216,8 +229,9 @@ public class Communicator {
 			}
 		}
 		
+		// Sleep for a brief period to give time for responses
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(500);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
