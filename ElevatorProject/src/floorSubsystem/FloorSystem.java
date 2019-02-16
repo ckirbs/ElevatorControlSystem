@@ -127,11 +127,11 @@ public class FloorSystem {
 							} else {
 								floor.setUpDirectionLampOn(true, buffer[3]);
 							}
-							printOutFloorInformation(floor, "door has opened");
+							printOutFloorInformation(floor, "Elevator " + buffer[3] + " door has opened");
 						} else {
 							//close the door on the floor
 							floor.closeDoor(buffer[3]);
-							printOutFloorInformation(floor, "door has closed");
+							printOutFloorInformation(floor, "Elevator " + buffer[3] + " door has closed");
 						}
 						break;
 					}
