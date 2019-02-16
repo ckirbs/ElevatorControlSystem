@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class FloorListener extends Communicator implements Runnable {
 		super();
 		try {
 			Communicator.floorSocket = new DatagramSocket(FLOOR_PORT);
+			Communicator.floorSocket.setSoTimeout(TIMEOUT_TIME);
 		} catch (SocketException e) {
 			System.out.println("Error creating floor socket.");
 			e.printStackTrace();
@@ -50,11 +52,8 @@ public class FloorListener extends Communicator implements Runnable {
 			Communicator.floorPort = packet.getPort();
 
 			this.handleNewMessage(message);
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch(SocketTimeoutException e) {
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

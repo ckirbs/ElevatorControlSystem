@@ -47,7 +47,7 @@ public class ElevatorMotor extends Thread {
 			switch (currentElvState) {
 			case STANDBY:
 				if (previousElvState != currentElvState){
-					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " is on StandBy");
+					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " is on StandBy on floor " + elv.getCurrFloorPosition());
 					previousElvState = currentElvState;
 				}
 				if (!elv.isServiceListEmpty()) { // Check if there is a floor to service

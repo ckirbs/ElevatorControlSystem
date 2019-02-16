@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import static resources.Constants.ELEVATOR_PORT;
 import static resources.Constants.MESSAGE_LENGTH;
 
 /**
@@ -51,7 +50,6 @@ public class ElevatorListener extends Communicator implements Runnable {
 	public void run() {
 		while (true) {
 			checkForMessages();
-			super.retryDeniedReqs();
 		}
 	}
 }
