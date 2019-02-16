@@ -37,6 +37,9 @@ public class ElevatorReciever {
 	public ElevatorReciever() {
 		elevators = new ArrayList<Elevator>();
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
+			// (i + 1) * (HIGHEST_FLOOR + 1) / (NUMBER_OF_ELEVATORS + 1) will displace the elevators evenly amongst the floors
+			// Splits the floors into chunks so that there is one more chunk than elevators, then places an elevator in each gap
+			// e.g. For 20 floors and 4 elevators: elevators at floors 4, 8, 12, 16
 			elevators.add(new Elevator(i, this, (int) ((i + 1) * (HIGHEST_FLOOR + 1) / (NUMBER_OF_ELEVATORS + 1))));
 		}
 		
