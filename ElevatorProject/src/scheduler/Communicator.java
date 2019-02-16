@@ -23,11 +23,12 @@ import resources.Directions;
 public class Communicator {
 	protected static DatagramSocket floorSocket, elevatorSocket;
 	protected static Dispatcher dispatcher = new Dispatcher();
-	protected final int TIMEOUT_TIME = 50;
+	protected final int TIMEOUT_TIME = 1000;
 	protected static int elevatorReturnPort;
 	protected static int floorPort;
 	protected static ArrayList<ArrayList<Set<Integer>>> destinations = new ArrayList<ArrayList<Set<Integer>>>();
 	protected static ArrayList<byte[]> deniedReqs = new ArrayList<byte[]>();
+	private static ArrayList<byte[]> tempDeniedHolder = new ArrayList<byte[]>();
 	protected static ArrayList<byte[]> pendingReqs = new ArrayList<byte[]>();
 	private static int currReqId;
 	
@@ -36,9 +37,9 @@ public class Communicator {
 	}
 	
 	/**
-	 * Takes in a message and preforms the appropriate actions on it
+	 * Takes in a message and performs the appropriate actions on it
 	 * 
-	 * @param message	The byte array of hte message
+	 * @param message	The byte array of the message
 	 * @return			True if properly handled, false otherwise
 	 */
 	public boolean handleNewMessage(byte[] message) {
@@ -47,6 +48,7 @@ public class Communicator {
 		byte val1 = message[2];
 		byte val2 = message[3]; 
 		byte val3 = message[4]; 
+		
 		
 		switch (messageType) {
 		case (byte) NEW_REQUEST_FROM_FLOOR: return this.processNewRequest(flag, val1, val2);
@@ -58,7 +60,7 @@ public class Communicator {
 	}
 
 	/**
-	 * Handles a status report from an elvator, and updates dispatcher
+	 * Handles a status report from an elevator, and updates dispatcher
 	 * 
 	 * @param dir			The elevator's direction
 	 * @param floorNum		The elevator's current floor
@@ -96,14 +98,14 @@ public class Communicator {
 		
 		// If no request was found, this is an error
 		if (req == null) {
-			System.out.println(FORMATTER.format(new Date()) + ": Confirmation error (floor: " + floorNum + ", elevator: " + elevatorNum + ", request id: " + id);
+			System.out.println(FORMATTER.format(new Date()) + ": Confirmation error for floor: " + floorNum + ", elevator: " + elevatorNum + ", request id: " + id);
 			return false;
 		}
 		
 		// If denied, add the request to the denied requests list
 		if (yesNoVal == NO) {
-			synchronized (deniedReqs) {
-				deniedReqs.add(new byte[] {req[1], req[2], req[3]});
+			synchronized (Communicator.deniedReqs) {
+				Communicator.deniedReqs.add(new byte[] {req[1], req[2], req[3]});
 			}
 			return false;
 			
@@ -218,7 +220,9 @@ public class Communicator {
 			
 		// If no elevator was chosen, consider the request denied
 		} else {
-			deniedReqs.add(new byte[] {dir, origFloor, destFloor});
+			synchronized (Communicator.deniedReqs) {
+				Communicator.deniedReqs.add(new byte[] {dir, origFloor, destFloor});
+			}
 			return false;
 		}
 
@@ -253,12 +257,17 @@ public class Communicator {
 	/**
 	 * Retry all of the voluntary requests that were previously denied
 	 */
-	protected void retryDeniedReqs() {
-		synchronized (deniedReqs) {
-			for (byte[] req: deniedReqs) {
+	protected synchronized void retryDeniedReqs() {
+		synchronized (Communicator.deniedReqs) {
+			for (byte[] x: Communicator.deniedReqs) Communicator.tempDeniedHolder.add(x);
+			
+			Communicator.deniedReqs.clear();
+			
+			for (byte[] req: Communicator.tempDeniedHolder) {
 				processNewRequest(req[0], req[1], req[2]);
 			}
-			deniedReqs.clear();
+			
+			Communicator.tempDeniedHolder.clear();
 		}
 	}
 }
