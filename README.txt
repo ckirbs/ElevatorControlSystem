@@ -29,8 +29,9 @@ File Names and Descriptions
 
 		FloorSystem - A class that schedules the events from the text file to be sent as packetsto the scheduler
 
-		and receives packets from the scheulder to open/close doors and turn on lights
-
+			and receives packets from the scheulder to open/close doors and turn on lights
+		
+		ElevatorForFloor - A class to control each elevator's lights and floor doors 
 
 	resources
 
@@ -62,46 +63,67 @@ File Names and Descriptions
 			DispatcherTests - JUnit tests for testing the dispatcher in the scheduler system
 
 Group Memebers and Responsibilities
-	Darren Holden
-
-		Programming the Scheduler system classes
-				Writing documention
+	Iteration 1
+		Darren Holden
 		
-		Writing JUnit test cases
 
-		Performing end-to-end tests and debugging
+			Programming the Scheduler system classes
+					Writing documention
+			
+			Writing JUnit test cases
 
-	Callum Kirby
+			Performing end-to-end tests and debugging
 
-		Programming the Elevator, ElevatorMotor, and ElevatorReciever
-		Writing JUnit Test Cases
+		Callum Kirby
 
-		Documentation
+			Programming the Elevator, ElevatorMotor, and ElevatorReciever
+			Writing JUnit Test Cases
 
-	Christopher Molnar
-
-		Programming SystemFile, Message, and Elevator State Machine
-
-		Created JUnit Tests
-
-		Writing documentation
-
-		Drawing the elevator state machine diagram
-
-	Logan MacGillivary
-
-		Programming the Scheduler system classes
-
-		Drawing UML Class diagram
-
-	Brandon Hartford
-
-		Programming the Floor system classes
-
-		Writing JUnit Test Cases
 			Documentation
 
+		Christopher Molnar
 
+			Programming SystemFile, Message, and Elevator State Machine
+
+			Created JUnit Tests
+
+			Writing documentation
+
+			Drawing the elevator state machine diagram
+
+		Logan MacGillivary
+
+			Programming the Scheduler system classes
+
+			Drawing UML Class diagram
+
+		Brandon Hartford
+
+			Programming the Floor system classes
+
+			Writing JUnit Test Cases
+				Documentation
+	
+	Iteration 2
+		Darren Holden
+		
+			Updating the Scheduler subsystem
+
+		Callum Kirby
+
+			Updating the Elevator subsystem
+			
+		Christopher Molnar
+
+			Updating the Elevator subsystem
+
+		Logan MacGillivary
+
+			Updating UML and README
+
+		Brandon Hartford
+	
+			Updating Floor subsystem
 
 Set Up Instructions/Run
 	
@@ -141,3 +163,14 @@ Set Up Instructions/Run
 
 		5.2 - To run a JUnit Test navigate to the desired JUnit file and select run
 
+Errors List
+
+	(1) Scheduler subsystem receives back a response message with an id that does not exist
+	
+	(2) Scheduler subsystem does not receive a response after sending voluntary requests
+	
+	(3) Scheduler, Elevator, and Floor subsystems receive invalid message type
+	
+	(4) Scheduler subsystem experiences request starvation when a denied request consistently gets denied
+	
+	(5) Scheduler, Elevator, and Floor subsystems all experience packet loss
