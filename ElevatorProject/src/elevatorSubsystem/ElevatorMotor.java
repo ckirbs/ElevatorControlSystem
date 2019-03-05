@@ -60,7 +60,11 @@ public class ElevatorMotor extends Thread {
 				if (elv.getCurrFloorPosition() == elv.getFloorDestionation()) { // Arrived at destination floor
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.STOP;
-				} else {
+				} else if (Math.random()*10 <= 2){ // Random error occurs
+					previousElvState = ElevatorState.MOVE;
+					currentElvState = ElevatorState.ERROR;
+				}
+				else {
 					move(); // Keep moving
 				}
 				break;
@@ -90,13 +94,42 @@ public class ElevatorMotor extends Thread {
 				previousElvState = currentElvState;
 				currentElvState = ElevatorState.DOOR_OPEN;
 				break;
+			case ERROR:
+				System.out.println("************************");
+				System.out.println("An error has occured on elevator " + elv.getElvNumber());
+				System.out.println("************************");
+				
+				// Fix the error
+				fixElevator();
+				
+				// Return to previous state to complete the needed action
+				System.out.println("Elevator Fixed! Returning to previous state");
+				ElevatorState temp = previousElvState;
+				previousElvState = currentElvState;
+				currentElvState = temp;
+				break;
 			default:
 				System.out.println(FORMATTER.format(new Date()) + ": uh oh");
 				break;
 			}
 		}
 	}
-
+	
+	/**
+	 * fixElevator() Fix the elevator (it will take between 1 to 10 seconds)
+	 */
+	private void fixElevator() {
+		// Generate random fix time
+		long randomFixTime = (long) (Math.random()*9000 + 1000);
+		try {
+			Thread.sleep(randomFixTime); // sleep for 1 to 10000 seconds
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	/**
 	 * move() Simulates movement OF the elevator subsystem with delay of X seconds
 	 * to represent travel time
@@ -104,17 +137,19 @@ public class ElevatorMotor extends Thread {
 	private synchronized void move() {
 		System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " is at floor " + elv.getCurrFloorPosition() + " Moving " + elv.getStatus());
 
-		if (elv.getStatus() == Directions.UP) {
-			elv.moveUp();
-		} else if (elv.getStatus() == Directions.DOWN) {
-			elv.moveDown();
-		}
-
+		// The time it takes for the elevator to move up a floor
 		try {
 			Thread.sleep(Constants.ELEVATOR_TRAVEL_SPEED_MS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		
+		// Move the elevator up a floor
+		if (elv.getStatus() == Directions.UP) {
+			elv.moveUp();
+		} else if (elv.getStatus() == Directions.DOWN) {
+			elv.moveDown();
 		}
 	}
 
