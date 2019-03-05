@@ -31,6 +31,7 @@ public class Communicator {
 	private static ArrayList<byte[]> tempDeniedHolder = new ArrayList<byte[]>();
 	protected static ArrayList<byte[]> pendingReqs = new ArrayList<byte[]>();
 	private static int currReqId;
+	private static Set<Integer> pendingMandReqs = new HashSet<Integer>();
 	
 	public Communicator() {
 		Communicator.currReqId = 1;
@@ -97,8 +98,11 @@ public class Communicator {
 		}
 		
 		// If no request was found, this is an error
-		if (req == null) {
-			System.out.println(FORMATTER.format(new Date()) + ": Confirmation error for floor: " + floorNum + ", elevator: " + elevatorNum + ", request id: " + id);
+		if (req == null && pendingMandReqs.contains((int)id)) {
+			pendingMandReqs.remove((int)id);
+			return true;
+		} else if (req == null) {
+			System.err.println(FORMATTER.format(new Date()) + ": Confirmation error for floor: " + floorNum + ", elevator: " + elevatorNum + ", request id: " + id);
 			return false;
 		}
 		
@@ -161,6 +165,9 @@ public class Communicator {
 				// For each new destination, send it to the elevator
 				for (int i: tempSet) {
 					destMsg[2] = (byte) i;
+					destMsg[4] = (byte) currReqId;
+					pendingMandReqs.add(currReqId);
+					currReqId ++;
 					pckt = new DatagramPacket(destMsg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
 					elevatorSocket.send(pckt);
 				}
