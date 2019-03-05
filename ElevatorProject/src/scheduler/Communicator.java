@@ -97,10 +97,11 @@ public class Communicator {
 			pendingReqs.remove(req);
 		}
 		
-		// If no request was found, this is an error
+		// If the request was a mandatory destination
 		if (req == null && pendingMandReqs.contains((int)id)) {
 			pendingMandReqs.remove((int)id);
 			return true;
+		// If the request id is invalid
 		} else if (req == null) {
 			System.err.println(FORMATTER.format(new Date()) + ": Confirmation error for floor: " + floorNum + ", elevator: " + elevatorNum + ", request id: " + id);
 			return false;
@@ -165,9 +166,12 @@ public class Communicator {
 				// For each new destination, send it to the elevator
 				for (int i: tempSet) {
 					destMsg[2] = (byte) i;
+					// Give id to mandatory request and increment it
 					destMsg[4] = (byte) currReqId;
 					pendingMandReqs.add(currReqId);
 					currReqId ++;
+					
+					// Send the packet
 					pckt = new DatagramPacket(destMsg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
 					elevatorSocket.send(pckt);
 				}
