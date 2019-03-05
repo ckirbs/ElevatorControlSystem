@@ -6,6 +6,7 @@ public enum ElevatorState {
     DOOR_CLOSE,
     DOOR_OPEN,
     MOVE,
-    STOP;
+    STOP,
+    ERROR;
 
 }
