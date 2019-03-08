@@ -25,6 +25,8 @@ import static resources.Constants.HIGHEST_FLOOR;
 import static resources.Constants.SCHED_IP_ADDRESS;
 import static resources.Constants.MESSAGE_LENGTH;
 import static resources.Constants.FORMATTER;
+import static resources.Constants.ERROR;
+import static resources.Constants.NEW_REQUEST_FROM_FLOOR;
 
 public class FloorSystem {
 	
@@ -43,7 +45,7 @@ public class FloorSystem {
 			floors.add(new Floor(i));
 		}
 		//Reads in the file and puts all the messages into a queue
-		systemFile = new SystemFile(SystemFile.FILENAME1);
+		systemFile = new SystemFile(SystemFile.FILENAME3);
 		systemFile.readValidateAndCreateMessages();
 		que = Message.getMessageQueue();
 		try {
@@ -75,7 +77,8 @@ public class FloorSystem {
 			scheduler.schedule(new Callable<Boolean>() {
 				
 				public Boolean call() throws Exception {
-					byte direction;
+					byte direction = 0;
+					byte messageType = NEW_REQUEST_FROM_FLOOR;
 					// finds the floor depending on the starting floor
 					Floor floor = getFloorObjectByLevel(message.getStartingFloor());
 					//takes the data from the message object and puts it into a floor object
@@ -83,13 +86,20 @@ public class FloorSystem {
 					if (message.getDirection() == Directions.UP) {
 						floor.setUpButtonPressed(true);
 						direction = 1;
-					} else {
+						printOutFloorInformation(floor, "A floor destination is chosen");
+					} else if (message.getDirection() == Directions.UP){
 						floor.setDownButtonPressed(true);
 						direction = 0;
+						printOutFloorInformation(floor, "A floor destination is chosen");
+					} else if (message.getDirection() == Directions.ERROR_DOOR){
+						direction = 3;
+						messageType = ERROR;
+					} else if (message.getDirection() == Directions.ERROR_MOVE){
+						direction = 4;
+						messageType = ERROR;
 					}
-					printOutFloorInformation(floor, "A floor destination is chosen");
 					//puts the information of the floor event into a packet and sends it to the scheduler
-					byte[] buffer = new byte[]{(byte) 1, direction, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor()};
+					byte[] buffer = new byte[]{messageType, direction, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor()};
 					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName(SCHED_IP_ADDRESS), FLOOR_PORT);
 					datagramSocket.send(packet);
 					return true;

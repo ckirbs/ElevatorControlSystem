@@ -21,6 +21,8 @@ public class SystemFile {
 							    // text files
 
     public final static String FILENAME1 = "elevatorInputFile.txt"; // Filename1
+    public final static String FILENAME2 = "TestFile1.txt"; // Filename1
+    public final static String FILENAME3 = "ErrorRunFile.txt"; // Filename1
 
     private String filename;
 
@@ -92,6 +94,10 @@ public class SystemFile {
 
 	    } else if (messageDetails[2].equalsIgnoreCase("down")) {
 		direction = Directions.DOWN;
+	    } else if (messageDetails[2].equalsIgnoreCase("error_move")) {
+			direction = Directions.ERROR_MOVE;
+	    } else if (messageDetails[2].equalsIgnoreCase("error_door")) {
+			direction = Directions.ERROR_DOOR;
 	    } else // If not "up" or "down" it's an invalid direction
 	    {
 		System.out.println("Invalid Direction");

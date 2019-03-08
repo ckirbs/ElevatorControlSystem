@@ -56,6 +56,7 @@ public class Communicator {
 		case (byte) OPEN_CLOSE_DOOR: return this.openCloseDoor(flag, val1, val2, val3);
 		case (byte) CONFIRM_VOL_DESTINATION: return this.processConfirmation(flag, val1, val2, val3);
 		case (byte) STATUS_REPORT: return this.processStatusReport(flag, val1, val2);
+		case (byte) ERROR: return this.processNewRequest(flag, val1, val2);
 		default: return false;
 		}
 	}
@@ -210,6 +211,12 @@ public class Communicator {
 		
 		// Pick an elevator to send a request to
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
+		
+		if (Directions.getDirByInt((int) dir) == Directions.ERROR_MOVE) {
+			message[0] = ERROR;
+		} else if (Directions.getDirByInt((int) dir) == Directions.ERROR_DOOR) {
+			message[0] = ERROR;
+		}
 		
 		// If an elevator was chosen
 		if (elevatorNumber != -1) {
