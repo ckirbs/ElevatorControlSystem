@@ -26,6 +26,7 @@ public class Elevator {
 	private SortedSet<Integer> currentServiceList;
 	private Set<Integer> elevatorPassengerButtons;
 	private Directions status;
+	private Directions errorState = Directions.STANDBY;
 
 	private ElevatorMotor motor;
 	private ElevatorReciever elvReceieve;
@@ -63,8 +64,8 @@ public class Elevator {
 	 */
 	public synchronized boolean updateFloorToService() {
 		if (!upList.isEmpty() || !downList.isEmpty()) {
-			System.out.println(FORMATTER.format(new Date()) + " Elevator " + this.elvNumber + " UPLIST: " + upList.toString());
-			System.out.println(FORMATTER.format(new Date()) + " Elevator " + this.elvNumber + " DOWNLIST: " + downList.toString());
+			System.out.println(FORMATTER.format(new Date()) + ": Elevator " + this.elvNumber + " UPLIST: " + upList.toString());
+			System.out.println(FORMATTER.format(new Date()) + ": Elevator " + this.elvNumber + " DOWNLIST: " + downList.toString());
 			Directions serviceUpList = Directions.UP;
 			if (status == Directions.UP) { // If direction is up
 				if (!upList.subSet(currFloorPosition, MAX_FLOOR + 1).isEmpty()) { // There is stuff to service above the
@@ -112,7 +113,7 @@ public class Elevator {
 	 * current service.
 	 */
 	public synchronized void updateDirection() {
-		System.out.println(FORMATTER.format(new Date()) + " Elevator " + this.elvNumber + " Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestination);
+		System.out.println(FORMATTER.format(new Date()) + ": Elevator " + this.elvNumber + " Updating Direction currFloor: " + currFloorPosition + ", destFloor: " + floorDestination);
 
 		if (currFloorPosition < floorDestination) {
 			if (status != Directions.UP) {
@@ -161,7 +162,7 @@ public class Elevator {
 	public void setCurrentServiceList(Directions direction) {
 		if (direction == Directions.UP) {
 			currentServiceList = upList;
-		} else {
+		} else if (direction == Directions.DOWN) {
 			currentServiceList = downList;
 		}
 	}
@@ -378,5 +379,13 @@ public class Elevator {
 
 	public Directions getStatus() {
 		return status;
+	}
+	
+	public Directions getElvErrorState() {
+		return errorState;
+	}
+	
+	public void setElvErrorState(Directions elvErrorState) {
+		errorState = elvErrorState;
 	}
 }

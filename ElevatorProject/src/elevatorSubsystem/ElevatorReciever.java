@@ -9,6 +9,7 @@ import static resources.Constants.SCHED_IP_ADDRESS;
 import static resources.Constants.VOLUNTARY;
 import static resources.Constants.NUMBER_OF_ELEVATORS;
 import static resources.Constants.HIGHEST_FLOOR;
+import static resources.Constants.ERROR;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -102,6 +103,8 @@ public class ElevatorReciever {
 			}
 		} else if (scenario == (int) ELEVATOR_INFO_REQUEST) {
 			sendResponse(elevators.get(elvNum).generateSatusMsg(), packet.getPort());
+		} else if (scenario == (int) ERROR) {
+			setError(elvNum, Directions.getDirByInt(dirReq));
 		}
 	}
 
@@ -161,6 +164,10 @@ public class ElevatorReciever {
 			// Failed generating response
 			e.printStackTrace();
 		}
+	}
+	
+	private synchronized void setError(Integer elevatorNumber, Directions errorType) {
+		elevators.get(elevatorNumber).setElvErrorState(errorType);
 	}
 
 	public List<Elevator> getElevators() {

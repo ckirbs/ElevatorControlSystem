@@ -60,20 +60,24 @@ public class ElevatorMotor extends Thread {
 				if (elv.getCurrFloorPosition() == elv.getFloorDestionation()) { // Arrived at destination floor
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.STOP;
-				} else if (Math.random()*10 <= 2){ // Random error occurs
-					previousElvState = ElevatorState.MOVE;
+				} else if (elv.getElvErrorState() == Directions.ERROR_MOVE) {
+					previousElvState = currentElvState;
 					currentElvState = ElevatorState.ERROR;
-				}
-				else {
+				} else {
 					move(); // Keep moving
 				}
 				break;
 			case DOOR_CLOSE:
-				System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " close door");
-				elv.getElevatorReciever().sendMessage(elv.generateDoorCloseMsg());
-				elv.closeDoor();
-				previousElvState = currentElvState;
-				currentElvState = ElevatorState.MOVE;
+				if (elv.getElvErrorState() == Directions.ERROR_DOOR) {
+					previousElvState = currentElvState;
+					currentElvState = ElevatorState.ERROR;
+				} else {
+    				System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " close door");
+    				elv.getElevatorReciever().sendMessage(elv.generateDoorCloseMsg());
+    				elv.closeDoor();
+    				previousElvState = currentElvState;
+    				currentElvState = ElevatorState.MOVE;
+				}
 				break;
 			case DOOR_OPEN:
 				System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " open door on floor " + elv.getCurrFloorPosition());
@@ -95,18 +99,23 @@ public class ElevatorMotor extends Thread {
 				currentElvState = ElevatorState.DOOR_OPEN;
 				break;
 			case ERROR:
-				System.out.println("************************");
-				System.out.println("An error has occured on elevator " + elv.getElvNumber());
-				System.out.println("************************");
-				
-				// Fix the error
-				fixElevator();
+				System.out.println(FORMATTER.format(new Date()) + ": ************************");				
+				if (previousElvState == ElevatorState.MOVE) { // Hard fault
+					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " stuck while moving");
+					System.out.println(FORMATTER.format(new Date()) + ": ************************");
+					fixElevator(10000);
+				} else { // Soft fault. ie: Doors don't close
+					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " door stuck open");
+					System.out.println(FORMATTER.format(new Date()) + ": ************************");
+					fixElevator(2000);
+				}
 				
 				// Return to previous state to complete the needed action
-				System.out.println("Elevator Fixed! Returning to previous state");
-				ElevatorState temp = previousElvState;
-				previousElvState = currentElvState;
-				currentElvState = temp;
+				System.out.println(FORMATTER.format(new Date()) + ": ************************");		
+				System.out.println(FORMATTER.format(new Date()) + ": Elevator " +  + elv.getElvNumber() + " Fixed! Returning to previous state");
+				System.out.println(FORMATTER.format(new Date()) + ": ************************");
+				currentElvState = previousElvState;
+				previousElvState = ElevatorState.ERROR;
 				break;
 			default:
 				System.out.println(FORMATTER.format(new Date()) + ": uh oh");
@@ -116,17 +125,17 @@ public class ElevatorMotor extends Thread {
 	}
 	
 	/**
-	 * fixElevator() Fix the elevator (it will take between 1 to 10 seconds)
+	 * fixElevator() Fix the elevator (it will 2 if soft fault or 10 seconds if hard fault)
 	 */
-	private void fixElevator() {
-		// Generate random fix time
-		long randomFixTime = (long) (Math.random()*9000 + 1000);
+	private void fixElevator(int time) {
+
 		try {
-			Thread.sleep(randomFixTime); // sleep for 1 to 10000 seconds
+			Thread.sleep(time); // sleep for 1 to 10000 seconds
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}	
+		elv.setElvErrorState(Directions.STANDBY); // Remove errorState
 	}
 	
 	
