@@ -78,7 +78,7 @@ public class ElevatorTest {
 		while (elvList.hasNext()) {
 			Elevator elv = elvList.next();
 			
-			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10, (byte) (int) elv.getElvNumber(), (byte) Directions.getIntByDir(Directions.UP) };
+			msg = new byte[] {Constants.NEW_ELEVATOR_DESTINATION, Constants.VOLUNTARY, 10, (byte) (int) elv.getElvNumber(), (byte) Directions.getIntByDir(Directions.UP), (byte) 1 };
 			packet = new DatagramPacket(msg, msg.length, InetAddress.getByName("127.0.0.1"), Constants.ELEVATOR_PORT);
 			
 			elvRec.processSchedulerMsg(packet);
