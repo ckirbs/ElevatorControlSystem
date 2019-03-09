@@ -143,8 +143,8 @@ Group Memebers and Responsibilities
 			
 
 		Brandon Hartford
-
-			
+			Timing diagram
+			Floor subsystem formatting cleanup
 
 Set Up Instructions/Run
 	
@@ -196,7 +196,6 @@ Errors List
 	
 	(5) Scheduler, Elevator, and Floor subsystems all experience packet loss
 
-
 Performance Notes
 	Currently the Elevators travel at 1 floor per second with instantaneous acceleration
 	The doors open and close instantaneously, with 1 second between open and close
@@ -229,33 +228,3 @@ Performance Notes
 			Average: 12.4 seconds
 			Minimum: 3 seconds
 			Maximum: 47 seconds
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
