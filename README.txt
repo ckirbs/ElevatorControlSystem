@@ -37,7 +37,7 @@ File Names and Descriptions
 
 		Constants - A static class which only holds constant values to be used by other classes
 
-		Directions - An enumerated type denoting directions that an elevator can move
+		Directions - An enumerated type denoting directions that an elevator can move and the possible elevator error states
 
 		Message - A class responsible for creating and holding all of the users requests
 
@@ -74,6 +74,8 @@ Group Memebers and Responsibilities
 
 			Performing end-to-end tests and debugging
 
+			Error mode debugging
+
 		Callum Kirby
 
 			Programming the Elevator, ElevatorMotor, and ElevatorReciever
@@ -90,6 +92,9 @@ Group Memebers and Responsibilities
 			Writing documentation
 
 			Drawing the elevator state machine diagram
+			
+			Implementing error modes for the elevators
+
 
 		Logan MacGillivary
 
