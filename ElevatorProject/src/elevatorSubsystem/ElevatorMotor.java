@@ -146,19 +146,19 @@ public class ElevatorMotor extends Thread {
 	private synchronized void move() {
 		System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " is at floor " + elv.getCurrFloorPosition() + " Moving " + elv.getStatus());
 
+		// Move the elevator up a floor
+		if (elv.getStatus() == Directions.UP) {
+			elv.moveUp();
+		} else if (elv.getStatus() == Directions.DOWN) {
+			elv.moveDown();
+		}
+		
 		// The time it takes for the elevator to move up a floor
 		try {
 			Thread.sleep(Constants.ELEVATOR_TRAVEL_SPEED_MS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		// Move the elevator up a floor
-		if (elv.getStatus() == Directions.UP) {
-			elv.moveUp();
-		} else if (elv.getStatus() == Directions.DOWN) {
-			elv.moveDown();
 		}
 	}
 
