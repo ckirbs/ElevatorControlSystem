@@ -16,11 +16,16 @@ public class Dispatcher {
 	private ArrayList<Elevator> elevators;
 	public final static int MAX_DIFF = NUMBER_OF_FLOORS + 1; // + 1 so that it's always bigger than the greatest possible difference
 	
-	
+	/**
+	 * Default constructor that builds a Dispatcher with a default value
+	 */
 	public Dispatcher() {
 		this(NUMBER_OF_ELEVATORS);
 	}
 	
+	/** 
+	 * Constructor class that builds a Dispatcher with suggested number of elevators
+	 */
 	public Dispatcher(int elevNum) {
 		this.elevators = new ArrayList<Elevator>();
 		for (int i = 0; i < elevNum; i++) this.elevators.add(new Elevator(i, Directions.STANDBY, 0));
