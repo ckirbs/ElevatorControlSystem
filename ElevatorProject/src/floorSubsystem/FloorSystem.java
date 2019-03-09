@@ -87,19 +87,17 @@ public class FloorSystem {
 						floor.addFloorButtonPressed(message.getDestinationFloor());
 						if (message.getDirection() == Directions.UP) {
 							floor.setUpButtonPressed(true);
-							direction = 1;
-							printOutFloorInformation(floor, "A floor destination is chosen");
 						} else {
 							floor.setDownButtonPressed(true);
-							direction = 0;
-							printOutFloorInformation(floor, "A floor destination is chosen");
 						}
+						direction = (byte) Directions.getIntByDir(message.getDirection());
+						printOutFloorInformation(floor, "A floor destination is chosen");
 					} else {
 						if (message.getDirection() == Directions.ERROR_DOOR){
-							direction = 3;
+							direction = (byte) Directions.getIntByDir(message.getDirection());
 							messageType = ERROR;
     					} else if (message.getDirection() == Directions.ERROR_MOVE){
-    						direction = 4;
+    						direction = (byte) Directions.getIntByDir(message.getDirection());
     						messageType = ERROR;
     					}
 					}

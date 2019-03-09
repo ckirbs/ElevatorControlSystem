@@ -98,6 +98,7 @@ public class SystemFile {
 			direction = Directions.ERROR_MOVE;
 	    } else if (messageDetails[2].equalsIgnoreCase("error_door")) {
 			direction = Directions.ERROR_DOOR;
+	    	System.out.println(direction);
 	    } else // If not "up" or "down" it's an invalid direction
 	    {
 		System.out.println("Invalid Direction");

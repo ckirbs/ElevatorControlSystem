@@ -50,7 +50,6 @@ public class Communicator {
 		byte val2 = message[3]; 
 		byte val3 = message[4]; 
 		
-		
 		switch (messageType) {
 		case (byte) NEW_REQUEST_FROM_FLOOR: return this.processNewRequest(flag, val1, val2);
 		case (byte) OPEN_CLOSE_DOOR: return this.openCloseDoor(flag, val1, val2, val3);
@@ -257,7 +256,7 @@ public class Communicator {
 	 * 
 	 * @param dir
 	 * @param elevatorNumber
-	 * @param timer
+	 * @param timer (not mandatory, but for future consideration)
 	 * @return
 	 */
 	private boolean processErrorRequest(byte dir, byte elevatorNumber, byte timer) {
