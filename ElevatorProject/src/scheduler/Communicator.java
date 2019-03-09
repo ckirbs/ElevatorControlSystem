@@ -212,9 +212,7 @@ public class Communicator {
 		// Pick an elevator to send a request to
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
 		
-		if (Directions.getDirByInt((int) dir) == Directions.ERROR_MOVE) {
-			message[0] = ERROR;
-		} else if (Directions.getDirByInt((int) dir) == Directions.ERROR_DOOR) {
+		if (Directions.getDirByInt((int) dir) == Directions.ERROR_MOVE || Directions.getDirByInt((int) dir) == Directions.ERROR_DOOR) {
 			message[0] = ERROR;
 		}
 		

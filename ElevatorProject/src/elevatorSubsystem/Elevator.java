@@ -378,7 +378,8 @@ public class Elevator {
 	}
 
 	public Directions getStatus() {
-		return status;
+		if (errorState == Directions.STANDBY) return status;
+		else return errorState;
 	}
 	
 	public Directions getElvErrorState() {
