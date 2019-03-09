@@ -211,16 +211,6 @@ public class Communicator {
 		// Pick an elevator to send a request to
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
 		
-		/*if (Directions.getDirByInt((int) dir) == Directions.ERROR_MOVE || Directions.getDirByInt((int) dir) == Directions.ERROR_DOOR) {
-			message[0] = ERROR;
-		}*/
-		
-		// This method allows us to add more errors in the future rather than just the two 
-		// we currently have
-		if ((int) dir >= Directions.getIntByDir(Directions.ERROR_DEFAULT)) {
-			message[0] = ERROR;
-		}
-		
 		// If an elevator was chosen
 		if (elevatorNumber != -1) {
 			System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
@@ -269,36 +259,22 @@ public class Communicator {
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
 		
-		// Update the dispatcher information
-		Communicator.updateDispatcher();
+		System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " an error notice: " + Directions.getDirByInt((int) dir));
 		
-		// If an elevator was chosen
-		if (elevatorNumber != -1) {
-			System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " an error notice: " + Directions.getDirByInt((int) dir));
+		// The request is now pending
+		pendingReqs.add(new byte[] {message[5], dir, elevatorNumber, timer, (byte) elevatorNumber});
 			
-			// The request is now pending
-			pendingReqs.add(new byte[] {message[5], dir, elevatorNumber, timer, (byte) elevatorNumber});
-			
-			// Send the request to the elevator
-			try {
-				message[3] = (byte) elevatorNumber;
-				DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
-				elevatorSocket.send(pckt);
-			} catch (IOException e) {
-				e.printStackTrace();
-				return false;
-			}
-			
-			return true;
-			
-		// If no elevator was chosen, consider the request denied
-		} else {
-			synchronized (Communicator.deniedReqs) {
-				Communicator.deniedReqs.add(new byte[] {dir, elevatorNumber, timer});
-			}
-			
+		// Send the request to the elevator
+		try {
+			message[3] = (byte) elevatorNumber;
+			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
+			elevatorSocket.send(pckt);
+		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
+			
+		return true;
 	}
 	
 	/**
