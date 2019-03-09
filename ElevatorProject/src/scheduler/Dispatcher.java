@@ -56,7 +56,8 @@ public class Dispatcher {
 		for (Elevator elevator: this.elevators) {
 			// Only check elevators that are on standby or going the right direction
 			// Elevators that are in error do not pass here
-			if (!Directions.isOpposite(dir, elevator.getDir())) {
+			if (!Directions.isOpposite(dir, elevator.getDir()) && 
+					!Directions.isInError(dir) && !Directions.isInError(elevator.getDir())) {
 				
 				// If elevator is going down, it can only hit floors below it
 				// If elevator is going up, it can only hit floors above it
