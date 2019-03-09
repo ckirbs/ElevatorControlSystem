@@ -128,12 +128,16 @@ Group Memebers and Responsibilities
 		Darren Holden
 		
 			Debugging error modes
+			
 			Measuring performance times
 
 		Callum Kirby
 
 			Updates to Directions enum class
-			Automated test updates
+			
+      Automated test updates
+
+			UML Class Diagram Update			
 
 		Christopher Molnar
 
@@ -142,11 +146,14 @@ Group Memebers and Responsibilities
 
 		Logan MacGillivary
 
-			Update UML
-			Dispatcher logic update to accomodate errors
+      Update UML Class diagram
+      
+			Dispatcher & Communicator logic update to accomodate errors
 
 		Brandon Hartford
+			
 			Timing diagram
+			
 			Floor subsystem formatting cleanup
 
 Set Up Instructions/Run
