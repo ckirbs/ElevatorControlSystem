@@ -383,7 +383,7 @@ public class Elevator {
 	public void setStatus(Directions newStatus) {
 		status = newStatus;
 	}
-	
+
 	public Directions getElvErrorState() {
 		return errorState;
 	}

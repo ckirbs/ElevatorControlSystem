@@ -50,13 +50,12 @@ public class Communicator {
 		byte val2 = message[3]; 
 		byte val3 = message[4]; 
 		
-		
 		switch (messageType) {
 		case (byte) NEW_REQUEST_FROM_FLOOR: return this.processNewRequest(flag, val1, val2);
 		case (byte) OPEN_CLOSE_DOOR: return this.openCloseDoor(flag, val1, val2, val3);
 		case (byte) CONFIRM_VOL_DESTINATION: return this.processConfirmation(flag, val1, val2, val3);
 		case (byte) STATUS_REPORT: return this.processStatusReport(flag, val1, val2);
-		case (byte) ERROR: return this.processNewRequest(flag, val1, val2);
+		case (byte) ERROR: return this.processErrorRequest(flag, val1, val2);
 		default: return false;
 		}
 	}
@@ -212,10 +211,6 @@ public class Communicator {
 		// Pick an elevator to send a request to
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
 		
-		if (Directions.getDirByInt((int) dir) == Directions.ERROR_MOVE || Directions.getDirByInt((int) dir) == Directions.ERROR_DOOR) {
-			message[0] = ERROR;
-		}
-		
 		// If an elevator was chosen
 		if (elevatorNumber != -1) {
 			System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " new destination: " + (int) origFloor + " Direction: " + Directions.getDirByInt((int) dir));
@@ -242,6 +237,44 @@ public class Communicator {
 			return false;
 		}
 
+	}
+	
+	/**
+	 * Method to set elevators into "broken" states, where the doors are stuck open or the elevator 
+	 * is stuck between floors.
+	 * 
+	 * 
+	 * @param dir
+	 * @param elevatorNumber
+	 * @param timer (not mandatory, but for future consideration)
+	 * @return
+	 */
+	private boolean processErrorRequest(byte dir, byte elevatorNumber, byte timer) {
+		// Create the request, giving it an id
+		byte[] message = new byte[MESSAGE_LENGTH];
+		message[0] = ERROR;
+		message[1] = MANDATORY;
+		message[3] = elevatorNumber;
+		message[4] = dir;
+		message[5] = (byte) Communicator.currReqId;
+		Communicator.currReqId++;
+		
+		System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " an error notice: " + Directions.getDirByInt((int) dir));
+		
+		// The request is now pending
+		pendingReqs.add(new byte[] {message[5], dir, elevatorNumber, timer, (byte) elevatorNumber});
+			
+		// Send the request to the elevator
+		try {
+			message[3] = (byte) elevatorNumber;
+			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
+			elevatorSocket.send(pckt);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+			
+		return true;
 	}
 	
 	/**

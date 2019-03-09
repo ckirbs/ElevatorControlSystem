@@ -87,23 +87,21 @@ public class FloorSystem {
 						floor.addFloorButtonPressed(message.getDestinationFloor());
 						if (message.getDirection() == Directions.UP) {
 							floor.setUpButtonPressed(true);
-							direction = 1;
-							printOutFloorInformation(floor, "A floor destination is chosen");
 						} else {
 							floor.setDownButtonPressed(true);
-							direction = 0;
-							printOutFloorInformation(floor, "A floor destination is chosen");
 						}
+						direction = (byte) Directions.getIntByDir(message.getDirection());
+						printOutFloorInformation(floor, "A floor destination is chosen");
 					} else {
 						if (message.getDirection() == Directions.ERROR_DOOR){
-							direction = 3;
+							direction = (byte) Directions.getIntByDir(message.getDirection());
 							messageType = ERROR;
-							System.out.println("\n" + FORMATTER.format(new Date()) + " Door Error sent\n");
-    					} else if (message.getDirection() == Directions.ERROR_MOVE){
-    						direction = 4;
-    						messageType = ERROR;
-    						System.out.println("\n" + FORMATTER.format(new Date()) + " Move Error sent\n");
-    					}
+              System.out.println("\n" + FORMATTER.format(new Date()) + " Door Error sent\n");
+    			  } else if (message.getDirection() == Directions.ERROR_MOVE){
+    					direction = (byte) Directions.getIntByDir(message.getDirection());
+    					messageType = ERROR;
+              System.out.println("\n" + FORMATTER.format(new Date()) + " Move Error sent\n");
+    				}
 					}
 					//puts the information of the floor event into a packet and sends it to the scheduler
 					byte[] buffer = new byte[]{messageType, direction, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor()};

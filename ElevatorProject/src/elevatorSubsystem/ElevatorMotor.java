@@ -100,6 +100,7 @@ public class ElevatorMotor extends Thread {
 				break;
 			case ERROR:
 				System.out.println(FORMATTER.format(new Date()) + ": ************************");				
+          
 				if (elv.getElvErrorState() == Directions.ERROR_MOVE) { // Hard fault
 					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " stuck while moving");
 					System.out.println(FORMATTER.format(new Date()) + ": ************************");
