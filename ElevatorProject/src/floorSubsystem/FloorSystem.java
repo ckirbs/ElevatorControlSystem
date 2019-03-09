@@ -79,24 +79,29 @@ public class FloorSystem {
 				public Boolean call() throws Exception {
 					byte direction = 0;
 					byte messageType = NEW_REQUEST_FROM_FLOOR;
-					// finds the floor depending on the starting floor
-					Floor floor = getFloorObjectByLevel(message.getStartingFloor());
-					//takes the data from the message object and puts it into a floor object
-					floor.addFloorButtonPressed(message.getDestinationFloor());
-					if (message.getDirection() == Directions.UP) {
-						floor.setUpButtonPressed(true);
-						direction = 1;
-						printOutFloorInformation(floor, "A floor destination is chosen");
-					} else if (message.getDirection() == Directions.UP){
-						floor.setDownButtonPressed(true);
-						direction = 0;
-						printOutFloorInformation(floor, "A floor destination is chosen");
-					} else if (message.getDirection() == Directions.ERROR_DOOR){
-						direction = 3;
-						messageType = ERROR;
-					} else if (message.getDirection() == Directions.ERROR_MOVE){
-						direction = 4;
-						messageType = ERROR;
+					
+					if (message.getDirection() == Directions.UP || message.getDirection() == Directions.DOWN){
+						// finds the floor depending on the starting floor
+						Floor floor = getFloorObjectByLevel(message.getStartingFloor());
+						//takes the data from the message object and puts it into a floor object
+						floor.addFloorButtonPressed(message.getDestinationFloor());
+						if (message.getDirection() == Directions.UP) {
+							floor.setUpButtonPressed(true);
+							direction = 1;
+							printOutFloorInformation(floor, "A floor destination is chosen");
+						} else {
+							floor.setDownButtonPressed(true);
+							direction = 0;
+							printOutFloorInformation(floor, "A floor destination is chosen");
+						}
+					} else {
+						if (message.getDirection() == Directions.ERROR_DOOR){
+							direction = 3;
+							messageType = ERROR;
+    					} else if (message.getDirection() == Directions.ERROR_MOVE){
+    						direction = 4;
+    						messageType = ERROR;
+    					}
 					}
 					//puts the information of the floor event into a packet and sends it to the scheduler
 					byte[] buffer = new byte[]{messageType, direction, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor()};
