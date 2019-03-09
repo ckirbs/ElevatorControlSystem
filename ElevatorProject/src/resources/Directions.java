@@ -9,7 +9,7 @@ public enum Directions {
 	ERROR_MOVE;
 	
 	public static boolean isOpposite(Directions dir1, Directions dir2) {
-		return !((dir1 == STANDBY || dir2 == STANDBY || dir1 == dir2) && !isInError(dir1,dir2));
+		return !((dir1 == STANDBY || dir2 == STANDBY || dir1 == dir2) && !isInError(dir1) || !isInError(dir2));
 	}
 	
 	/**
@@ -17,9 +17,8 @@ public enum Directions {
 	 * 
 	 * It is a separate function so that any call to it may be done from the dispatcher.
 	 */
-	public static boolean isInError(Directions dir1, Directions dir2) {
-		return (Directions.getIntByDir(dir1) >= Directions.getIntByDir(ERROR_DEFAULT) || 
-				Directions.getIntByDir(dir2) >= Directions.getIntByDir(ERROR_DEFAULT));
+	public static boolean isInError(Directions dir) {
+		return (Directions.getIntByDir(dir) >= Directions.getIntByDir(ERROR_DEFAULT));
 	}
 	
 	public static Directions getDirByInt(int val) {
