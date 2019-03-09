@@ -98,9 +98,11 @@ public class FloorSystem {
 						if (message.getDirection() == Directions.ERROR_DOOR){
 							direction = 3;
 							messageType = ERROR;
+							System.out.println("\n" + FORMATTER.format(new Date()) + " Door Error sent\n");
     					} else if (message.getDirection() == Directions.ERROR_MOVE){
     						direction = 4;
     						messageType = ERROR;
+    						System.out.println("\n" + FORMATTER.format(new Date()) + " Move Error sent\n");
     					}
 					}
 					//puts the information of the floor event into a packet and sends it to the scheduler

@@ -100,7 +100,7 @@ public class ElevatorMotor extends Thread {
 				break;
 			case ERROR:
 				System.out.println(FORMATTER.format(new Date()) + ": ************************");				
-				if (previousElvState == ElevatorState.MOVE) { // Hard fault
+				if (elv.getElvErrorState() == Directions.ERROR_MOVE) { // Hard fault
 					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " stuck while moving");
 					System.out.println(FORMATTER.format(new Date()) + ": ************************");
 					fixElevator(10000);
@@ -124,10 +124,28 @@ public class ElevatorMotor extends Thread {
 		}
 	}
 	
+	/*
+	 * enterErrorState() Change the elevator status to the correct error
+	 */
+	private void enterErrorState() {
+		elv.setStatus(elv.getElvErrorState());
+	}
+	
+	/*
+	 * exitErrorState() Revert the elevator status back to its previous directions
+	 * and reset the elvErrorState back to STANDBY
+	 */
+	private void exitErrorState(Directions tempStatus) {
+		elv.setElvErrorState(Directions.STANDBY); // Remove errorState
+		elv.setStatus(tempStatus);
+	}
+	
 	/**
 	 * fixElevator() Fix the elevator (it will 2 if soft fault or 10 seconds if hard fault)
 	 */
 	private void fixElevator(int time) {
+		Directions tempStatus = elv.getStatus();
+		enterErrorState();
 
 		try {
 			Thread.sleep(time); // sleep for 1 to 10000 seconds
@@ -135,7 +153,7 @@ public class ElevatorMotor extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
-		elv.setElvErrorState(Directions.STANDBY); // Remove errorState
+		exitErrorState(tempStatus); 
 	}
 	
 	
