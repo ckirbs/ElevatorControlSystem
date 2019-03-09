@@ -96,12 +96,12 @@ public class FloorSystem {
 						if (message.getDirection() == Directions.ERROR_DOOR){
 							direction = (byte) Directions.getIntByDir(message.getDirection());
 							messageType = ERROR;
-              System.out.println("\n" + FORMATTER.format(new Date()) + " Door Error sent\n");
-    			  } else if (message.getDirection() == Directions.ERROR_MOVE){
-    					direction = (byte) Directions.getIntByDir(message.getDirection());
-    					messageType = ERROR;
-              System.out.println("\n" + FORMATTER.format(new Date()) + " Move Error sent\n");
-    				}
+							System.out.println("\n" + FORMATTER.format(new Date()) + " Door Error sent\n");
+						} else if (message.getDirection() == Directions.ERROR_MOVE){
+							direction = (byte) Directions.getIntByDir(message.getDirection());
+							messageType = ERROR;
+							System.out.println("\n" + FORMATTER.format(new Date()) + " Move Error sent\n");
+    					}
 					}
 					//puts the information of the floor event into a packet and sends it to the scheduler
 					byte[] buffer = new byte[]{messageType, direction, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor()};
@@ -183,11 +183,6 @@ public class FloorSystem {
 	public synchronized void printOutFloorInformation(Floor floor, String action) {
 		System.out.print(FORMATTER.format(new Date()) + ": " + action + ", ");
 		System.out.print("On floor " + floor.getLevel() + ",");
-//		if (floor.isDoorOpen(elevatorIndex)) {
-//			System.out.print(" The elevator " + elevatorIndex + " door is open, ");
-//		} else {
-//			System.out.print(" The elevator " + elevatorIndex + " door is closed, ");
-//		}
 		if (floor.isUpButtonPressed()) {
 			System.out.print(" The up button pressed, ");
 		}
