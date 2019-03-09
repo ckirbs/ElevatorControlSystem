@@ -96,10 +96,12 @@ public class FloorSystem {
 						if (message.getDirection() == Directions.ERROR_DOOR){
 							direction = (byte) Directions.getIntByDir(message.getDirection());
 							messageType = ERROR;
-    					} else if (message.getDirection() == Directions.ERROR_MOVE){
-    						direction = (byte) Directions.getIntByDir(message.getDirection());
-    						messageType = ERROR;
-    					}
+              System.out.println("\n" + FORMATTER.format(new Date()) + " Door Error sent\n");
+    			  } else if (message.getDirection() == Directions.ERROR_MOVE){
+    					direction = (byte) Directions.getIntByDir(message.getDirection());
+    					messageType = ERROR;
+              System.out.println("\n" + FORMATTER.format(new Date()) + " Move Error sent\n");
+    				}
 					}
 					//puts the information of the floor event into a packet and sends it to the scheduler
 					byte[] buffer = new byte[]{messageType, direction, (byte) message.getStartingFloor(), (byte) message.getDestinationFloor()};
