@@ -9,7 +9,7 @@ public enum Directions {
 	ERROR_MOVE;
 	
 	public static boolean isOpposite(Directions dir1, Directions dir2) {
-		return !((dir1 == STANDBY || dir2 == STANDBY || dir1 == dir2) && !isInError(dir1) || !isInError(dir2));
+		return !((dir1 == STANDBY || dir2 == STANDBY || dir1 == dir2) && (!isInError(dir1) || !isInError(dir2)));
 	}
 	
 	/**
