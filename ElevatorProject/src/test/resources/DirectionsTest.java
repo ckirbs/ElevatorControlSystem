@@ -41,6 +41,42 @@ public class DirectionsTest {
 	}
 	
 	@Test
+	public void testOppositeUpErrDf() {
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.UP, Directions.ERROR_DEFAULT));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_DEFAULT, Directions.UP));
+	}
+	
+	@Test
+	public void testOppositeUpErrDo() {
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.UP, Directions.ERROR_DOOR));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_DOOR, Directions.UP));
+	}
+	
+	@Test
+	public void testOppositeUpErrMv() {
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.UP, Directions.ERROR_MOVE));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_MOVE, Directions.UP));
+	}
+	
+	@Test
+	public void testOppositeDownErrDf() {
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.DOWN, Directions.ERROR_DEFAULT));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_DEFAULT, Directions.DOWN));
+	}
+	
+	@Test
+	public void testOppositeDownErrDo() {
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.DOWN, Directions.ERROR_DOOR));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_DOOR, Directions.DOWN));
+	}
+	
+	@Test
+	public void testOppositeDownErrMv() {
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.DOWN, Directions.ERROR_MOVE));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_MOVE, Directions.DOWN));
+	}
+	
+	@Test
 	public void testZeroReturnsDown() {
 		assertEquals("Wrong Direction Value", Directions.DOWN, Directions.getDirByInt(0));
 	}
