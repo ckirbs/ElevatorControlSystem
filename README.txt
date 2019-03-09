@@ -132,15 +132,18 @@ Group Memebers and Responsibilities
 
 		Callum Kirby
 
-			
+			Updates to Directions enum class
+			Automated test updates
 
 		Christopher Molnar
 
-			Implementing elevator error modes
+			Implementing elevator error modes and error propogation through the system
+			Update State Machine
 
 		Logan MacGillivary
 
-			
+			Update UML
+			Dispatcher logic update to accomodate errors
 
 		Brandon Hartford
 			Timing diagram
