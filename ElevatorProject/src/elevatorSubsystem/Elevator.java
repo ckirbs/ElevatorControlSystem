@@ -82,20 +82,20 @@ public class Elevator {
 			} else if (status == Directions.DOWN) {
 				if (!downList.subSet(MIN_FLOOR, currFloorPosition + 1).isEmpty()) {// There is down services below us
 					floorDestination = downList.subSet(MIN_FLOOR, currFloorPosition + 1).last();
-					serviceUpList = Directions.UP;
+					serviceUpList = Directions.DOWN;
 				} else if (!upList.isEmpty()) { // IF there aren't down requests below us check for up requests
 					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR + 1).first(); // Start service at the lowest
 																						// up floor
 				} else { // still down floors to service above the currentFloorPosition
 					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR + 1).last(); // Start at top and go down
-					serviceUpList = Directions.UP;
+					serviceUpList = Directions.DOWN;
 				}
 			} else { // status == Directions.STANDBY
 				if (!upList.isEmpty()) {
 					floorDestination = upList.subSet(MIN_FLOOR, MAX_FLOOR + 1).first();
 				} else {
 					floorDestination = downList.subSet(MIN_FLOOR, MAX_FLOOR + 1).last();
-					serviceUpList = Directions.UP;
+					serviceUpList = Directions.DOWN;
 				}
 			}
 			setCurrentServiceList(serviceUpList);
@@ -378,8 +378,7 @@ public class Elevator {
 	}
 
 	public Directions getStatus() {
-		if (errorState == Directions.STANDBY) return status;
-		else return errorState;
+		return status;
 	}
 	
 	public Directions getElvErrorState() {
