@@ -135,7 +135,7 @@ Group Memebers and Responsibilities
 
 			Updates to Directions enum class
 			
-      Automated test updates
+      			Automated test updates
 
 			UML Class Diagram Update			
 
