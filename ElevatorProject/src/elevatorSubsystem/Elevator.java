@@ -282,7 +282,7 @@ public class Elevator {
 	 * @return msg containing elevator status, number, and current position
 	 */
 	byte[] generateSatusMsg() {
-		return new byte[] { Constants.STATUS_REPORT, (byte) Directions.getIntByDir(this.getStatus()),
+		return new byte[] { Constants.STATUS_REPORT, (byte) Directions.getIntByDir(((this.errorState == Directions.STANDBY) ? this.getStatus() : this.errorState)),
 				(byte) (int) currFloorPosition, (byte) (int) elvNumber, 0 };
 	}
 
