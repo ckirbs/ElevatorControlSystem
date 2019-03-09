@@ -264,7 +264,7 @@ public class Communicator {
 		byte[] message = new byte[MESSAGE_LENGTH];
 		message[0] = ERROR;
 		message[1] = MANDATORY;
-		message[2] = elevatorNumber;
+		message[3] = elevatorNumber;
 		message[4] = dir;
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
