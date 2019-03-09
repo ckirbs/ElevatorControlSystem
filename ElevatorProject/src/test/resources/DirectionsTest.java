@@ -77,57 +77,32 @@ public class DirectionsTest {
 	}
 	
 	@Test
-	public void testErrorUpDown() {
-		assertFalse("Wrong Error Value", Directions.isInError(Directions.UP, Directions.DOWN));
-		assertFalse("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.UP));
+	public void testErrorUp() {
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.UP));
 	}
 	
 	@Test
-	public void testErrorUpSB() {
-		assertFalse("Wrong Error Value", Directions.isInError(Directions.UP, Directions.STANDBY));
-		assertFalse("Wrong Error Value", Directions.isInError(Directions.STANDBY, Directions.UP));
+	public void testErrorDown() {
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.DOWN));
 	}
 	
 	@Test
-	public void testErrorUpDf() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.UP, Directions.ERROR_DEFAULT));
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DEFAULT, Directions.UP));
+	public void testErrorSB() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.STANDBY));
 	}
 	
 	@Test
-	public void testErrorUpDo() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.UP, Directions.ERROR_DOOR));
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DOOR, Directions.UP));
+	public void testErrorDoorErr() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DOOR));
+	}
+
+	public void testErrorDefaultErr() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DEFAULT));
 	}
 	
 	@Test
-	public void testErrorUpMV() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.UP, Directions.ERROR_MOVE));
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_MOVE, Directions.UP));
-	}
-	
-	@Test
-	public void testErrorDownSB() {
-		assertFalse("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.STANDBY));
-		assertFalse("Wrong Error Value", Directions.isInError(Directions.STANDBY, Directions.DOWN));
-	}
-	
-	@Test
-	public void testErrorDownDf() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.ERROR_DEFAULT));
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DEFAULT, Directions.DOWN));
-	}
-	
-	@Test
-	public void testErrorDownDo() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.ERROR_DOOR));
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DOOR, Directions.DOWN));
-	}
-	
-	@Test
-	public void testErrorDownMV() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.ERROR_MOVE));
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_MOVE, Directions.DOWN));
+	public void testErrorMoveErr() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_MOVE));
 	}
 	
 	@Test
