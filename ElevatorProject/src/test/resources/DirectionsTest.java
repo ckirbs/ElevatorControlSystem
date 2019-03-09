@@ -95,6 +95,10 @@ public class DirectionsTest {
 	public void testErrorDoorErr() {
 		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DOOR));
 	}
+
+	public void testErrorDefaultErr() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DEFAULT));
+	}
 	
 	@Test
 	public void testErrorMoveErr() {
