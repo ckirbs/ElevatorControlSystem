@@ -77,6 +77,60 @@ public class DirectionsTest {
 	}
 	
 	@Test
+	public void testErrorUpDown() {
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.UP, Directions.DOWN));
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.UP));
+	}
+	
+	@Test
+	public void testErrorUpSB() {
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.UP, Directions.STANDBY));
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.STANDBY, Directions.UP));
+	}
+	
+	@Test
+	public void testErrorUpDf() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.UP, Directions.ERROR_DEFAULT));
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DEFAULT, Directions.UP));
+	}
+	
+	@Test
+	public void testErrorUpDo() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.UP, Directions.ERROR_DOOR));
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DOOR, Directions.UP));
+	}
+	
+	@Test
+	public void testErrorUpMV() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.UP, Directions.ERROR_MOVE));
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_MOVE, Directions.UP));
+	}
+	
+	@Test
+	public void testErrorDownSB() {
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.STANDBY));
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.STANDBY, Directions.DOWN));
+	}
+	
+	@Test
+	public void testErrorDownDf() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.ERROR_DEFAULT));
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DEFAULT, Directions.DOWN));
+	}
+	
+	@Test
+	public void testErrorDownDo() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.ERROR_DOOR));
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DOOR, Directions.DOWN));
+	}
+	
+	@Test
+	public void testErrorDownMV() {
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.DOWN, Directions.ERROR_MOVE));
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_MOVE, Directions.DOWN));
+	}
+	
+	@Test
 	public void testZeroReturnsDown() {
 		assertEquals("Wrong Direction Value", Directions.DOWN, Directions.getDirByInt(0));
 	}
