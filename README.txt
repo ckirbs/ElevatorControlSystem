@@ -128,6 +128,7 @@ Group Memebers and Responsibilities
 		Darren Holden
 		
 			Debugging error modes
+			Measuring performance times
 
 		Callum Kirby
 
