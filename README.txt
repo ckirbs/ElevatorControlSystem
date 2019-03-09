@@ -128,11 +128,14 @@ Group Memebers and Responsibilities
 		Darren Holden
 		
 			Debugging error modes
+			
 			Measuring performance times
 
 		Callum Kirby
 
 			
+
+			UML Class Diagram Update			
 
 		Christopher Molnar
 
@@ -140,10 +143,14 @@ Group Memebers and Responsibilities
 
 		Logan MacGillivary
 
-			
+			Implementing scheduler error injection
+		
+			UML Class Diagram Update			
 
 		Brandon Hartford
+			
 			Timing diagram
+			
 			Floor subsystem formatting cleanup
 
 Set Up Instructions/Run
