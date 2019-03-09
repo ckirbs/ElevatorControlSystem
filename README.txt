@@ -142,11 +142,12 @@ Group Memebers and Responsibilities
 		Christopher Molnar
 
 			Implementing elevator error modes and error propogation through the system
+			
 			Update State Machine
 
 		Logan MacGillivary
 
-      Update UML Class diagram
+      			Update UML Class diagram
       
 			Dispatcher & Communicator logic update to accomodate errors
 
