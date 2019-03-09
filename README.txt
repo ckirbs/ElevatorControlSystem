@@ -74,8 +74,6 @@ Group Memebers and Responsibilities
 
 			Performing end-to-end tests and debugging
 
-			Error mode debugging
-
 		Callum Kirby
 
 			Programming the Elevator, ElevatorMotor, and ElevatorReciever
@@ -92,9 +90,6 @@ Group Memebers and Responsibilities
 			Writing documentation
 
 			Drawing the elevator state machine diagram
-			
-			Implementing error modes for the elevators
-
 
 		Logan MacGillivary
 
@@ -129,6 +124,26 @@ Group Memebers and Responsibilities
 		Brandon Hartford
 	
 			Updating Floor subsystem
+	Iteration 3
+		Darren Holden
+		
+			Debugging error modes
+
+		Callum Kirby
+
+			
+
+		Christopher Molnar
+
+			Implementing elevator error modes
+
+		Logan MacGillivary
+
+			
+
+		Brandon Hartford
+
+			
 
 Set Up Instructions/Run
 	
