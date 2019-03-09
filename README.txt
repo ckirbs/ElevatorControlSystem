@@ -128,6 +128,7 @@ Group Memebers and Responsibilities
 		Darren Holden
 		
 			Debugging error modes
+			Measuring performance times
 
 		Callum Kirby
 
@@ -194,3 +195,36 @@ Errors List
 	(4) Scheduler subsystem experiences request starvation when a denied request consistently gets denied
 	
 	(5) Scheduler, Elevator, and Floor subsystems all experience packet loss
+
+Performance Notes
+	Currently the Elevators travel at 1 floor per second with instantaneous acceleration
+	The doors open and close instantaneously, with 1 second between open and close
+	Times were measured without any elevator errors
+
+	Service Times
+		Service time was measured as the time it takes between a passenger pressing a button on a floor and an elevator going in the correct direction opening its doors on that floor
+		As seen below, the system is much more efficient with 4 elevators as opposed to 1, increasing the number of elevators to 4 decreases the average service time by 86%	
+
+		4 Elevators, 11 Floors: 
+			Average: 3.8 seconds
+			Minimum: 0 seconds
+			Maximum: 9 seconds
+
+		1 Elevator, 11 Floors:
+			Average: 27.3 seconds
+			Minimum: 4 seconds
+			Maximum: 53 seconds
+
+	Travel Times
+		Travel time was measured as the time it takes between an elevator opening its doors to pick up the passenger and the elevator opening its doors at the destination floor
+		As seen below, the average travel time does not significantly change with more elevators, however the range is much less volatile with more elvators, the maximum travel time being 27 seconds higher for 1 elevator
+
+		4 Elevators, 11 Floors: 
+			Average: 10.1 seconds
+			Minimum: 3 seconds
+			Maximum: 20 seconds
+
+		1 Elevator, 11 Floors:
+			Average: 12.4 seconds
+			Minimum: 3 seconds
+			Maximum: 47 seconds
