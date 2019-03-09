@@ -142,8 +142,8 @@ Group Memebers and Responsibilities
 			
 
 		Brandon Hartford
-
-			
+			Timing diagram
+			Floor subsystem formatting cleanup
 
 Set Up Instructions/Run
 	
