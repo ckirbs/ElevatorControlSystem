@@ -71,6 +71,7 @@ public class Communicator {
 	private boolean processStatusReport(byte dir, byte floorNum, byte elevatorNum) {
 		System.out.println(FORMATTER.format(new Date()) + ": Updating status of elev " + (int) elevatorNum);
 		if (dir == (byte) Directions.getIntByDir(Directions.ERROR_HARD))  {
+			System.out.println(FORMATTER.format(new Date()) + ": Elevator " + (int)elevatorNum + " stuck permanently: Reschedule pending requests");
 			Thread reallocator = new Thread(new Reallocator((int) elevatorNum));
 			reallocator.start();
 		} 
@@ -289,13 +290,16 @@ public class Communicator {
 		
 		// For each elevator
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
-			// Generate and send a status report request
-			byte[] msg = new byte[] {ELEVATOR_INFO_REQUEST, (byte) 0, (byte) 0, (byte) i, (byte) 0, (byte) 0};
-			try {
-				pckt = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
-				elevatorSocket.send(pckt);
-			} catch (IOException e) {
-				e.printStackTrace();
+			// Don't check permanently stuck elevators
+			if (Dispatcher.getElevatorDirectionByElevatorNumber(i) != Directions.ERROR_HARD) {
+    			// Generate and send a status report request
+    			byte[] msg = new byte[] {ELEVATOR_INFO_REQUEST, (byte) 0, (byte) 0, (byte) i, (byte) 0, (byte) 0};
+    			try {
+    				pckt = new DatagramPacket(msg, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
+    				elevatorSocket.send(pckt);
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
 			}
 		}
 		

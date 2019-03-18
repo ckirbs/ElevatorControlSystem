@@ -15,6 +15,7 @@ import static resources.Constants.*;
 public class Dispatcher {
 	private ArrayList<Elevator> elevators;
 	public final static int MAX_DIFF = NUMBER_OF_FLOORS + 1; // + 1 so that it's always bigger than the greatest possible difference
+	private static ArrayList<Directions> elevatorDirections = new ArrayList<Directions>();
 	
 	/**
 	 * Default constructor that builds a Dispatcher with a default value
@@ -28,7 +29,11 @@ public class Dispatcher {
 	 */
 	public Dispatcher(int elevNum) {
 		this.elevators = new ArrayList<Elevator>();
-		for (int i = 0; i < elevNum; i++) this.elevators.add(new Elevator(i, Directions.STANDBY, 0));
+		for (int i = 0; i < elevNum; i++) {
+			Elevator elv = new Elevator(i, Directions.STANDBY, 0);
+			this.elevators.add(elv);
+			Dispatcher.elevatorDirections.add(elv.getDir());
+		}
 	}
 	
 	public synchronized boolean updateElevatorInfo(int id, Directions dir, int floor) {
@@ -36,6 +41,7 @@ public class Dispatcher {
 		
 		this.elevators.get(id).setFloor(floor);
 		this.elevators.get(id).setDir(dir);
+		Dispatcher.setElevatorDirectionByElevatorNumber(id, dir);
 		return true;
 	}
 	
@@ -73,6 +79,14 @@ public class Dispatcher {
 		}
 		
 		return currElevator;
+	}
+	
+	public static Directions getElevatorDirectionByElevatorNumber(int elvNum){
+		return Dispatcher.elevatorDirections.get(elvNum);		
+	}
+	
+	public static void setElevatorDirectionByElevatorNumber(int elvNum, Directions direction){
+		Dispatcher.elevatorDirections.set(elvNum, direction);		
 	}
 	
 	// Elevator object to hold elevator info

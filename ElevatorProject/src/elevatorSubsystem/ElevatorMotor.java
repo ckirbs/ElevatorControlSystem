@@ -103,7 +103,7 @@ public class ElevatorMotor extends Thread {
 				System.out.println(FORMATTER.format(new Date()) + ": ************************");				
           
 				if (elv.getElvErrorState() == Directions.ERROR_HARD) { // Hard fault
-					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " stuck while moving");
+					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " permanently stuck");
 					System.out.println(FORMATTER.format(new Date()) + ": ************************");
 					fixElevator(-1);
 				} else { // Soft fault. ie: Doors don't close

@@ -94,9 +94,9 @@ public class SystemFile {
 
 			} else if (messageDetails[2].equalsIgnoreCase("down")) {
 				direction = Directions.DOWN;
-			} else if (messageDetails[2].equalsIgnoreCase("error_move")) {
+			} else if (messageDetails[2].equalsIgnoreCase("error_hard")) {
 				direction = Directions.ERROR_HARD;
-			} else if (messageDetails[2].equalsIgnoreCase("error_door")) {
+			} else if (messageDetails[2].equalsIgnoreCase("error_soft")) {
 				direction = Directions.ERROR_SOFT;
 			} else // If not "up" or "down" it's an invalid direction
 			{

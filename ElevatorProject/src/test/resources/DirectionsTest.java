@@ -88,7 +88,7 @@ public class DirectionsTest {
 	
 	@Test
 	public void testErrorSB() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.STANDBY));
+		assertFalse("Wrong Error Value", Directions.isInError(Directions.STANDBY));
 	}
 	
 	@Test
