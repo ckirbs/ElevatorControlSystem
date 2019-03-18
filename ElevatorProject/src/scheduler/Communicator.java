@@ -348,6 +348,8 @@ public class Communicator {
 		
 		@Override
 		public void run() {
+			System.out.println(FORMATTER.format(new Date()) + ": Reallocating requests for elevator " + (int) elev);
+			
 			// Grab the list of requests for people who are waiting for the elevator at a given floor
 			// Create a instance copy and empty the list after copying and release the lock
 			ArrayList<Set<Integer>> pendingReqList;
