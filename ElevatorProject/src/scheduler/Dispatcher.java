@@ -1,8 +1,6 @@
 package scheduler;
 
 import java.util.ArrayList;
-import java.time.LocalTime;
-
 import resources.*;
 import static resources.Constants.*;
 
@@ -13,7 +11,7 @@ import static resources.Constants.*;
  *
  */
 public class Dispatcher {
-	private ArrayList<Elevator> elevators;
+	private static ArrayList<Elevator> elevators;
 	public final static int MAX_DIFF = NUMBER_OF_FLOORS + 1; // + 1 so that it's always bigger than the greatest possible difference
 	
 	/**
@@ -27,15 +25,18 @@ public class Dispatcher {
 	 * Constructor class that builds a Dispatcher with suggested number of elevators
 	 */
 	public Dispatcher(int elevNum) {
-		this.elevators = new ArrayList<Elevator>();
-		for (int i = 0; i < elevNum; i++) this.elevators.add(new Elevator(i, Directions.STANDBY, 0));
+		Dispatcher.elevators = new ArrayList<Elevator>();
+		for (int i = 0; i < elevNum; i++) {
+			Elevator elv = new Elevator(i, Directions.STANDBY, 0);
+			Dispatcher.elevators.add(elv);
+		}
 	}
 	
 	public synchronized boolean updateElevatorInfo(int id, Directions dir, int floor) {
-		if (id > this.elevators.size() || id < 0) return false;
+		if (id > Dispatcher.elevators.size() || id < 0) return false;
 		
-		this.elevators.get(id).setFloor(floor);
-		this.elevators.get(id).setDir(dir);
+		Dispatcher.elevators.get(id).setFloor(floor);
+		Dispatcher.elevators.get(id).setDir(dir);
 		return true;
 	}
 	
@@ -53,7 +54,7 @@ public class Dispatcher {
 		int currElevator = -1;
 		
 		// For each elevator
-		for (Elevator elevator: this.elevators) {
+		for (Elevator elevator: Dispatcher.elevators) {
 			// Only check elevators that are on standby or going the right direction
 			// Elevators that are in error do not pass here
 			if (!Directions.isOpposite(dir, elevator.getDir()) && 
@@ -73,6 +74,10 @@ public class Dispatcher {
 		}
 		
 		return currElevator;
+	}
+	
+	public static Directions getElevatorDirectionByElevatorNumber(int elvNum){
+		return elevators.get(elvNum).getDir();		
 	}
 	
 	// Elevator object to hold elevator info

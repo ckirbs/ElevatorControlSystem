@@ -30,7 +30,7 @@ public final class Constants {
 	public static final String FLOOR_SYS_IP_ADDRESS = "127.0.0.1";
 	public static final String ELEVATOR_SYS_IP_ADDRESS = "127.0.0.1";
 	
-	public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss");
+	public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSSS");
 	
 	// Message Type Values
 	public static final byte ERROR = 0;

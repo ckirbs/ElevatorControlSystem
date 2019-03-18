@@ -2,6 +2,7 @@ package elevatorSubsystem;
 
 
 import java.util.Date;
+import java.util.Random;
 
 import resources.Constants;
 import resources.Directions;
@@ -60,7 +61,7 @@ public class ElevatorMotor extends Thread {
 				if (elv.getCurrFloorPosition() == elv.getFloorDestionation()) { // Arrived at destination floor
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.STOP;
-				} else if (elv.getElvErrorState() == Directions.ERROR_MOVE) {
+				} else if (elv.getElvErrorState() == Directions.ERROR_HARD) {
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.ERROR;
 				} else {
@@ -68,7 +69,7 @@ public class ElevatorMotor extends Thread {
 				}
 				break;
 			case DOOR_CLOSE:
-				if (elv.getElvErrorState() == Directions.ERROR_DOOR) {
+				if (elv.getElvErrorState() == Directions.ERROR_SOFT) {
 					previousElvState = currentElvState;
 					currentElvState = ElevatorState.ERROR;
 				} else {
@@ -101,14 +102,18 @@ public class ElevatorMotor extends Thread {
 			case ERROR:
 				System.out.println(FORMATTER.format(new Date()) + ": ************************");				
           
-				if (elv.getElvErrorState() == Directions.ERROR_MOVE) { // Hard fault
-					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " stuck while moving");
+				if (elv.getElvErrorState() == Directions.ERROR_HARD) { // Hard fault
+					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " permanently stuck");
 					System.out.println(FORMATTER.format(new Date()) + ": ************************");
-					fixElevator(10000);
+					fixElevator(-1);
 				} else { // Soft fault. ie: Doors don't close
 					System.out.println(FORMATTER.format(new Date()) + ": Elevator " + elv.getElvNumber() + " door stuck open");
 					System.out.println(FORMATTER.format(new Date()) + ": ************************");
-					fixElevator(2000);
+					
+					// Generate a random fix time which is between 1 and 4 seconds (inclusive) 
+					Random r = new Random();
+					int fixSeconds = r.nextInt(4) + 1;
+					fixElevator(fixSeconds * 1000);
 				}
 				
 				// Return to previous state to complete the needed action
@@ -143,10 +148,14 @@ public class ElevatorMotor extends Thread {
 	
 	/**
 	 * fixElevator() Fix the elevator (it will 2 if soft fault or 10 seconds if hard fault)
+	 * -1 is a flag to indicate that it can't be fixed
 	 */
 	private void fixElevator(int time) {
 		Directions tempStatus = elv.getStatus();
 		enterErrorState();
+		
+		// If it's a hard fault, it's stuck forever
+		while (time == -1) {}
 
 		try {
 			Thread.sleep(time); // sleep for 1 to 10000 seconds

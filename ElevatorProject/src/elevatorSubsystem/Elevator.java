@@ -159,7 +159,7 @@ public class Elevator {
 		return currentServiceList;
 	}
 
-	public void setCurrentServiceList(Directions direction) {
+	public synchronized void setCurrentServiceList(Directions direction) {
 		if (direction == Directions.UP) {
 			currentServiceList = upList;
 		} else if (direction == Directions.DOWN) {

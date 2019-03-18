@@ -89,15 +89,15 @@ public class SystemFile {
 
 			Directions direction;
 
-			if (messageDetails[2].equalsIgnoreCase("up")) {
+			if (messageDetails[2].equalsIgnoreCase(Directions.UP.toString())) {
 				direction = Directions.UP;
 
-			} else if (messageDetails[2].equalsIgnoreCase("down")) {
+			} else if (messageDetails[2].equalsIgnoreCase(Directions.DOWN.toString())) {
 				direction = Directions.DOWN;
-			} else if (messageDetails[2].equalsIgnoreCase("error_move")) {
-				direction = Directions.ERROR_MOVE;
-			} else if (messageDetails[2].equalsIgnoreCase("error_door")) {
-				direction = Directions.ERROR_DOOR;
+			} else if (messageDetails[2].equalsIgnoreCase(Directions.ERROR_HARD.toString())) {
+				direction = Directions.ERROR_HARD;
+			} else if (messageDetails[2].equalsIgnoreCase(Directions.ERROR_SOFT.toString())) {
+				direction = Directions.ERROR_SOFT;
 			} else // If not "up" or "down" it's an invalid direction
 			{
 				System.out.println("Invalid Direction");

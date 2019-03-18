@@ -93,11 +93,11 @@ public class FloorSystem {
 						direction = (byte) Directions.getIntByDir(message.getDirection());
 						printOutFloorInformation(floor, "A floor destination is chosen");
 					} else {
-						if (message.getDirection() == Directions.ERROR_DOOR){
+						if (message.getDirection() == Directions.ERROR_SOFT){
 							direction = (byte) Directions.getIntByDir(message.getDirection());
 							messageType = ERROR;
 							System.out.println("\n" + FORMATTER.format(new Date()) + " Door Error sent\n");
-						} else if (message.getDirection() == Directions.ERROR_MOVE){
+						} else if (message.getDirection() == Directions.ERROR_HARD){
 							direction = (byte) Directions.getIntByDir(message.getDirection());
 							messageType = ERROR;
 							System.out.println("\n" + FORMATTER.format(new Date()) + " Move Error sent\n");
