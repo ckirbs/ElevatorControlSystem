@@ -48,14 +48,14 @@ public class DirectionsTest {
 	
 	@Test
 	public void testOppositeUpErrDo() {
-		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.UP, Directions.ERROR_DOOR));
-		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_DOOR, Directions.UP));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.UP, Directions.ERROR_SOFT));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_SOFT, Directions.UP));
 	}
 	
 	@Test
 	public void testOppositeUpErrMv() {
-		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.UP, Directions.ERROR_MOVE));
-		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_MOVE, Directions.UP));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.UP, Directions.ERROR_HARD));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_HARD, Directions.UP));
 	}
 	
 	@Test
@@ -66,14 +66,14 @@ public class DirectionsTest {
 	
 	@Test
 	public void testOppositeDownErrDo() {
-		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.DOWN, Directions.ERROR_DOOR));
-		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_DOOR, Directions.DOWN));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.DOWN, Directions.ERROR_SOFT));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_SOFT, Directions.DOWN));
 	}
 	
 	@Test
 	public void testOppositeDownErrMv() {
-		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.DOWN, Directions.ERROR_MOVE));
-		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_MOVE, Directions.DOWN));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.DOWN, Directions.ERROR_HARD));
+		assertFalse("Wrong Opposite Value", Directions.isOpposite(Directions.ERROR_HARD, Directions.DOWN));
 	}
 	
 	@Test
@@ -93,7 +93,7 @@ public class DirectionsTest {
 	
 	@Test
 	public void testErrorDoorErr() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_DOOR));
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_SOFT));
 	}
 
 	public void testErrorDefaultErr() {
@@ -102,7 +102,7 @@ public class DirectionsTest {
 	
 	@Test
 	public void testErrorMoveErr() {
-		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_MOVE));
+		assertTrue("Wrong Error Value", Directions.isInError(Directions.ERROR_HARD));
 	}
 	
 	@Test

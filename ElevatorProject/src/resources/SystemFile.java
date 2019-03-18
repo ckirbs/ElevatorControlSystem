@@ -95,9 +95,9 @@ public class SystemFile {
 			} else if (messageDetails[2].equalsIgnoreCase("down")) {
 				direction = Directions.DOWN;
 			} else if (messageDetails[2].equalsIgnoreCase("error_move")) {
-				direction = Directions.ERROR_MOVE;
+				direction = Directions.ERROR_HARD;
 			} else if (messageDetails[2].equalsIgnoreCase("error_door")) {
-				direction = Directions.ERROR_DOOR;
+				direction = Directions.ERROR_SOFT;
 			} else // If not "up" or "down" it's an invalid direction
 			{
 				System.out.println("Invalid Direction");

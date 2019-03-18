@@ -5,8 +5,8 @@ public enum Directions {
 	DOWN,
 	STANDBY,
 	ERROR_DEFAULT,
-	ERROR_DOOR,
-	ERROR_MOVE;
+	ERROR_SOFT,
+	ERROR_HARD;
 	
 	public static boolean isOpposite(Directions dir1, Directions dir2) {
 		return !((dir1 == STANDBY || dir2 == STANDBY || dir1 == dir2) || isInError(dir1) || isInError(dir2));
@@ -27,8 +27,8 @@ public enum Directions {
 		case 1: return UP;
 		case 2: return STANDBY;
 		case 3: return ERROR_DEFAULT;
-		case 4: return ERROR_DOOR;
-		case 5: return ERROR_MOVE;
+		case 4: return ERROR_SOFT;
+		case 5: return ERROR_HARD;
 		default: return null;
 		}
 	}
@@ -41,8 +41,8 @@ public enum Directions {
 		case UP: return 1;
 		case STANDBY: return 2;
 		case ERROR_DEFAULT: return 3;
-		case ERROR_DOOR: return 4;
-		case ERROR_MOVE: return 5;
+		case ERROR_SOFT: return 4;
+		case ERROR_HARD: return 5;
 		default: return -1;
 		}
 	}

@@ -70,6 +70,10 @@ public class Communicator {
 	 */
 	private boolean processStatusReport(byte dir, byte floorNum, byte elevatorNum) {
 		System.out.println(FORMATTER.format(new Date()) + ": Updating status of elev " + (int) elevatorNum);
+		if (dir == (byte) Directions.getIntByDir(Directions.ERROR_HARD))  {
+			Thread reallocator = new Thread(new Reallocator((int) elevatorNum));
+			reallocator.start();
+		} 
 		return Communicator.dispatcher.updateElevatorInfo((int) elevatorNum, Directions.getDirByInt((int) dir) , (int) floorNum);
 	}
 
@@ -318,5 +322,50 @@ public class Communicator {
 			
 			Communicator.tempDeniedHolder.clear();
 		}
+	}
+	
+	/**
+	 * A class that will reallocate all of a give elevator's pending requests
+	 * 
+	 * @author Darren
+	 *
+	 */
+	private class Reallocator implements Runnable {
+		private int elev;
+ 
+		/**
+		 * Construct the reallocator with the target elevator
+		 * 
+		 * @param elev
+		 */
+		public Reallocator(int elev) {
+			this.elev = elev;
+		}
+		
+		@Override
+		public void run() {
+			// Grab the list of requests for people who are waiting for the elevator at a given floor
+			// Create a instance copy and empty the list after copying and release the lock
+			ArrayList<Set<Integer>> pendingReqList;
+			synchronized (destinations) {
+				pendingReqList = destinations.get(elev);
+				destinations.set(elev, new ArrayList<Set<Integer>>());
+			}
+			
+			// For each of the floors, find all of the waiting requests that would be picked up by the elevator
+			for (int floorNum = 0; floorNum < pendingReqList.size(); floorNum++) {
+				// For each request waiting at the current floor, reprocess the request so it gets allocated to a working elevator
+				for (int dest: pendingReqList.get(floorNum)) {
+					// Debug line to see it cycling the pending requests
+					//System.err.println(FORMATTER.format(new Date()) + ": Retrying elevator " + elev + " pending req: " + floorNum + " to " + dest);
+					if (floorNum < dest) {
+						processNewRequest((byte) Directions.getIntByDir(Directions.UP), (byte) floorNum, (byte) dest);
+					} else {
+						processNewRequest((byte) Directions.getIntByDir(Directions.DOWN), (byte) floorNum, (byte) dest);
+					}
+				}
+			}
+		}
+		
 	}
 }
