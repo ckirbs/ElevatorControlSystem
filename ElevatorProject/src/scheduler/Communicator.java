@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Date;
 
 import scheduler.Dispatcher;
@@ -32,9 +33,14 @@ public class Communicator {
 	protected static ArrayList<byte[]> pendingReqs = new ArrayList<byte[]>();
 	private static int currReqId;
 	private static Set<Integer> pendingMandReqs = new HashSet<Integer>();
+	private static List<Floor> floors;
 	
 	public Communicator() {
 		Communicator.currReqId = 1;
+		floors = new ArrayList<Floor>();
+		for (int i = 0; i < NUMBER_OF_FLOORS; i++) {
+			floors.add(new Floor(i));
+		}
 	}
 	
 	/**
@@ -144,6 +150,17 @@ public class Communicator {
 			msg[2] = floorNum;
 			msg[3] = elevatorNum;
 			msg[4] = dir;
+			
+			for (Floor floor : floors) {
+				if (floor.getLevel() == floorNum) {
+					if (openClose == OPEN) {
+						floor.isDoorOpen = true;
+					} else {
+						floor.isDoorOpen = false;
+					}
+					break;
+				}
+			}
 			
 			System.out.println(FORMATTER.format(new Date()) + ": " + ((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
@@ -325,6 +342,42 @@ public class Communicator {
 			}
 			
 			Communicator.tempDeniedHolder.clear();
+		}
+	}
+	
+	public Dispatcher getDispatcher() {
+		return dispatcher;
+	}
+	
+	public ArrayList<Integer> getFloorsWithOpenDoor(){
+		ArrayList<Integer> returnList = new ArrayList<>();
+		for (Floor floor : floors) {
+			if (floor.isDoorOpen) {
+				returnList.add(floor.getLevel());
+			}
+		}
+		return returnList;
+	}
+	
+	private class Floor {
+		
+		private int level;
+		private boolean isDoorOpen = false;
+		
+		public Floor(int level) {
+			this.level = level;
+		}
+		
+		public void setIsDoorOpen(boolean isDoorOpen) {
+			this.isDoorOpen = isDoorOpen;
+		}
+		
+		public boolean getIsDoorOpen() {
+			return isDoorOpen;
+		}
+		
+		public int getLevel() {
+			return level;
 		}
 	}
 	
