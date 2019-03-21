@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -59,14 +60,18 @@ public class ElevatorGUI extends JPanel implements Runnable{
 	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		ArrayList<Integer> floorWithOpenDoor = floorListener.getFloorsWithOpenDoor();
+		HashMap<Integer, ArrayList<Integer>> floorWithOpenDoor = floorListener.getFloorsWithOpenDoor();
 		for (int i = 0; i < HIGHEST_FLOOR; i++) {
 			g.fillRect(0, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR, SIZE_X/2, HEIGHT_OF_FLOOR_SEPERATOR);
 			g.drawString("Floor " + (HIGHEST_FLOOR - i), 20, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 5);
-			if (floorWithOpenDoor.contains(i)) {
-				g.drawImage(doorsOpen, WIDTH_OF_BUFFER, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT, WIDTH_OF_ELEVATOR, HEIGHT_OF_ELEVATOR, this);
-			} else {
-				g.drawImage(doorsClosed, WIDTH_OF_BUFFER, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT, WIDTH_OF_ELEVATOR, HEIGHT_OF_ELEVATOR, this);
+			
+			ArrayList<Integer> openElevators = floorWithOpenDoor.get(HIGHEST_FLOOR - i);
+			for (int j = 0; j < NUMBER_OF_ELEVATORS; j++) {
+				if (openElevators.contains(j)) {
+					g.drawImage(doorsOpen, WIDTH_OF_BUFFER + (80 * j), ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT, WIDTH_OF_ELEVATOR, HEIGHT_OF_ELEVATOR, this);
+				} else {
+					g.drawImage(doorsClosed, WIDTH_OF_BUFFER + (80 * j), ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT, WIDTH_OF_ELEVATOR, HEIGHT_OF_ELEVATOR, this);
+				}
 			}
 		}
 	}

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Date;
+import java.util.HashMap;
 
 import scheduler.Dispatcher;
 import static resources.Constants.*;
@@ -154,9 +155,9 @@ public class Communicator {
 			for (Floor floor : floors) {
 				if (floor.getLevel() == floorNum) {
 					if (openClose == OPEN) {
-						floor.isDoorOpen = true;
+						floor.addElevatorDoorOpen(new Integer(elevatorNum));
 					} else {
-						floor.isDoorOpen = false;
+						floor.removeElevatorDoorOpen(new Integer(elevatorNum));
 					}
 					break;
 				}
@@ -349,12 +350,10 @@ public class Communicator {
 		return dispatcher;
 	}
 	
-	public ArrayList<Integer> getFloorsWithOpenDoor(){
-		ArrayList<Integer> returnList = new ArrayList<>();
+	public HashMap<Integer, ArrayList<Integer>> getFloorsWithOpenDoor(){
+		HashMap<Integer, ArrayList<Integer>> returnList = new HashMap<>();
 		for (Floor floor : floors) {
-			if (floor.isDoorOpen) {
-				returnList.add(floor.getLevel());
-			}
+				returnList.put(floor.getLevel(), floor.getIsDoorsOpen());
 		}
 		return returnList;
 	}
@@ -362,18 +361,23 @@ public class Communicator {
 	private class Floor {
 		
 		private int level;
-		private boolean isDoorOpen = false;
+		private ArrayList<Integer> isDoorsOpenOfElevators;
 		
 		public Floor(int level) {
 			this.level = level;
+			isDoorsOpenOfElevators = new ArrayList<>();
 		}
 		
-		public void setIsDoorOpen(boolean isDoorOpen) {
-			this.isDoorOpen = isDoorOpen;
+		public void addElevatorDoorOpen(Integer elevatorIndex) {
+			isDoorsOpenOfElevators.add(elevatorIndex);
 		}
 		
-		public boolean getIsDoorOpen() {
-			return isDoorOpen;
+		public void removeElevatorDoorOpen(Integer elevatorIndex) {
+			isDoorsOpenOfElevators.remove(elevatorIndex);
+		}
+		
+		public ArrayList<Integer> getIsDoorsOpen() {
+			return isDoorsOpenOfElevators;
 		}
 		
 		public int getLevel() {
