@@ -157,6 +157,31 @@ Group Memebers and Responsibilities
 			
 			Floor subsystem formatting cleanup
 
+	Iteration 4
+		Darren Holden
+		
+			Increased accuracy of timing
+
+			Error fixes
+
+		Callum Kirby
+
+			Error fixes			
+
+		Christopher Molnar
+
+			Error fixes
+
+			State-Machine Diagram
+
+		Logan MacGillivary
+
+      			Update UML Class diagram
+
+		Brandon Hartford
+			
+			Started work on GUI (for Iteration 5)
+
 Set Up Instructions/Run
 	
 	1 - Unzip project
@@ -185,15 +210,26 @@ Set Up Instructions/Run
 
 		3.3 - Select from floorSubsytem -> FloorSystem.java
 
-	4 - To run our project run ElevatorReciever.java, SchedulerRunner.java and floorSystem.java (in that order)
+	4 - To run the system on multiple computers, follow the next instructions, otherwise skip to step 5
 
-		4.1 - The elevatorReciever output will show the progress of the elevator (where its going and what state its in)
+		4.1 Repeat Steps 1 to 3 on each computer that is to be used.
+		
+		4.2 - In Eclipse, open resources.Constants.java and update the following values:
+			4.2.1 - SCHED_IP_ADDRESS - This should be the ip address of the computer that will run the Scheduler
+			4.2.2 - FLOOR_SYS_IP_ADDRESS - This should be the ip address of the computer that will run the Floor System
+			4.2.3 - ELEVATOR_SYS_IP_ADDRESS - This should be the ip address of the computer that will run the Elevator System
 
-	5 - To acces JUnit Tests navigate to ElevatorProject -> src -> test
+		4.3 - Repeat step 4.2 on each computer that is being used
 
-		5.1 - Included are JUnit Tests for all of the subsystems (elevator, floor, scheduler and resources)
+	5 - To run our project run ElevatorReciever.java, SchedulerRunner.java and floorSystem.java (in that order)
 
-		5.2 - To run a JUnit Test navigate to the desired JUnit file and select run
+		5.1 - The elevatorReciever output will show the progress of the elevator (where its going and what state its in)
+
+	6 - To acces JUnit Tests navigate to ElevatorProject -> src -> test
+
+		6.1 - Included are JUnit Tests for all of the subsystems (elevator, floor, scheduler and resources)
+
+		6.2 - To run a JUnit Test navigate to the desired JUnit file and select run
 
 Errors List
 
