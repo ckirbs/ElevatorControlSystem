@@ -76,6 +76,18 @@ public class Dispatcher {
 		return currElevator;
 	}
 	
+	/**
+	 * Determines if an elevator exists or is able to receive requests
+	 * 
+	 * @param elvNum	The elevator number to check
+	 * @return 			True if the elevator can be called, otherwise false
+	 */
+	public Boolean elevatorCallable(int elvNum) {
+        if (elvNum < 0 || elvNum >= Dispatcher.elevators.size()) return false;
+		
+        return Dispatcher.elevators.get(elvNum).getDir() != Directions.ERROR_HARD;
+	}
+	
 	public static Directions getElevatorDirectionByElevatorNumber(int elvNum){
 		return elevators.get(elvNum).getDir();		
 	}

@@ -264,22 +264,27 @@ public class Communicator {
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
 		
-		System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " an error notice: " + Directions.getDirByInt((int) dir));
-		
-		// The request is now pending
-		pendingReqs.add(new byte[] {message[5], dir, elevatorNumber, timer, (byte) elevatorNumber});
-			
-		// Send the request to the elevator
-		try {
-			message[3] = (byte) elevatorNumber;
-			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
-			elevatorSocket.send(pckt);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (Communicator.dispatcher.elevatorCallable((int) elevatorNumber)) {
+    		System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " an error notice: " + Directions.getDirByInt((int) dir));
+    		
+    		// The request is now pending
+    		pendingReqs.add(new byte[] {message[5], dir, elevatorNumber, timer, (byte) elevatorNumber});
+    			
+    		// Send the request to the elevator
+    		try {
+    			message[3] = (byte) elevatorNumber;
+    			DatagramPacket pckt = new DatagramPacket(message, MESSAGE_LENGTH, InetAddress.getByName(ELEVATOR_SYS_IP_ADDRESS), ELEVATOR_PORT);
+    			elevatorSocket.send(pckt);
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    			return false;
+    		}
+    			
+    		return true;
+		} else {
+			System.out.println(FORMATTER.format(new Date()) + ": Failed to send elevator " + elevatorNumber + " an error notice: " + Directions.getDirByInt((int) dir) + " because it is out of service or doesn't exist");
 			return false;
 		}
-			
-		return true;
 	}
 	
 	/**
