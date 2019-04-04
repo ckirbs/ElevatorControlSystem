@@ -358,6 +358,10 @@ public class Communicator {
 		return returnList;
 	}
 	
+	public ArrayList<ArrayList<Set<Integer>>> getDestinations(){
+		return destinations;
+	}
+	
 	private class Floor {
 		
 		private int level;
