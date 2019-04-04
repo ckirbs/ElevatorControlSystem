@@ -71,6 +71,8 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		
 		ArrayList<ArrayList<Set<Integer>>> dest = floorListener.getDestinations();
 		
+		ArrayList<Elevator> elevators = dispatcher.getElevators();
+		
 		g.fillRect(SIZE_X/2, 0, HEIGHT_OF_FLOOR_SEPERATOR, SIZE_Y);
 		
 		for (int i = 0; i < HIGHEST_FLOOR; i++) {
@@ -88,6 +90,8 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		}
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
 			g.drawString("Elevator " + (i + 1), SIZE_X/2 + 50, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+			g.drawString("Current floor " + elevators.get(i).getFloor(), SIZE_X/2 + 400, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+			g.drawString("Direction " + elevators.get(i).getDir(), SIZE_X/2 + 400, 20 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			g.fillRect(SIZE_X/2, ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR + 70, SIZE_X/2, HEIGHT_OF_FLOOR_SEPERATOR);
 			g.drawImage(elevator, SIZE_X/2 + HEIGHT_OF_FLOOR_SEPERATOR + HEIGHT_OF_BUFFER, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 20, WIDTH_OF_ELEVATOR_IMAGE, HEIGHT_OF_ELEVATOR_IMAGE, this);
 		}

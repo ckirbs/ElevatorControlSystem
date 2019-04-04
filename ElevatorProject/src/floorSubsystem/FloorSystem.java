@@ -45,7 +45,7 @@ public class FloorSystem {
 			floors.add(new Floor(i));
 		}
 		//Reads in the file and puts all the messages into a queue
-		systemFile = new SystemFile(SystemFile.FILENAME2);
+		systemFile = new SystemFile(SystemFile.FILENAME1);
 		systemFile.readValidateAndCreateMessages();
 		que = Message.getMessageQueue();
 		try {

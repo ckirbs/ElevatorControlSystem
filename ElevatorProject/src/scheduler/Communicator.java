@@ -163,6 +163,8 @@ public class Communicator {
 				}
 			}
 			
+			Communicator.updateDispatcher();
+			
 			System.out.println(FORMATTER.format(new Date()) + ": " + ((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
 			// Pass the message to the floor
@@ -323,7 +325,7 @@ public class Communicator {
 		
 		// Sleep for a brief period to give time for responses
 		try {
-			Thread.sleep(500);
+			Thread.sleep(100);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
