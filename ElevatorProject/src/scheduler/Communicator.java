@@ -163,8 +163,6 @@ public class Communicator {
 				}
 			}
 			
-			Communicator.updateDispatcher();
-			
 			System.out.println(FORMATTER.format(new Date()) + ": " + ((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
 			// Pass the message to the floor
@@ -229,9 +227,6 @@ public class Communicator {
 		message[4] = dir;
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
-				
-		// Update the dispatcher information
-		Communicator.updateDispatcher();
 		
 		// Pick an elevator to send a request to
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
@@ -305,7 +300,7 @@ public class Communicator {
 	/**
 	 * Sends a status request to each elevator so that the dispatcher can update its data.
 	 */
-	private static synchronized void updateDispatcher() {
+	public static synchronized void updateDispatcher() {
 		DatagramPacket pckt;
 		
 		// For each elevator

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -73,12 +74,17 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		
 		ArrayList<Elevator> elevators = dispatcher.getElevators();
 		
-		g.fillRect(SIZE_X/2, 0, HEIGHT_OF_FLOOR_SEPERATOR, SIZE_Y);
+		g.fillRect(SIZE_X/2 - 200, 0, HEIGHT_OF_FLOOR_SEPERATOR, SIZE_Y);
+		
+		Set<Integer> buttonsPressed = new HashSet<Integer>();
 		
 		for (int i = 0; i < HIGHEST_FLOOR; i++) {
-			g.fillRect(0, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR, SIZE_X/2, HEIGHT_OF_FLOOR_SEPERATOR);
+			g.fillRect(0, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR, SIZE_X/2 - 200, HEIGHT_OF_FLOOR_SEPERATOR);
 			g.drawString("Floor " + (HIGHEST_FLOOR - i), 20, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 5);
-			
+			for (int k = 0; k < NUMBER_OF_ELEVATORS; k++) {
+				buttonsPressed.addAll(dest.get(k).get(HIGHEST_FLOOR - i));
+			}
+			g.drawString("buttons pressed: " + buttonsPressed, 350, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 10);
 			ArrayList<Integer> openElevators = floorWithOpenDoor.get(HIGHEST_FLOOR - i);
 			for (int j = 0; j < NUMBER_OF_ELEVATORS; j++) {
 				if (openElevators.contains(j)) {
@@ -89,17 +95,17 @@ public class ElevatorGUI extends JPanel implements Runnable{
 			}
 		}
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
-			g.drawString("Elevator: " + (i + 1), SIZE_X/2 + 50, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
-			g.drawString("Current floor: " + elevators.get(i).getFloor(), SIZE_X/2 + 200, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
-			g.drawString("Direction: " + elevators.get(i).getDir(), SIZE_X/2 + 200, 20 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+			g.drawString("Elevator: " + (i + 1), SIZE_X/2 - 150, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+			g.drawString("Current floor: " + elevators.get(i).getFloor(), SIZE_X/2, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+			g.drawString("Direction: " + elevators.get(i).getDir(), SIZE_X/2, 20 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			ArrayList<Integer> openElevators = floorWithOpenDoor.get(elevators.get(i).getFloor());
 			if (openElevators.contains(i)) {
-				g.drawString("Door: open", SIZE_X/2 + 200, 40 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+				g.drawString("Door: open", SIZE_X/2, 40 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			} else {
-				g.drawString("Door: closed", SIZE_X/2 + 200, 40 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+				g.drawString("Door: closed", SIZE_X/2, 40 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			}	
-			g.fillRect(SIZE_X/2, ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR + 70, SIZE_X/2, HEIGHT_OF_FLOOR_SEPERATOR);
-			g.drawImage(elevator, SIZE_X/2 + HEIGHT_OF_FLOOR_SEPERATOR + HEIGHT_OF_BUFFER, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 20, WIDTH_OF_ELEVATOR_IMAGE, HEIGHT_OF_ELEVATOR_IMAGE, this);
+			g.fillRect(SIZE_X/2 - 200, ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR + 70, SIZE_X/2, HEIGHT_OF_FLOOR_SEPERATOR);
+			g.drawImage(elevator, SIZE_X/2 + HEIGHT_OF_FLOOR_SEPERATOR + HEIGHT_OF_BUFFER - 200, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 20, WIDTH_OF_ELEVATOR_IMAGE, HEIGHT_OF_ELEVATOR_IMAGE, this);
 		}
 	}
 
