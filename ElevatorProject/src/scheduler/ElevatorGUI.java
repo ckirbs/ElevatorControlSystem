@@ -45,6 +45,8 @@ public class ElevatorGUI extends JPanel implements Runnable{
 	Image doorsOpen;
 	Image elevator;
 	
+	ArrayList<Set<Integer>> elevatorButtonsPressed = new ArrayList<Set<Integer>>();
+	
 	public ElevatorGUI(ElevatorListener elevatorListener, FloorListener floorListener) {
 		super();
 		this.elevatorListener = elevatorListener;
@@ -56,6 +58,14 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		frame.setSize(SIZE_X,SIZE_Y);
 		frame.setVisible(true);
 		setDoubleBuffered(true);
+		
+		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
+			elevatorButtonsPressed.add(new HashSet<Integer>());
+			elevatorButtonsPressed.add(new HashSet<Integer>());
+			elevatorButtonsPressed.add(new HashSet<Integer>());
+			elevatorButtonsPressed.add(new HashSet<Integer>());
+		}
+		
 		try {
 			doorsClosed = ImageIO.read(new File(DOOR_CLOSED_IMAGE_PATH));
 			doorsOpen = ImageIO.read(new File(DOOR_OPEN_IMAGE_PATH));
@@ -68,17 +78,26 @@ public class ElevatorGUI extends JPanel implements Runnable{
 	
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
 		HashMap<Integer, ArrayList<Integer>> floorWithOpenDoor = floorListener.getFloorsWithOpenDoor();
 		
 		ArrayList<ArrayList<Set<Integer>>> dest = floorListener.getDestinations();
 		
 		ArrayList<Elevator> elevators = dispatcher.getElevators();
 		
+		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
+			for (int k = 0; k < HIGHEST_FLOOR; k++) {
+				elevatorButtonsPressed.get(i).addAll(dest.get(i).get(k));
+			}
+			elevatorButtonsPressed.get(i).remove(new Integer(elevators.get(i).getFloor()));
+		}
+		
 		g.fillRect(SIZE_X/2 - 200, 0, HEIGHT_OF_FLOOR_SEPERATOR, SIZE_Y);
 		
-		Set<Integer> buttonsPressed = new HashSet<Integer>();
+		Set<Integer> buttonsPressed;
 		
 		for (int i = 0; i < HIGHEST_FLOOR; i++) {
+			buttonsPressed = new HashSet<Integer>();
 			g.fillRect(0, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR, SIZE_X/2 - 200, HEIGHT_OF_FLOOR_SEPERATOR);
 			g.drawString("Floor " + (HIGHEST_FLOOR - i), 20, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 5);
 			for (int k = 0; k < NUMBER_OF_ELEVATORS; k++) {
@@ -99,6 +118,7 @@ public class ElevatorGUI extends JPanel implements Runnable{
 			g.drawString("Current floor: " + elevators.get(i).getFloor(), SIZE_X/2, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			g.drawString("Direction: " + elevators.get(i).getDir(), SIZE_X/2, 20 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			ArrayList<Integer> openElevators = floorWithOpenDoor.get(elevators.get(i).getFloor());
+			g.drawString("Destinations: " + elevatorButtonsPressed.get(i), SIZE_X/2, 60 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			if (openElevators.contains(i)) {
 				g.drawString("Door: open", SIZE_X/2, 40 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			} else {
@@ -114,7 +134,7 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		while(true) {
 			this.repaint();
 			try {
-				Thread.sleep(5);
+				Thread.sleep(15);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

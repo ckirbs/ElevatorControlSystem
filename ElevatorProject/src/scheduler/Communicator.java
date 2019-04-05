@@ -228,6 +228,10 @@ public class Communicator {
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
 		
+		
+		// Update the dispatcher information
+		Communicator.updateDispatcher();
+		
 		// Pick an elevator to send a request to
 		int elevatorNumber = Communicator.dispatcher.getNearestElevator(Directions.getDirByInt((int) dir), (int) origFloor);
 		
