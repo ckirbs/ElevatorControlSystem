@@ -61,9 +61,6 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
 			elevatorButtonsPressed.add(new HashSet<Integer>());
-			elevatorButtonsPressed.add(new HashSet<Integer>());
-			elevatorButtonsPressed.add(new HashSet<Integer>());
-			elevatorButtonsPressed.add(new HashSet<Integer>());
 		}
 		
 		try {
