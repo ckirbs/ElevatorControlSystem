@@ -47,6 +47,9 @@ public class ElevatorGUI extends JPanel implements Runnable{
 	
 	ArrayList<Set<Integer>> elevatorButtonsPressed = new ArrayList<Set<Integer>>();
 	
+	boolean upArrow = false;
+	boolean downArrow = false;
+	
 	public ElevatorGUI(ElevatorListener elevatorListener, FloorListener floorListener) {
 		super();
 		this.elevatorListener = elevatorListener;
@@ -92,15 +95,34 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		g.fillRect(SIZE_X/2 - 200, 0, HEIGHT_OF_FLOOR_SEPERATOR, SIZE_Y);
 		
 		Set<Integer> buttonsPressed;
-		
+
 		for (int i = 0; i < HIGHEST_FLOOR; i++) {
+			upArrow = false;
+			downArrow = false;
 			buttonsPressed = new HashSet<Integer>();
 			g.fillRect(0, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR, SIZE_X/2 - 200, HEIGHT_OF_FLOOR_SEPERATOR);
 			g.drawString("Floor " + (HIGHEST_FLOOR - i), 20, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 5);
 			for (int k = 0; k < NUMBER_OF_ELEVATORS; k++) {
 				buttonsPressed.addAll(dest.get(k).get(HIGHEST_FLOOR - i));
 			}
-			g.drawString("buttons pressed: " + buttonsPressed, 350, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 10);
+			g.drawString("Buttons Pressed: " + buttonsPressed, 350, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 10);
+			for (Integer p : buttonsPressed) {
+				if (p > (HIGHEST_FLOOR - i)) {
+					upArrow = true;
+				} else if (p < (HIGHEST_FLOOR - i)) {
+					downArrow = true;
+				}
+			}
+			String arrows = "";
+			if (upArrow) {
+				arrows += "Up";
+			}
+			if (upArrow && downArrow) {
+				arrows += ", Down";
+			} else if (downArrow) {
+				arrows += "Down";
+			}
+			g.drawString("Direction Arrows: " + arrows, 350, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 30);
 			ArrayList<Integer> openElevators = floorWithOpenDoor.get(HIGHEST_FLOOR - i);
 			for (int j = 0; j < NUMBER_OF_ELEVATORS; j++) {
 				if (openElevators.contains(j)) {
