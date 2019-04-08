@@ -26,9 +26,10 @@ public class ElevatorGUI extends JPanel implements Runnable{
 	private static final int SIZE_X = 2000;
 	private static final int SIZE_Y = 1300;
 	private static final int HEIGHT_OF_FLOOR_SEPERATOR = 5;
-	private static final int HEIGHT_OF_FLOOR = 90;
-	private static final int HEIGHT_OF_ELEVATOR = 75;
-	private static final int WIDTH_OF_ELEVATOR = 75;
+	private static final int HEIGHT_OF_FLOOR = 36;
+	private static final int HEIGHT_OF_FLOOR_ELEVATOR = 90;
+	private static final int HEIGHT_OF_ELEVATOR = 30;
+	private static final int WIDTH_OF_ELEVATOR = 30;
 	private static final int HEIGHT_OF_TEXT = 10;
 	private static final int HEIGHT_OF_BUFFER = 10;
 	private static final int WIDTH_OF_BUFFER = 10;
@@ -121,7 +122,7 @@ public class ElevatorGUI extends JPanel implements Runnable{
 					
 				}
 			}
-			g.drawString("Buttons Pressed: " + buttonsPressed, 350, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 10);
+			g.drawString("Buttons Pressed: " + buttonsPressed, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * NUMBER_OF_ELEVATORS) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT - 5 + 200, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 10);
 			for (Integer p : buttonsPressed) {
 				if (p > (HIGHEST_FLOOR - i)) {
 					upArrow = true;
@@ -138,13 +139,13 @@ public class ElevatorGUI extends JPanel implements Runnable{
 			} else if (downArrow) {
 				arrows += "Down";
 			}
-			g.drawString("Direction Arrows: " + arrows, 350, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 30);
+			g.drawString("Direction Arrows: " + arrows, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * NUMBER_OF_ELEVATORS) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT - 5 + 200, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 30);
 			ArrayList<Integer> openElevators = floorWithOpenDoor.get(HIGHEST_FLOOR - i);
 			for (int j = 0; j < NUMBER_OF_ELEVATORS; j++) {
 				if (openElevators.contains(j)) {
-					g.drawImage(doorsOpen, WIDTH_OF_BUFFER + (80 * j), ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT, WIDTH_OF_ELEVATOR, HEIGHT_OF_ELEVATOR, this);
+					g.drawImage(doorsOpen, WIDTH_OF_BUFFER + (80 * j), ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT - 5, WIDTH_OF_ELEVATOR, HEIGHT_OF_ELEVATOR, this);
 				} else {
-					g.drawImage(doorsClosed, WIDTH_OF_BUFFER + (80 * j), ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT, WIDTH_OF_ELEVATOR, HEIGHT_OF_ELEVATOR, this);
+					g.drawImage(doorsClosed, WIDTH_OF_BUFFER + (80 * j), ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_TEXT - 5, WIDTH_OF_ELEVATOR, HEIGHT_OF_ELEVATOR, this);
 				}
 			}
 		}
@@ -165,7 +166,7 @@ public class ElevatorGUI extends JPanel implements Runnable{
 			} else {
 				g.drawString("Door: closed", SIZE_X/2, 40 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			}	
-			g.fillRect(SIZE_X/2 - 200, ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR + 70, SIZE_X/2, HEIGHT_OF_FLOOR_SEPERATOR);
+			g.fillRect(SIZE_X/2 - 200, ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR_ELEVATOR + 70, SIZE_X/2, HEIGHT_OF_FLOOR_SEPERATOR);
 			g.drawImage(elevator, SIZE_X/2 + HEIGHT_OF_FLOOR_SEPERATOR + HEIGHT_OF_BUFFER - 200, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 20, WIDTH_OF_ELEVATOR_IMAGE, HEIGHT_OF_ELEVATOR_IMAGE, this);
 		}
 	}
