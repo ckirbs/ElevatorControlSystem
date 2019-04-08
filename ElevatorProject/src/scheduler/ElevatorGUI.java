@@ -1,5 +1,6 @@
 package scheduler;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
@@ -14,6 +15,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+
+import resources.Directions;
+
 import static resources.Constants.HIGHEST_FLOOR;
 import static resources.Constants.NUMBER_OF_ELEVATORS;
 
@@ -147,7 +151,13 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
 			g.drawString("Elevator: " + (i + 1), SIZE_X/2 - 150, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			g.drawString("Current floor: " + elevators.get(i).getFloor(), SIZE_X/2, HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
-			g.drawString("Direction: " + elevators.get(i).getDir(), SIZE_X/2, 20 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+			if (elevators.get(i).getDir() == Directions.ERROR_HARD | elevators.get(i).getDir() == Directions.ERROR_SOFT) {
+				g.setColor(Color.RED);
+				g.drawString("Direction: " + elevators.get(i).getDir(), SIZE_X/2, 20 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+				g.setColor(Color.BLACK);
+			} else {
+				g.drawString("Direction: " + elevators.get(i).getDir(), SIZE_X/2, 20 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
+			}
 			ArrayList<Integer> openElevators = floorWithOpenDoor.get(elevators.get(i).getFloor());
 			g.drawString("Destinations: " + elevatorButtonsPressed.get(i), SIZE_X/2, 60 + HEIGHT_OF_BUFFER + ((HEIGHT_OF_ELEVATOR_IMAGE + HEIGHT_OF_BUFFER + 40) * i) + 10);
 			if (openElevators.contains(i)) {
