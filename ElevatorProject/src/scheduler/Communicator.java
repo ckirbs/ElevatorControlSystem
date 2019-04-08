@@ -7,7 +7,9 @@ import java.net.InetAddress;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Date;
+import java.util.HashMap;
 
 import scheduler.Dispatcher;
 import static resources.Constants.*;
@@ -32,9 +34,14 @@ public class Communicator {
 	protected static ArrayList<byte[]> pendingReqs = new ArrayList<byte[]>();
 	private static int currReqId;
 	private static Set<Integer> pendingMandReqs = new HashSet<Integer>();
+	private static List<Floor> floors;
 	
 	public Communicator() {
 		Communicator.currReqId = 1;
+		floors = new ArrayList<Floor>();
+		for (int i = 0; i < NUMBER_OF_FLOORS; i++) {
+			floors.add(new Floor(i));
+		}
 	}
 	
 	/**
@@ -145,6 +152,17 @@ public class Communicator {
 			msg[3] = elevatorNum;
 			msg[4] = dir;
 			
+			for (Floor floor : floors) {
+				if (floor.getLevel() == floorNum) {
+					if (openClose == OPEN) {
+						floor.addElevatorDoorOpen(new Integer(elevatorNum));
+					} else {
+						floor.removeElevatorDoorOpen(new Integer(elevatorNum));
+					}
+					break;
+				}
+			}
+			
 			System.out.println(FORMATTER.format(new Date()) + ": " + ((openClose == OPEN) ? "Opening " : "Closing ") + "doors on floor " + (int) floorNum + " for elevator " + (int) elevatorNum);
 			
 			// Pass the message to the floor
@@ -209,7 +227,8 @@ public class Communicator {
 		message[4] = dir;
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
-				
+		
+		
 		// Update the dispatcher information
 		Communicator.updateDispatcher();
 		
@@ -290,7 +309,7 @@ public class Communicator {
 	/**
 	 * Sends a status request to each elevator so that the dispatcher can update its data.
 	 */
-	private static synchronized void updateDispatcher() {
+	public static synchronized void updateDispatcher() {
 		DatagramPacket pckt;
 		
 		// For each elevator
@@ -310,7 +329,7 @@ public class Communicator {
 		
 		// Sleep for a brief period to give time for responses
 		try {
-			Thread.sleep(500);
+			Thread.sleep(100);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
@@ -330,6 +349,49 @@ public class Communicator {
 			}
 			
 			Communicator.tempDeniedHolder.clear();
+		}
+	}
+	
+	public Dispatcher getDispatcher() {
+		return dispatcher;
+	}
+	
+	public HashMap<Integer, ArrayList<Integer>> getFloorsWithOpenDoor(){
+		HashMap<Integer, ArrayList<Integer>> returnList = new HashMap<>();
+		for (Floor floor : floors) {
+				returnList.put(floor.getLevel(), floor.getIsDoorsOpen());
+		}
+		return returnList;
+	}
+	
+	public ArrayList<ArrayList<Set<Integer>>> getDestinations(){
+		return destinations;
+	}
+	
+	private class Floor {
+		
+		private int level;
+		private ArrayList<Integer> isDoorsOpenOfElevators;
+		
+		public Floor(int level) {
+			this.level = level;
+			isDoorsOpenOfElevators = new ArrayList<>();
+		}
+		
+		public void addElevatorDoorOpen(Integer elevatorIndex) {
+			isDoorsOpenOfElevators.add(elevatorIndex);
+		}
+		
+		public void removeElevatorDoorOpen(Integer elevatorIndex) {
+			isDoorsOpenOfElevators.remove(elevatorIndex);
+		}
+		
+		public ArrayList<Integer> getIsDoorsOpen() {
+			return isDoorsOpenOfElevators;
+		}
+		
+		public int getLevel() {
+			return level;
 		}
 	}
 	
