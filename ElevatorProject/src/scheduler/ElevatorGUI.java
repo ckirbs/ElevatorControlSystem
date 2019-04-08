@@ -87,9 +87,17 @@ public class ElevatorGUI extends JPanel implements Runnable{
 		
 		for (int i = 0; i < NUMBER_OF_ELEVATORS; i++) {
 			for (int k = 0; k < HIGHEST_FLOOR; k++) {
-				elevatorButtonsPressed.get(i).addAll(dest.get(i).get(k));
+				try {
+					elevatorButtonsPressed.get(i).addAll(dest.get(i).get(k));
+				} catch (Exception e) {
+					
+				}
 			}
-			elevatorButtonsPressed.get(i).remove(new Integer(elevators.get(i).getFloor()));
+			try {
+				elevatorButtonsPressed.get(i).remove(new Integer(elevators.get(i).getFloor()));
+			} catch (Exception e) {
+				
+			}
 		}
 		
 		g.fillRect(SIZE_X/2 - 200, 0, HEIGHT_OF_FLOOR_SEPERATOR, SIZE_Y);
@@ -103,7 +111,11 @@ public class ElevatorGUI extends JPanel implements Runnable{
 			g.fillRect(0, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + HEIGHT_OF_FLOOR, SIZE_X/2 - 200, HEIGHT_OF_FLOOR_SEPERATOR);
 			g.drawString("Floor " + (HIGHEST_FLOOR - i), 20, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 5);
 			for (int k = 0; k < NUMBER_OF_ELEVATORS; k++) {
-				buttonsPressed.addAll(dest.get(k).get(HIGHEST_FLOOR - i));
+				try {
+					buttonsPressed.addAll(dest.get(k).get(HIGHEST_FLOOR - i));
+				} catch (Exception e) {
+					
+				}
 			}
 			g.drawString("Buttons Pressed: " + buttonsPressed, 350, ((HEIGHT_OF_FLOOR + HEIGHT_OF_TEXT) * i) + HEIGHT_OF_BUFFER + 10);
 			for (Integer p : buttonsPressed) {
