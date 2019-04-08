@@ -32,6 +32,8 @@ public final class Constants {
 	
 	public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSSS");
 	
+	public static final Boolean RUN_GUI = false;
+	
 	// Message Type Values
 	public static final byte ERROR = 0;
 	public static final byte NEW_REQUEST_FROM_FLOOR = 1;

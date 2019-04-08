@@ -1,5 +1,6 @@
 package scheduler;
 
+import static resources.Constants.RUN_GUI;
 
 public class SchedulerRunner {
 
@@ -8,10 +9,13 @@ public class SchedulerRunner {
 		FloorListener floorListener = new FloorListener();
 		Thread eList = new Thread(elvListener, "elevListener");
 		Thread fList = new Thread(floorListener, "floorListener");
-		Thread gui = new Thread(new ElevatorGUI(elvListener, floorListener), "gui");
 		
 		fList.start();
 		eList.start();
-		gui.start();
+		
+		if (RUN_GUI) {
+			Thread gui = new Thread(new ElevatorGUI(elvListener, floorListener), "gui");
+			gui.start();
+		}
 	}
 }
