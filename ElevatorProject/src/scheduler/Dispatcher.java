@@ -32,6 +32,18 @@ public class Dispatcher {
 		}
 	}
 	
+	/**
+	 * Determines if an elevator exists or is able to receive requests
+	 * 
+	 * @param elvNum	The elevator number to check
+	 * @return 			True if the elevator can be called, otherwise false
+	 */
+	public Boolean elevatorCallable(int elvNum) {
+        if (elvNum < 0 || elvNum >= Dispatcher.elevators.size()) return false;
+		
+        return Dispatcher.elevators.get(elvNum).getDir() != Directions.ERROR_HARD;
+	}
+	
 	public synchronized boolean updateElevatorInfo(int id, Directions dir, int floor) {
 		if (id >= Dispatcher.elevators.size() || id < 0) return false;
 		if (floor > HIGHEST_FLOOR || floor < LOWEST_FLOOR) return false;
@@ -77,52 +89,11 @@ public class Dispatcher {
 		return currElevator;
 	}
 	
-	/**
-	 * Determines if an elevator exists or is able to receive requests
-	 * 
-	 * @param elvNum	The elevator number to check
-	 * @return 			True if the elevator can be called, otherwise false
-	 */
-	public Boolean elevatorCallable(int elvNum) {
-        if (elvNum < 0 || elvNum >= Dispatcher.elevators.size()) return false;
-		
-        return Dispatcher.elevators.get(elvNum).getDir() != Directions.ERROR_HARD;
-	}
-	
 	public static Directions getElevatorDirectionByElevatorNumber(int elvNum){
 		return elevators.get(elvNum).getDir();		
 	}
 	
-	// Elevator object to hold elevator info
-	public class Elevator {
-		private Directions dir;
-		private int currFloor;
-		private int id;
-		
-		public Elevator (int id, Directions dir, int floor) {
-			this.dir = dir;
-			this.currFloor = floor;
-			this.id = id;
-		}
-		
-		public int getFloor() {
-			return this.currFloor;
-		}
-
-		public void setFloor(int floor) {
-			this.currFloor = floor;
-		}
-		
-		public Directions getDir() {
-			return this.dir;
-		}
-
-		public void setDir(Directions dir) {
-			this.dir = dir;
-		}
-		
-		public int getId() {
-			return this.id;
-		}
+	public ArrayList<Elevator> getElevators() {
+		return elevators;
 	}
 }

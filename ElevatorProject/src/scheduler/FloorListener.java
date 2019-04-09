@@ -10,6 +10,10 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An object to listen to the floor system and deal with any received messages
@@ -45,7 +49,14 @@ public class FloorListener extends Communicator implements Runnable {
 
 	@Override
 	public void run() {
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 		while (true) {
+			scheduler.scheduleAtFixedRate(new Runnable() {
+				@Override
+				public void run() {
+					Communicator.updateDispatcher();
+				}
+			}, 0, 500, TimeUnit.MILLISECONDS);
 			checkForMessages();
 			super.retryDeniedReqs();
 		}
