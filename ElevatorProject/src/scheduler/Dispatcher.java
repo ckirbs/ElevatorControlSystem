@@ -33,7 +33,8 @@ public class Dispatcher {
 	}
 	
 	public synchronized boolean updateElevatorInfo(int id, Directions dir, int floor) {
-		if (id > Dispatcher.elevators.size() || id < 0) return false;
+		if (id >= Dispatcher.elevators.size() || id < 0) return false;
+		if (floor > HIGHEST_FLOOR || floor < LOWEST_FLOOR) return false;
 		
 		Dispatcher.elevators.get(id).setFloor(floor);
 		Dispatcher.elevators.get(id).setDir(dir);

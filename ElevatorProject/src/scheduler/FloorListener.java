@@ -22,22 +22,6 @@ public class FloorListener extends Communicator implements Runnable {
 	
 	public FloorListener() {
 		super();
-		try {
-			Communicator.floorSocket = new DatagramSocket(FLOOR_PORT);
-			Communicator.floorSocket.setSoTimeout(TIMEOUT_TIME);
-		} catch (SocketException e) {
-			System.out.println("Error creating floor socket.");
-			e.printStackTrace();
-			System.exit(1);
-		}
-		
-		for (int e = 0; e < NUMBER_OF_ELEVATORS; e++) {
-			ArrayList<Set<Integer>> tempList = new ArrayList<Set<Integer>>();
-			for(int i = 0; i < NUMBER_OF_FLOORS; i++) {
-				tempList.add(new HashSet<Integer>());
-			}
-			Communicator.destinations.add(tempList);
-		}
 	}
 
 	/**
