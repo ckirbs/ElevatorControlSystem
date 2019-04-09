@@ -72,4 +72,47 @@ public class DispatcherTest {
 		// Should give the closest elevator that is going in the correct direction/not moving
 		assertEquals("Incorrect Elevator", 1, dispatcher.getNearestElevator(Directions.UP, 6));
 	}
+	
+	@Test
+	public void testElevatorCallable() {
+		dispatcher = new Dispatcher(5);
+		dispatcher.updateElevatorInfo(0, Directions.UP, 7);
+		dispatcher.updateElevatorInfo(1, Directions.DOWN, 3);
+		dispatcher.updateElevatorInfo(2, Directions.STANDBY, 3);
+		dispatcher.updateElevatorInfo(3, Directions.ERROR_SOFT, 3);
+		dispatcher.updateElevatorInfo(4, Directions.ERROR_HARD, 3);
+		
+		// Nonexistent elevators and elevators in a hard error state should not be callable
+		assertTrue("Incorrect Callable Value", dispatcher.elevatorCallable(0));
+		assertTrue("Incorrect Callable Value", dispatcher.elevatorCallable(1));
+		assertTrue("Incorrect Callable Value", dispatcher.elevatorCallable(2));
+		assertTrue("Incorrect Callable Value", dispatcher.elevatorCallable(3));
+		assertFalse("Incorrect Callable Value", dispatcher.elevatorCallable(4));
+		assertFalse("Incorrect Callable Value", dispatcher.elevatorCallable(5));
+		assertFalse("Incorrect Callable Value", dispatcher.elevatorCallable(-1));
+
+		dispatcher.updateElevatorInfo(0, Directions.ERROR_HARD, 7);
+		assertFalse("Incorrect Callable Value", dispatcher.elevatorCallable(0));
+	}
+	
+	@Test
+	public void testGetDirectionByElevNumb() {
+		dispatcher = new Dispatcher(5);
+		dispatcher.updateElevatorInfo(0, Directions.UP, 7);
+		dispatcher.updateElevatorInfo(1, Directions.DOWN, 3);
+		dispatcher.updateElevatorInfo(2, Directions.STANDBY, 3);
+		dispatcher.updateElevatorInfo(3, Directions.ERROR_SOFT, 3);
+		dispatcher.updateElevatorInfo(4, Directions.ERROR_HARD, 3);
+		
+		// Nonexistent elevators and elevators in a hard error state should not be callable
+		assertEquals("Incorrect Direction Value", Directions.UP, dispatcher.getElevatorDirectionByElevatorNumber(0));
+		assertEquals("Incorrect Direction Value", Directions.DOWN, dispatcher.getElevatorDirectionByElevatorNumber(1));
+		assertEquals("Incorrect Direction Value", Directions.STANDBY, dispatcher.getElevatorDirectionByElevatorNumber(2));
+		assertEquals("Incorrect Direction Value", Directions.ERROR_SOFT, dispatcher.getElevatorDirectionByElevatorNumber(3));
+		assertEquals("Incorrect Direction Value", Directions.ERROR_HARD, dispatcher.getElevatorDirectionByElevatorNumber(4));
+		
+
+		dispatcher.updateElevatorInfo(0, Directions.DOWN, 7);
+		assertEquals("Incorrect Callable Value", Directions.DOWN, dispatcher.getElevatorDirectionByElevatorNumber(0));
+	}
 }

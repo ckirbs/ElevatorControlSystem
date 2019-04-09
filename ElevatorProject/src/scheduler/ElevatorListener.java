@@ -18,13 +18,6 @@ public class ElevatorListener extends Communicator implements Runnable {
 	
 	public ElevatorListener() {
 		super();
-		try {
-			Communicator.elevatorSocket = new DatagramSocket();
-		} catch (SocketException e) {
-			System.out.println("Error creating elevator socket.");
-			e.printStackTrace();
-			System.exit(1);
-		}
 	}
 
 	/**

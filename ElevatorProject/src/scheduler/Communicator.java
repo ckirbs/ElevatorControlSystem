@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +24,8 @@ import resources.Directions;
  *
  */
 public class Communicator {
-	protected static DatagramSocket floorSocket, elevatorSocket;
+	protected static DatagramSocket floorSocket = null;
+	protected static DatagramSocket elevatorSocket = null;
 	protected static Dispatcher dispatcher = new Dispatcher();
 	protected final int TIMEOUT_TIME = 1000;
 	protected static int elevatorReturnPort;
@@ -38,6 +40,38 @@ public class Communicator {
 	
 	public Communicator() {
 		Communicator.currReqId = 1;
+		
+		if (floorSocket == null) {
+			try {
+				Communicator.floorSocket = new DatagramSocket(FLOOR_PORT);
+				Communicator.floorSocket.setSoTimeout(TIMEOUT_TIME);
+			} catch (SocketException e) {
+				System.out.println("Error creating floor socket.");
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		if (elevatorSocket == null) {
+			try {
+				Communicator.elevatorSocket = new DatagramSocket(ELEVATOR_PORT);
+			} catch (SocketException e) {
+				System.out.println("Error creating elevator socket.");
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
+		
+		if (destinations.isEmpty()) {
+			for (int e = 0; e < NUMBER_OF_ELEVATORS; e++) {
+				ArrayList<Set<Integer>> tempList = new ArrayList<Set<Integer>>();
+				for(int i = LOWEST_FLOOR; i <= HIGHEST_FLOOR; i++) {
+					tempList.add(new HashSet<Integer>());
+				}
+				Communicator.destinations.add(tempList);
+			}
+		}
+			
 		floors = new ArrayList<Floor>();
 		for (int i = 0; i < NUMBER_OF_FLOORS; i++) {
 			floors.add(new Floor(i));
@@ -77,8 +111,10 @@ public class Communicator {
 	 */
 	private boolean processStatusReport(byte dir, byte floorNum, byte elevatorNum) {
 		System.out.println(FORMATTER.format(new Date()) + ": Updating status of elev " + (int) elevatorNum);
+		if ((int) elevatorNum < 0 || (int) elevatorNum >= NUMBER_OF_ELEVATORS) return false;
+		
 		if (dir == (byte) Directions.getIntByDir(Directions.ERROR_HARD))  {
-			System.out.println(FORMATTER.format(new Date()) + ": Elevator " + (int)elevatorNum + " stuck permanently: Reschedule pending requests");
+			System.out.println(FORMATTER.format(new Date()) + ": Elevator " + (int) elevatorNum + " stuck permanently: Reschedule pending requests");
 			Thread reallocator = new Thread(new Reallocator((int) elevatorNum));
 			reallocator.start();
 		} 
@@ -282,6 +318,8 @@ public class Communicator {
 		message[4] = dir;
 		message[5] = (byte) Communicator.currReqId;
 		Communicator.currReqId++;
+		
+		if ((int) dir <= Directions.getIntByDir(Directions.ERROR_DEFAULT)) return false;
 		
 		if (Communicator.dispatcher.elevatorCallable((int) elevatorNumber)) {
     		System.out.println(FORMATTER.format(new Date()) + ": Sending elevator " + elevatorNumber + " an error notice: " + Directions.getDirByInt((int) dir));
