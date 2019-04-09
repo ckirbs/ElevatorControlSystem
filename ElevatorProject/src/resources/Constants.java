@@ -21,18 +21,30 @@ public final class Constants {
 	public static final int MESSAGE_LENGTH = 6;
 	public static final int NUMBER_OF_ELEVATORS = 4;
 	public static final int LOWEST_FLOOR = 0;
-	public static final int HIGHEST_FLOOR = 10;
+	public static final int HIGHEST_FLOOR = 22;
 	public static final int NUMBER_OF_FLOORS = HIGHEST_FLOOR - LOWEST_FLOOR + 1;
 	public static final int ELEVATOR_TRAVEL_SPEED_MS = 1500;
 	public static final int ELEVATOR_STOP_TIME = 1750;
 	
+	// IP_ADDRESS
 	public static final String SCHED_IP_ADDRESS = "127.0.0.1";
 	public static final String FLOOR_SYS_IP_ADDRESS = "127.0.0.1";
 	public static final String ELEVATOR_SYS_IP_ADDRESS = "127.0.0.1";
 	
 	public static final SimpleDateFormat FORMATTER = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss.SSSS");
 	
+	// Toggle GUI on (true) and off (false)
 	public static final Boolean RUN_GUI = true;
+	
+	// Input files
+	public final static String FILENAME1 = "elevatorInputFile.txt"; 
+	public final static String FILENAME2 = "TestFile1.txt"; 
+	public final static String FILENAME3 = "ErrorRunFile.txt"; 
+	public final static String FILENAME4 = "PerformanceTimesInputFile.txt"; 
+	public final static String FILENAME5 = "DuttonExampleFile.txt"; 
+	// Select the file you want to run by putting it in FILE_TO_RUN
+	public static final String FILE_TO_RUN = FILENAME5;
+
 	
 	// Message Type Values
 	public static final byte ERROR = 0;

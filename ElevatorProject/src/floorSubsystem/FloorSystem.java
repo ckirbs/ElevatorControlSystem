@@ -27,6 +27,7 @@ import static resources.Constants.MESSAGE_LENGTH;
 import static resources.Constants.FORMATTER;
 import static resources.Constants.ERROR;
 import static resources.Constants.NEW_REQUEST_FROM_FLOOR;
+import static resources.Constants.FILE_TO_RUN;
 
 public class FloorSystem {
 	
@@ -45,7 +46,7 @@ public class FloorSystem {
 			floors.add(new Floor(i));
 		}
 		//Reads in the file and puts all the messages into a queue
-		systemFile = new SystemFile(SystemFile.FILENAME3);
+		systemFile = new SystemFile(FILE_TO_RUN);
 		systemFile.readValidateAndCreateMessages();
 		que = Message.getMessageQueue();
 		try {

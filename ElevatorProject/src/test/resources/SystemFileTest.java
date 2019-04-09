@@ -5,12 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import resources.SystemFile;
+import static resources.Constants.FILENAME2;
 
 public class SystemFileTest {
-
-    public static final String TESTFILE1 = "TestFile1.txt"; // TestFile1.txt
-							    // found in
-							    // Resources folder
 
     @Test
     public void testValidateLineNoInput() {
@@ -56,7 +53,7 @@ public class SystemFileTest {
 
     @Test
     public void testValidateLineReadFile() {
-	SystemFile input = new SystemFile(TESTFILE1);
+	SystemFile input = new SystemFile(FILENAME2);
 	String returnInfo = "14:05:15.22 2 Up 4";
 	String output = input.testReadFile().get(0);
 	assertEquals("Incorrect Read of TestFile1!", returnInfo, output);
