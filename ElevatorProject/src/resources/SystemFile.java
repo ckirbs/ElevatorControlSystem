@@ -18,11 +18,6 @@ import static resources.Constants.HIGHEST_FLOOR;;
 public class SystemFile {
 
 	public final static String FILEPATH = "src/Resources/"; // File path for
-	// text files
-
-	public final static String FILENAME1 = "elevatorInputFile.txt"; // Filename1
-	public final static String FILENAME2 = "TestFile1.txt"; // Filename1
-	public final static String FILENAME3 = "ErrorRunFile.txt"; // Filename1
 
 	private String filename;
 
